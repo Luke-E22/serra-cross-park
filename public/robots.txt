@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://serracrosspark.com/sitemap-index.xml

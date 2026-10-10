@@ -1,0 +1,78 @@
+---
+// Global CSS, in this order: tokens, then the component bundle (its digit-only font faces
+// must follow the full faces), then site styles.
+import '../../design-system/tokens.css';
+import '../../design-system/components/bundle.css';
+import '../styles/site.css';
+import strongGlasgowBold from '../../design-system/fonts/StrongGlasgow-Bold.ttf?url';
+import { SiteFooter } from '../components/ds';
+import SiteHeaderIsland from '../components/SiteHeaderIsland';
+import { CREDIT, FOOTER_COLUMNS, SITE } from '../config/site';
+
+interface Props {
+  /** Page title. Rendered as "<title> | Serra Cross Park" unless titleSuffix is false. */
+  title: string;
+  description: string;
+  /** Site path for the canonical URL, for example "/about/". A trailing slash is added. */
+  path: string;
+  /** Open Graph image: an absolute URL or a site-relative path. */
+  ogImage?: string;
+  /** The header link to mark as current, by label. */
+  active?: string;
+  /** True when the page renders its own hero that carries the header. */
+  hero?: boolean;
+  /** False when `title` is already the full document title (Home). */
+  titleSuffix?: boolean;
+}
+
+const { title, description, path, ogImage, active, hero = false, titleSuffix = true } = Astro.props;
+
+const pageTitle = titleSuffix ? `${title} | ${SITE.name}` : title;
+const normalizedPath = ('/' + path.replace(/^\/+/, '')).replace(/\/?$/, '/');
+const canonical = new URL(normalizedPath, SITE.url).href;
+const ogImageUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={SITE.name} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#1d2944" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href={strongGlasgowBold} as="font" type="font/ttf" crossorigin />
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link label" href="#main">Skip to content</a>
+    {!hero && <SiteHeaderIsland client:media="(max-width: 1099px)" active={active} />}
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter
+      columns={FOOTER_COLUMNS}
+      ein={SITE.ein}
+      email={SITE.email}
+      location={SITE.location}
+      facebookHref={SITE.facebook}
+      credit={CREDIT}
+      year={2026}
+    />
+  </body>
+</html>

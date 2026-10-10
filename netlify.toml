@@ -1,0 +1,76 @@
+# Netlify settings for serracrosspark.com.
+# The one serverless function, availability.mts, lives in netlify/functions/ and answers at /api/availability.
+# The redirects below keep the old WordPress paths working (BRIEF.md section 11). Astro's own routes
+# are static files in dist/, so nothing here touches them. No Content-Security-Policy yet: Cal.com,
+# Zeffy and Google Fonts need room. Add one later and test it.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Old site paths that moved.
+
+[[redirects]]
+  from = "/calendar/"
+  to = "/booking/#availability"
+  status = 301
+
+[[redirects]]
+  from = "/calendar"
+  to = "/booking/#availability"
+  status = 301
+
+[[redirects]]
+  from = "/weddings/"
+  to = "/booking/"
+  status = 301
+
+[[redirects]]
+  from = "/weddings"
+  to = "/booking/"
+  status = 301
+
+# Old WooCommerce paths. The shop is gone; send people to the donate page.
+
+[[redirects]]
+  from = "/cart/*"
+  to = "/donate/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/checkout/*"
+  to = "/donate/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/shop/*"
+  to = "/donate/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/my-account/*"
+  to = "/donate/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/product/*"
+  to = "/donate/"
+  status = 301
+  force = true
+
+# Basic security headers on every response.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"

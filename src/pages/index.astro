@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero';
+import { Button, FactGrid, FeatureCard, Gallery, SectionHeading, SignPanel } from '../components/ds';
+import { SITE } from '../config/site';
+import { ogImage, picture } from '../lib/images';
+
+import panorama from '../assets/photos/cross-olive-panorama.jpg';
+import receptionLawn from '../assets/photos/reception-lawn.jpg';
+import crossIslands from '../assets/photos/cross-channel-islands.jpg';
+import benchOcean from '../assets/photos/bench-ocean.jpg';
+import rampartSalvia from '../assets/photos/stone-rampart-salvia.jpg';
+import floralArch from '../assets/photos/ceremony-floral-arch.jpg';
+import guestsBanner from '../assets/photos/ceremony-guests-banner.jpg';
+import bridesmaids from '../assets/photos/bridesmaids-gold.jpg';
+import coastline from '../assets/photos/ventura-coastline.jpg';
+import coastlineSalvia from '../assets/photos/coastline-salvia.jpg';
+import crossSunset from '../assets/photos/cross-sunset.jpg';
+
+// Rendered widths of each slot, for the sizes attribute.
+// Cards: three across in the 1200px container, one column (capped at 600px) under 860px.
+const CARD_SIZES = '(min-width: 1200px) 368px, (min-width: 861px) 33vw, (min-width: 640px) 600px, 100vw';
+// SignPanel photo: the narrower column of its two-column body, full width under 720px.
+const SIGN_SIZES = '(min-width: 1200px) 470px, (min-width: 721px) 42vw, 100vw';
+// Gallery cells: three columns, two under 720px. Tall cells crop a portrait to a thin
+// column, so the browser needs more pixels than the cell is wide; 80vw covers that.
+const GALLERY_CELL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 50vw';
+const GALLERY_TALL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 80vw';
+const GALLERY_WIDE = '(min-width: 1200px) 764px, (min-width: 721px) 66vw, 100vw';
+const GALLERY_LAST = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 100vw';
+
+const hero = await picture(panorama, {
+  widths: [640, 960, 1280, 1600, 2000],
+  sizes: '100vw',
+  priority: true,
+  alt: 'The wooden Cross on its stone platform among olive trees, with the ocean and the Ventura coastline behind.',
+});
+
+const weddings = await picture(receptionLawn, {
+  widths: [480, 736, 1100],
+  sizes: CARD_SIZES,
+  alt: 'Guests at round tables under white umbrellas on the lawn, the Cross and the ocean behind them.',
+});
+const history = await picture(crossIslands, {
+  widths: [480, 736, 1100],
+  sizes: CARD_SIZES,
+  position: '50% 22%',
+  alt: 'The Cross on its pedestal against a blue sky, with the Channel Islands on the horizon.',
+});
+const give = await picture(benchOcean, {
+  widths: [480, 736, 1100],
+  sizes: CARD_SIZES,
+  alt: 'A metal bench facing the ocean, the Cross small on the horizon between the trees.',
+});
+
+const rampart = await picture(rampartSalvia, {
+  widths: [480, 940, 1400],
+  sizes: SIGN_SIZES,
+  position: '50% 30%',
+  alt: 'A dry-stone rampart of pale sandstone blocks above a bank of purple salvia and red bougainvillea.',
+});
+
+// Six photos, 9 cells: tall, wide, two normal, wide, normal fills three rows of three.
+const strip = await Promise.all([
+  picture(floralArch, {
+    widths: [400, 752, 1128],
+    sizes: GALLERY_TALL,
+    position: '45% 50%',
+    alt: 'The Cross wrapped with greenery for a ceremony, a sweetheart table in rose gold at its base.',
+  }),
+  picture(guestsBanner, {
+    widths: [800, 1200, 1600],
+    sizes: GALLERY_WIDE,
+    alt: 'Guests in white chairs at a wedding ceremony on the stone platform at the Cross, the city and the ocean below.',
+  }),
+  picture(bridesmaids, {
+    widths: [400, 752, 1128],
+    sizes: GALLERY_CELL,
+    alt: 'A bride and two bridesmaids in gold sequins holding bouquets, seated on the stone wall.',
+  }),
+  picture(coastline, {
+    widths: [400, 752, 1128],
+    sizes: GALLERY_CELL,
+    position: '50% 70%',
+    alt: 'The Ventura coastline, the beach and the pier seen from the hilltop under a pale sky.',
+  }),
+  picture(coastlineSalvia, {
+    widths: [800, 1200, 1600],
+    sizes: GALLERY_WIDE,
+    position: '50% 45%',
+    alt: 'Purple salvia and red bougainvillea in front of the lawn, the bay and the pier beyond.',
+  }),
+  picture(crossSunset, {
+    widths: [400, 752, 1128],
+    sizes: GALLERY_LAST,
+    alt: 'The Cross in silhouette against an orange sunset, the ocean below.',
+  }),
+]);
+
+const gallery = [
+  { ...galleryItem(strip[0]), layout: 'tall' as const, caption: 'Ceremony at the Cross' },
+  { ...galleryItem(strip[1]), layout: 'wide' as const, caption: 'A wedding ceremony on the platform, the coast below' },
+  { ...galleryItem(strip[2]), caption: 'Bridesmaids on the stone wall' },
+  { ...galleryItem(strip[3]), caption: 'The pier and the coastline from the hilltop' },
+  { ...galleryItem(strip[4]), layout: 'wide' as const, caption: 'Salvia along the lawn above the coast' },
+  { ...galleryItem(strip[5]), caption: 'Sunset at the Cross' },
+];
+
+function galleryItem(p: Awaited<ReturnType<typeof picture>>) {
+  return { src: p.src, alt: p.alt, imgProps: p.imgProps };
+}
+
+const og = await ogImage(panorama);
+---
+
+<BaseLayout
+  title="Serra Cross Park: weddings and history on the hill above Ventura"
+  titleSuffix={false}
+  description="A one-acre park around the Cross above Mission San Buenaventura. Book a wedding or event, read the history of the Cross, and help the Conservancy care for the hill."
+  path="/"
+  ogImage={og}
+  hero
+>
+  <PageHero
+    client:media="(max-width: 1099px)"
+    height="full"
+    image={hero.src}
+    imageAlt={hero.alt}
+    imgProps={hero.imgProps}
+    focal="40% 30%"
+    eyebrow="Ventura, California"
+    title="The hill above Ventura"
+    lede="A one-acre park around the Cross, with the Pacific and the Channel Islands below. Couples marry here, and a small nonprofit keeps it open to everyone."
+    caption="The Cross among the olive trees, the ocean beyond."
+    actions={{
+      primary: { label: 'Plan your event', href: '/booking/' },
+      secondary: { label: 'Our history', href: '/history/' },
+    }}
+  />
+
+  <section class="sc-section" aria-label="The park at a glance">
+    <div class="sc-container">
+      <FactGrid
+        columns={4}
+        items={[
+          { icon: 'users', label: 'Guests', value: '300', note: 'seated, or 500 standing' },
+          { icon: 'clock', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
+          { icon: 'calendar', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
+          { icon: 'map-pin', label: 'Setting', value: 'One acre', note: 'above the Mission, ocean views' },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading eyebrow="The park" title="Weddings, history and giving" />
+      </div>
+      <div class="site-cards">
+        <FeatureCard
+          tone="navy"
+          eyebrow="Weddings"
+          title="Married on the hill"
+          text="Ceremonies and receptions for up to 300 seated guests, with the ocean behind you."
+          href="/booking/"
+          linkLabel="See dates and rates"
+          image={weddings.src}
+          imageAlt={weddings.alt}
+          imgProps={weddings.imgProps}
+        />
+        <FeatureCard
+          tone="green"
+          eyebrow="History"
+          title="The story of the Cross"
+          text="Father Junípero Serra planted a cross in Ventura in 1782. The one on the hill today went up in 1941."
+          href="/history/"
+          linkLabel="Read the history"
+          image={history.src}
+          imageAlt={history.alt}
+          imgProps={history.imgProps}
+        />
+        <FeatureCard
+          tone="ochre"
+          eyebrow="Give"
+          title="Keep the hill cared for"
+          text="Gifts replant what the Thomas Fire took and pay for water, insurance and upkeep."
+          href="/donate/"
+          linkLabel="Make a gift"
+          image={give.src}
+          imageAlt={give.alt}
+          imgProps={give.imgProps}
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <SignPanel
+        tone="navy"
+        as="h2"
+        title="The stonework"
+        image={rampart.src}
+        imageAlt={rampart.alt}
+        imgProps={rampart.imgProps}
+        caption="A dry-stone rampart above the salvia."
+      >
+        <p>
+          In January 2010, stoneworkers from around the world built the ramparts in ten days. A family from
+          Japan that has built castle walls for eight generations led the work, using stone from an Ojai quarry.
+        </p>
+        <p>
+          The walls are dry-stone, with no mortar, held by gravity alone. The Stone Foundation brought rock
+          knockers from several states to learn the method. A hand-carved stone sphere sits on one rampart.
+        </p>
+        <Button variant="link" href="/about/#stonework" icon="arrow-right">Read about the stonework</Button>
+      </SignPanel>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--dark">
+    <div class="sc-container site-dark__inner">
+      <SectionHeading onDark eyebrow="After the fire" title="Replanting after the Thomas Fire" />
+      <div class="site-dark__body body">
+        <p>On December 5, 2017, the Thomas Fire burned much of the park. Firefighters saved the Cross.</p>
+        <p>
+          Volunteers have been replanting the hillside ever since. Pete Dufau of Dufau Landscape in Ventura
+          donated and installed part of the new landscaping.
+        </p>
+        <p>Every gift replants what the fire took and keeps the hill cared for all year.</p>
+        <div class="site-dark__actions">
+          <Button variant="give" size="lg" icon="hand-heart" href="/donate/">Give to the hill</Button>
+        </div>
+        <p class="site-dark__legal body-sm">Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID {SITE.ein}.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt site-strip">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading eyebrow="Gallery" title="The park in pictures" />
+      </div>
+      <Gallery images={gallery} />
+      <div class="site-strip__more">
+        <Button variant="secondary" href="/gallery/" icon="arrow-right">See the gallery</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

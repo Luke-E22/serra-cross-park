@@ -1,0 +1,133 @@
+/* Serra Cross Park: site-level styles.
+   Every color, space and radius reads a token from design-system/tokens.css.
+   Containers and sections (.sc-container, .sc-section, .sc-section--alt, .sc-section--dark)
+   come from design-system/components/bundle.css; nothing here replaces them.
+   Square corners, borders not shadows, and status never by color alone. */
+
+/* ------------------------------------------------------------ document */
+html { -webkit-text-size-adjust: 100%; }
+
+/* Anchored sections (#stonework, #availability) land with a little air above them. */
+[id] { scroll-margin-top: var(--space-6); }
+
+/* The skip link sends focus to <main>. It is a target, not a control, so no ring. */
+#main:focus { outline: none; box-shadow: none; }
+
+/* Astro wraps children passed to static React components in a custom element.
+   display: contents keeps it out of the layout so the components' own spacing rules hold. */
+astro-slot,
+astro-static-slot { display: contents; }
+
+/* Every photo carries width and height attributes (src/lib/images.ts) so nothing shifts.
+   These two component figures set width: 100% and an aspect-ratio but no height, so the
+   attribute's height would win; height: auto hands control back to the aspect-ratio.
+   Hero, card and gallery photos already set height: 100% and need nothing. */
+.sc-sign__figure img,
+.sc-tl__figure img { height: auto; }
+
+/* ------------------------------------------------------------ skip link */
+/* Visually hidden until it takes focus, then fixed top-left: navy block, paper text, square corners. */
+.skip-link {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+  background: var(--navy);
+  color: var(--ink-on-dark);
+  text-decoration: none;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  position: fixed;
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: 100;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+  overflow: visible;
+  clip: auto;
+  border-radius: var(--radius-none);
+  color: var(--ink-on-dark);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--focus);
+}
+
+/* ------------------------------------------------------------ reduced motion */
+/* bundle.css already stops transitions and animations. This also stops the hover zoom on card photos. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+  a.sc-card:hover .sc-card__media img,
+  a:hover img { transform: none !important; }
+}
+
+/* ------------------------------------------------------------ section rhythm */
+/* Space between a SectionHeading and what follows it. */
+.site-section__head { margin-bottom: var(--space-7); }
+
+/* Running text in a section: one measure wide, paragraph spacing from the scale. */
+.site-prose { max-width: var(--measure); }
+.site-prose p { margin: 0 0 var(--space-4); }
+.site-prose > :last-child { margin-bottom: 0; }
+
+/* ------------------------------------------------------------ feature cards (Home) */
+/* Three across; one column under 860px, capped so a lone card does not balloon. */
+.site-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+@media (max-width: 860px) {
+  .site-cards { grid-template-columns: minmax(0, 600px); }
+}
+
+/* ------------------------------------------------------------ the navy section (Home) */
+/* Heading on the left, text and the give button on the right; stacked under 900px. */
+.site-dark__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+.site-dark__body { max-width: var(--measure); }
+.site-dark__body p { margin: 0 0 var(--space-4); }
+.site-dark__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.site-dark__body .site-dark__legal {
+  margin: var(--space-6) 0 0;
+  color: var(--ink-on-dark-muted);
+}
+@media (max-width: 900px) {
+  .site-dark__inner { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
+/* ------------------------------------------------------------ photo strip (Home gallery) */
+/* The Gallery fills its rows on three columns with 9 cells. On two columns the last
+   photo stretches across so the final row is full too. The link row sits under it. */
+.site-strip__more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+@media (max-width: 720px) {
+  .site-strip .sc-gallery__item:last-child { grid-column: span 2; }
+  .site-strip__more .sc-btn { width: 100%; }
+}
