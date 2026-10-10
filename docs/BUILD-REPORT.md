@@ -314,3 +314,24 @@ Collected from the stage agents' unresolved items, deduplicated and grouped. Eve
 **Content and facts (Luke, not a browser)**
 
 - `CONTENT-TODO.md` items the pages write around: 2 (site-fee receipts versus "not a donation"), 4, 5, 7, 8, 11 and 38 (Cal.com slots versus published hours, confirmation on, future limit, success redirect to `/booking/requested/`), 12 (Tax ID against the IRS letter), 13 (existing bookings into Cal.com), 15, 18, 19, 20, 22, 24, 27, 29, 30, 33, 35, 36, 37, 39. The brief's "every donation surface" rule: the "Pay the site fee" surfaces on `/booking/` and `/booking/requested/` carry no 501(c)(3) line on purpose, because the fee is not a donation; flag if the rule was meant to include them.
+
+
+## 13. Lighthouse (mobile, production build, 2026-10-09)
+
+Run with Lighthouse 13.5 in headless Chrome against `npm run preview` (the production build on 127.0.0.1:4322), mobile form factor, after the font and header changes. `/booking/` and `/donate/` were measured without the Cal.com and Zeffy iframes mounted above the fold.
+
+| Page | Performance | Accessibility | Best practices | SEO |
+| --- | --- | --- | --- | --- |
+| / | 93 | 100 | 100 | 100 |
+| /about/ | 94 | 100 | 100 | 100 |
+| /history/ | 96 | 100 | 100 | 100 |
+| /booking/ | 96 | 100 | 100 | 100 |
+| /booking/requested/ | 97 | 100 | 100 | 66 (noindex on purpose) |
+| /gallery/ | 88 | 100 | 100 | 100 |
+| /faq/ | 98 | 100 | 100 | 100 |
+| /contact/ | 94 | 100 | 100 | 100 |
+| /donate/ | 96 | 100 | 100 | 100 |
+| /terms-and-conditions/ | 98 | 100 | 100 | 100 |
+| /404.html | 98 | 100 | 100 | 66 (noindex on purpose) |
+
+What moved the numbers: self-hosting EB Garamond and stripping the render-blocking Google Fonts import (about 0.9 s of render delay on every page), WebP quality 75 with tighter srcset widths, and driving the header menu with a small script instead of hydrating React (Home went from 81 to 93; most pages now ship no JavaScript framework at all). The two 66s are the `is-crawlable` audit on pages that carry `noindex` by design. Gallery sits at 88 because its short hero photo is the largest contentful paint on a page that also loads two mosaics; the remaining savings Lighthouse lists are a few kilobytes per image. On Netlify, with HTTP/2 and the CDN, expect slightly better numbers than the local preview; the Cal.com and Zeffy iframes will cost Performance and Best Practices points on their pages once they load, as BRIEF.md section 13 anticipates (Zeffy also fails the back-forward cache audit because its iframe keeps a connection open).

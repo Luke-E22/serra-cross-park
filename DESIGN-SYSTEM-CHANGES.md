@@ -106,3 +106,21 @@ Built in site code from the tokens, not ported from the design system. Listed so
 - **What:** `SiteHeader` and the `PageHero` wrapper render statically on every page. `src/scripts/header-menu.ts` (loaded once from `BaseLayout.astro`) wires the menu button under 1100px: it toggles `is-open` on the header, `hidden` on the menu, `aria-expanded` on the button, swaps the menu and close icons with their labels, and switches the wordmark back to ink while an overlay header is open, which is what the component's own state does. It also closes on Escape.
 - **Why:** hydrating the header (or the hero that carries it) shipped the React runtime to every page for one toggle, the largest single cost in Lighthouse's mobile run. The component is unchanged; only the way its one interactive part is driven on this site changed.
 - **Re-apply:** nothing in the ported files. If a refreshed `SiteHeader` changes its class names, ids or icon handling, update the script to match.
+
+### 2026-10-10: FactGrid sets "to" and "or" in the serif
+
+- **What:** `FactGrid` passes each `value` through `factValue()`, which wraps a standalone "to" or "or" in `<span class="sc-fact__word">`. Values without those words render exactly as before. `src/styles/site.css` styles the span in the serif at 0.55em, lowercase.
+- **Why:** the owner found "9 TO 8" in display capitals distracting on the booking page; the connector should read as a word.
+- **Re-apply:** add the `FACT_WORD` constant and `factValue()` above `FactGrid` and use `{factValue(f.value)}` in the `.sc-fact__value` element.
+
+### 2026-10-10: SiteFooter `instagramHref`
+
+- **What:** an optional `instagramHref` prop renders one more `<li>` after the Facebook link in the footer's Contact column, with the `instagram` icon and the text "Instagram".
+- **Why:** the park has an Instagram account (https://www.instagram.com/serracrosspark/); `SITE.instagram` in `src/config/site.ts` feeds it.
+- **Re-apply:** add the prop to `SiteFooterProps` and the destructuring, then the conditional `<li>`.
+
+### 2026-10-10: site-level type scale
+
+- **What:** `src/styles/site.css` sets `body`, `.lede`, `.body`, `.body-sm`, `.caption` and the timeline text one step larger than `tokens.css` (20/32, 24/36, 20/32, 18/28, 16/24), with a smaller step under 640px. Display styles are unchanged.
+- **Why:** the owner asked for larger running text, especially on the History page.
+- **Re-apply:** nothing in the ported files; the rule lives in site.css. If `tokens.json` is changed to these sizes later, delete the override.

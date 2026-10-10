@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero';
-import { Button, FactGrid, FeatureCard, Gallery, SectionHeading, SignPanel } from '../components/ds';
+import { Button, FeatureCard, Gallery, SectionHeading, SignPanel } from '../components/ds';
 import { SITE } from '../config/site';
 import { ogImage, picture } from '../lib/images';
 
@@ -137,21 +137,7 @@ const og = await ogImage(panorama);
     }}
   />
 
-  <section class="sc-section" aria-label="The park at a glance">
-    <div class="sc-container">
-      <FactGrid
-        columns={4}
-        items={[
-          { icon: 'users', label: 'Guests', value: '300', note: 'seated, or 500 standing' },
-          { icon: 'clock', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
-          { icon: 'calendar', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
-          { icon: 'map-pin', label: 'Setting', value: 'One acre', note: 'above the Mission, ocean views' },
-        ]}
-      />
-    </div>
-  </section>
-
-  <section class="sc-section sc-section--alt">
+      <section class="sc-section sc-section--alt">
     <div class="sc-container">
       <div class="site-section__head">
         <SectionHeading eyebrow="The park" title="Weddings, history and giving" />

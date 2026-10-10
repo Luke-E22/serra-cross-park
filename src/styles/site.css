@@ -144,3 +144,32 @@ astro-static-slot { display: contents; }
     gap: var(--space-6);
   }
 }
+
+
+/* ------------------------------------------------------------ Type scale, site level */
+/* The owner asked for running text one step larger than the token scale (2026-10-10).
+   tokens.css keeps the brand values; these override them for this site and are logged in
+   DESIGN-SYSTEM-CHANGES.md. Display styles are unchanged. */
+body { font-size: 20px; line-height: 32px; }
+.lede { font-size: 24px; line-height: 36px; }
+.body { font-size: 20px; line-height: 32px; }
+.body-sm { font-size: 18px; line-height: 28px; }
+.caption { font-size: 16px; line-height: 24px; }
+.sc-tl__text { font-size: 20px; line-height: 32px; }
+@media (max-width: 640px) {
+  body { font-size: 19px; line-height: 30px; }
+  .lede { font-size: 21px; line-height: 31px; }
+  .body { font-size: 19px; line-height: 30px; }
+  .sc-tl__text { font-size: 19px; line-height: 30px; }
+}
+
+/* "to" and "or" inside a FactGrid value sit in the serif, lowercase, so "9 to 8" reads as words. */
+.sc-fact__word {
+  font-family: var(--font-serif);
+  font-size: 0.55em;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: 0.1em;
+  margin: 0 0.08em;
+}

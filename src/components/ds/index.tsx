@@ -297,6 +297,13 @@ export function FeatureCard({ image, imageAlt = '', eyebrow, tone = 'navy', titl
 export interface Fact { icon?: IconName; label: string; value: string; note?: string }
 export interface FactGridProps { items: Fact[]; columns?: 2 | 3 | 4 }
 /** The venue's numbers at a glance: guests, rate, hours, view. */
+/** Site change (logged): "to" and "or" inside a value drop out of the display capitals. */
+const FACT_WORD = /(\bto\b|\bor\b)/;
+function factValue(value: string) {
+  const parts = value.split(FACT_WORD);
+  if (parts.length === 1) return value;
+  return parts.map((part, i) => (part === 'to' || part === 'or' ? <span key={i} className="sc-fact__word">{part}</span> : part));
+}
 export function FactGrid({ items, columns = 4 }: FactGridProps) {
   return (
     <dl className={cx('sc-facts', 'sc-facts--' + columns)}>
@@ -306,7 +313,7 @@ export function FactGrid({ items, columns = 4 }: FactGridProps) {
             {f.icon && <Icon name={f.icon} size={20} />}
             {f.label}
           </dt>
-          <dd className="sc-fact__value display-lg">{f.value}</dd>
+          <dd className="sc-fact__value display-lg">{factValue(f.value)}</dd>
           {f.note && <dd className="sc-fact__note body-sm">{f.note}</dd>}
         </div>
       ))}
@@ -651,13 +658,13 @@ export function Notice({ tone = 'info', title, icon, children }: NoticeProps) {
 /* ------------------------------------------------------------ SiteFooter */
 export interface FooterColumn { title: string; links: NavLink[] }
 export interface FooterCredit { label: string; href: string }
-export interface SiteFooterProps { columns?: FooterColumn[]; ein?: string; email?: string; location?: string; year?: number; facebookHref?: string; credit?: FooterCredit }
+export interface SiteFooterProps { columns?: FooterColumn[]; ein?: string; email?: string; location?: string; year?: number; facebookHref?: string; instagramHref?: string; credit?: FooterCredit }
 const DEFAULT_COLUMNS: FooterColumn[] = [
   { title: 'Explore', links: [{ label: 'Weddings', href: '#weddings' }, { label: 'History', href: '#history' }, { label: 'Visit', href: '#visit' }, { label: 'FAQ', href: '#faq' }] },
   { title: 'Give', links: [{ label: 'Make a gift', href: '#donate' }, { label: 'Pay a site fee', href: '#site-fee' }] },
 ];
 /** Navy footer: lockup, links, contact and the nonprofit line with the Tax ID. */
-export function SiteFooter({ columns = DEFAULT_COLUMNS, ein = '20-8615264', email = 'admin@serracrosspark.com', location = 'Grant Park, above City Hall, Ventura, CA 93001', year = new Date().getFullYear(), facebookHref = 'https://www.facebook.com/groups/222411215009', credit }: SiteFooterProps) {
+export function SiteFooter({ columns = DEFAULT_COLUMNS, ein = '20-8615264', email = 'admin@serracrosspark.com', location = 'Grant Park, above City Hall, Ventura, CA 93001', year = new Date().getFullYear(), facebookHref = 'https://www.facebook.com/groups/222411215009', instagramHref, credit }: SiteFooterProps) {
   return (
     <footer className="sc-footer">
       <div className="sc-footer__inner">
@@ -677,6 +684,7 @@ export function SiteFooter({ columns = DEFAULT_COLUMNS, ein = '20-8615264', emai
             <ul>
               <li><a className="body-sm" href={'mailto:' + email}><Icon name="mail" size={18} />{email}</a></li>
               <li><a className="body-sm" href={facebookHref}><Icon name="facebook" size={18} />Facebook group</a></li>
+              {instagramHref && <li><a className="body-sm" href={instagramHref}><Icon name="instagram" size={18} />Instagram</a></li>}
             </ul>
           </div>
         </div>

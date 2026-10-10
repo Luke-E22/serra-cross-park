@@ -11,6 +11,7 @@ export const SITE = {
   location: 'Grant Park, above City Hall, Ventura, CA 93001',
   geo: { lat: 34.2846018, lng: -119.2962133 },
   facebook: 'https://www.facebook.com/groups/222411215009',
+  instagram: 'https://www.instagram.com/serracrosspark/',
   emergencyPhone: '805-258-3153',
 };
 
@@ -49,6 +50,7 @@ export const PEOPLE: { board: Person[]; staff: Person[] } = {
     { name: 'Karen Greenough' },
     {
       name: 'Luke Erickson',
+      photo: 'luke-erickson.webp',
       links: [
         { label: 'LinkedIn', href: 'https://www.linkedin.com/in/luke-erickson' },
         { label: 'Instagram', href: 'https://www.instagram.com/luke_erickson' },
