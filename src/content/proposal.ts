@@ -93,7 +93,7 @@ const INCLUDED: ProposalIncluded[] = [
   },
   {
     title: 'Website hosting for all time',
-    text: "Hosting at no charge to the Conservancy, for all time. The site runs on Netlify's free plan. There is no monthly bill, ever.",
+    text: "The site runs on Netlify's paid Pro plan. I pay for that plan and donate it to the Conservancy in perpetuity, for as long as the site exists. There is no hosting bill to the Conservancy, ever.",
   },
 ];
 
@@ -119,7 +119,7 @@ export const PROPOSAL: Proposal = {
     {
       label: 'Monthly cost',
       value: '$0',
-      note: 'Hosting included for all time. The site runs on free plans. There is no monthly bill, ever.',
+      note: "Hosting on Netlify's paid Pro plan, donated by me in perpetuity. No hosting bill to the Conservancy, ever.",
     },
     {
       label: 'Updates and changes',
@@ -176,7 +176,7 @@ export const PROPOSAL: Proposal = {
         'For comparison, the old WordPress site paid for hosting and a booking plugin, and PayPal took a fee from each gift. The email link on its booking page was broken, its contact form delivered to a personal address, and every booking request waited on an email reply from the office.',
       ],
       bullets: [
-        'Netlify, which hosts the site, receives the forms and runs the availability calendar: free plan, $0.',
+        "Netlify, which hosts the site, receives the forms and runs the availability calendar: the paid Pro plan, which I pay for and donate in perpetuity. $0 to the Conservancy.",
         'Cal.com, which takes reservations: free plan, $0.',
         'Zeffy, which takes donations and site fees: $0 to the Conservancy.',
         'The domain name, serracrosspark.com: the renewal stays with the Conservancy as it is today.',
