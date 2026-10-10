@@ -10,8 +10,8 @@ import { PROPOSAL, usd } from '../content/proposal';
 // X-Robots-Tag header in netlify.toml. Board members read it on screen or print it, so
 // proposal.css ends with print rules that drop the header, footer, buttons and backgrounds.
 //
-// Every word, the fee and the payment split come from src/content/proposal.ts. This file only
-// lays them out. The payment split (PAYMENT in that file) is an editable value: change the two
+// Every word, the fee and when it is due come from src/content/proposal.ts. This file only
+// lays them out. The fee and when it is due (FEE and PAYMENT in that file) are editable values.
 // numbers there and the figure, the paragraphs and the steps on this page follow.
 
 const { included, payment, sections, steps } = PROPOSAL;
@@ -27,11 +27,8 @@ function includedIcon(title: string): IconName {
   return 'check';
 }
 
-// The two amounts in the payment section, with their labels.
-const amounts = [
-  { label: 'On approval', value: usd(payment.onApproval) },
-  { label: 'When the site goes live', value: usd(payment.atLaunch) },
-];
+// The one amount in the payment section, with its label.
+const amounts = [{ label: payment.dueLabel, value: usd(payment.amount) }];
 
 // After the opening section, the sections alternate surface-alt and surface. The steps sit
 // inside the payment section (its last paragraph introduces them), so the closing lands on alt.

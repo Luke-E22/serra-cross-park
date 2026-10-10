@@ -1,5 +1,5 @@
 // The board proposal, in one file. Luke: this is the one file to edit for the hidden proposal
-// page. Every word on that page, the fee and the payment split come from here, so a change
+// page. Every word on that page, the fee and when it is due come from here, so a change
 // made once lands everywhere the page prints it. Strings only, no markup.
 //
 // The page is read by board members who are not technical, and it may be printed or saved as
@@ -19,12 +19,11 @@
 export const FEE = 4000;
 
 /**
- * The payment split. The two numbers should add up to FEE.
- * Editable: $2,000 on approval and $2,000 at launch is the starting point. Luke may change these
- * two numbers; the figures, the paragraphs and the steps on the page follow. This is Luke's own
- * term, not a park fact, so it carries no confirm marker and no CONTENT-TODO item.
+ * When the fee is due. One payment of FEE, due when the site goes live. Luke's own term, not a
+ * park fact, so it carries no confirm marker and no CONTENT-TODO item. The figure, the paragraphs
+ * and the steps on the page follow this value.
  */
-export const PAYMENT = { onApproval: 2000, atLaunch: 2000 };
+export const PAYMENT = { amount: FEE, dueLabel: 'Due when the site goes live' };
 
 /** "$4,000" from 4000. Figures for money, with a comma every three digits. */
 export function usd(amount: number): string {
@@ -66,7 +65,7 @@ export interface Proposal {
   preparedBy: string;
   preparedFor: string;
   fee: number;
-  payment: { onApproval: number; atLaunch: number };
+  payment: { amount: number; dueLabel: string };
   included: ProposalIncluded[];
   contactHref: string;
   lede: string;
@@ -85,7 +84,7 @@ const INCLUDED: ProposalIncluded[] = [
   },
   {
     title: 'Calendar reservations, fully automated',
-    text: 'Cal.com set up end to end, so requests, holds, confirmations and the confirmation page run without the office retyping anything. Every booking already on the calendar, 24 as of this proposal, is entered as part of the setup.',
+    text: "Cal.com set up end to end, so requests, holds, confirmations and the confirmation page run without the office retyping anything. Every booking already on the calendar, 24 as of this proposal, is entered as part of the setup. The calendar runs on Cal.com's free plan; an upgrade for extra features, if the Conservancy ever wants one, is billed separately.",
   },
   {
     title: 'Online payments through Zeffy, Stripe or both',
@@ -108,13 +107,13 @@ export const PROPOSAL: Proposal = {
   included: INCLUDED,
   contactHref: 'https://lukeerickson.com',
 
-  lede: `I have built the new serracrosspark.com so the park can take bookings, receive gifts and tell its story with less work for the office and no monthly bills. I am asking the board to approve a one-time fee of ${usd(FEE)}. It covers the site, full automation of calendar reservations, full setup of online payments, hosting for all time, and every update the Conservancy needs from here on.`,
+  lede: `I have built the new serracrosspark.com so the park can take bookings, receive gifts and tell its story with less work for the office and no monthly bills. I am asking the board to approve a one-time fee of ${usd(FEE)}, due when the site goes live. It covers the site, full automation of calendar reservations, full setup of online payments, hosting for all time, and every update the Conservancy needs from here on.`,
 
   facts: [
     {
       label: 'Fee',
       value: usd(FEE),
-      note: 'One time. No maintenance fee and no retainer.',
+      note: 'One time, due when the site goes live. No maintenance fee and no retainer.',
     },
     {
       label: 'Monthly cost',
@@ -140,7 +139,7 @@ export const PROPOSAL: Proposal = {
       paragraphs: [
         'The park has three jobs online: book weddings and events, tell the story of the Cross, and raise money to care for the hill. The new site is built around those three jobs, in that order.',
         "Here is what changes for the Conservancy. Couples see which dates are open before they ask. Requests, holds and confirmations run on their own. Gifts arrive without a platform fee. The site looks like the park's own sign, not a template. And there is no hosting bill, no plugin bill and no retainer.",
-        `The ask is one fee of ${usd(FEE)}, paid once. Four things come with it and stay included for as long as the Conservancy wants the site: unlimited updates, automated calendar reservations, online payments fully set up, and hosting at no charge. The rest of this page says what was built, what it costs to run, what the fee does not cover, and how I propose to be paid.`,
+        `The ask is one fee of ${usd(FEE)}, paid once, when the site goes live. Four things come with it and stay included for as long as the Conservancy wants the site: unlimited updates, automated calendar reservations, online payments fully set up, and hosting at no charge. The rest of this page says what was built, what it costs to run, what the fee does not cover, and how I propose to be paid.`,
       ],
     },
     {
@@ -177,7 +176,7 @@ export const PROPOSAL: Proposal = {
       ],
       bullets: [
         "Netlify, which hosts the site, receives the forms and runs the availability calendar: the paid Pro plan, which I pay for and donate in perpetuity. $0 to the Conservancy.",
-        'Cal.com, which takes reservations: free plan, $0.',
+        "Cal.com, which takes reservations: free plan, $0. If the Conservancy ever wants features that only Cal.com's paid plans offer, that upgrade is billed separately.",
         'Zeffy, which takes donations and site fees: $0 to the Conservancy.',
         'The domain name, serracrosspark.com: the renewal stays with the Conservancy as it is today.',
       ],
@@ -196,8 +195,8 @@ export const PROPOSAL: Proposal = {
       id: 'payment',
       heading: 'Payment and timeline',
       paragraphs: [
-        `The fee is ${usd(FEE)}, paid once. I propose ${usd(PAYMENT.onApproval)} on approval and ${usd(PAYMENT.atLaunch)} when the site goes live on serracrosspark.com. The split is a starting point and can change by agreement with the board.`,
-        "An invoice follows each of the two milestones. Nothing is billed after that: no monthly fee, no annual fee, no charge for updates. Once the fee is paid, the Conservancy's only ongoing cost for the site is the domain renewal it already pays.",
+        `The fee is ${usd(FEE)}, paid once, and it is due when the site goes live on serracrosspark.com. Nothing is due on approval and nothing is due while the work is finished.`,
+        `I send one invoice, for ${usd(FEE)}, on launch day. Nothing is billed after that: no monthly fee, no annual fee, no charge for updates. Once the fee is paid, the Conservancy's only ongoing cost for the site is the domain renewal it already pays.`,
         'The four steps below are the timeline, from approval to launch and beyond.',
       ],
     },
@@ -206,7 +205,7 @@ export const PROPOSAL: Proposal = {
   steps: [
     {
       title: 'Approval',
-      text: `The board approves the one-time fee of ${usd(FEE)} and the payment split. I send the first invoice, for ${usd(PAYMENT.onApproval)}.`,
+      text: `The board approves the one-time fee of ${usd(FEE)}, due when the site goes live. Nothing is paid at this step.`,
     },
     {
       title: 'Reservations and payments set up',
@@ -214,7 +213,7 @@ export const PROPOSAL: Proposal = {
     },
     {
       title: 'Launch',
-      text: `The licensed font files go in and the board's answers to the open questions land on the pages. The old site is backed up and kept running until the switch is confirmed. The domain points at the new site with the Conservancy's email kept working. I check every form, the calendar and every old address on the live domain, submit the site to Google, and follow the first real booking end to end. I send the second invoice, for ${usd(PAYMENT.atLaunch)}.`,
+      text: `The licensed font files go in and the board's answers to the open questions land on the pages. The old site is backed up and kept running until the switch is confirmed. The domain points at the new site with the Conservancy's email kept working. I check every form, the calendar and every old address on the live domain, submit the site to Google, and follow the first real booking end to end. I send the one invoice, for ${usd(FEE)}.`,
     },
     {
       title: 'Updates on request',
@@ -223,5 +222,5 @@ export const PROPOSAL: Proposal = {
   ],
 
   closing:
-    'To approve, the board votes on the fee and the payment split and lets me know. I then send the first invoice. Questions, changes to these terms and anything about the site come to me, Luke Erickson, through lukeerickson.com.',
+    'To approve, the board votes on the fee and lets me know. The one invoice comes when the site goes live. Questions, changes to these terms and anything about the site come to me, Luke Erickson, through lukeerickson.com.',
 };
