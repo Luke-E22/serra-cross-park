@@ -128,7 +128,7 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
   </head>
   <body>
     <a class="skip-link label" href="#main">Skip to content</a>
-    {!hero && <SiteHeaderIsland client:media="(max-width: 1099px)" active={active} />}
+    {!hero && <SiteHeaderIsland active={active} />}
     <main id="main" tabindex="-1">
       <slot />
     </main>
@@ -141,5 +141,8 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
       credit={CREDIT}
       year={2026}
     />
+    <script>
+      import '../scripts/header-menu';
+    </script>
   </body>
 </html>

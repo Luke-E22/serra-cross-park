@@ -7,9 +7,8 @@ export interface SiteHeaderIslandProps {
 }
 
 /**
- * The site header on pages without a hero. BaseLayout hydrates it with
- * client:media="(max-width: 1099px)", because the only interactive part is the
- * menu toggle that SiteHeader shows below 1100px. Above that it stays static HTML.
+ * The site header on pages without a hero. Rendered statically by BaseLayout; the menu
+ * toggle under 1100px is wired by src/scripts/header-menu.ts, so no React ships for it.
  */
 export default function SiteHeaderIsland({ active }: SiteHeaderIslandProps) {
   return (

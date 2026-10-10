@@ -139,7 +139,6 @@ const og = await ogImage(coastlineSalvia);
   hero
 >
   <PageHero
-    client:media="(max-width: 1100px)"
     height="short"
     image={hero.src}
     imageAlt={hero.alt}
@@ -161,7 +160,7 @@ const og = await ogImage(coastlineSalvia);
         />
       </div>
       <div class="gallery-mosaic">
-        <GalleryLightbox client:visible images={weddings} label="Weddings and events" />
+        <GalleryLightbox client:idle images={weddings} label="Weddings and events" />
       </div>
       <div class="gallery-more">
         <Button variant="secondary" href="/booking/" icon="arrow-right">Plan your event</Button>
@@ -179,7 +178,7 @@ const og = await ogImage(coastlineSalvia);
         />
       </div>
       <div class="gallery-mosaic">
-        <GalleryLightbox client:visible images={park} label="The park" />
+        <GalleryLightbox client:idle images={park} label="The park" />
       </div>
     </div>
   </section>

@@ -100,3 +100,9 @@ Built in site code from the tokens, not ported from the design system. Listed so
 - **Why:** a remote `@import` inside a stylesheet blocks rendering until Google answers. Lighthouse measured about 0.9 s of render delay on every page from that one line, which is most of the gap between the Home page's 81 and the brief's 90. Self-hosting also removes a third-party request from every page view.
 - **Component:** none; `bundle.css` is served as it is apart from that line.
 - **Re-apply:** nothing to re-apply in the ported files. When the snapshot is refreshed, check that the plugin's pattern still matches the first line of `bundle.css` (`npm run build`, then grep `dist/_astro/*.css` for `googleapis`; there should be no match).
+
+### 2026-10-09: header menu toggle driven by a script, not by hydrating React
+
+- **What:** `SiteHeader` and the `PageHero` wrapper render statically on every page. `src/scripts/header-menu.ts` (loaded once from `BaseLayout.astro`) wires the menu button under 1100px: it toggles `is-open` on the header, `hidden` on the menu, `aria-expanded` on the button, swaps the menu and close icons with their labels, and switches the wordmark back to ink while an overlay header is open, which is what the component's own state does. It also closes on Escape.
+- **Why:** hydrating the header (or the hero that carries it) shipped the React runtime to every page for one toggle, the largest single cost in Lighthouse's mobile run. The component is unchanged; only the way its one interactive part is driven on this site changed.
+- **Re-apply:** nothing in the ported files. If a refreshed `SiteHeader` changes its class names, ids or icon handling, update the script to match.
