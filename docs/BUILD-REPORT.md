@@ -10,7 +10,7 @@ Final gate on the Serra Cross Park site, run 2026-10-09 on the full repo with No
 | Full type check (includes `netlify/**` and `scripts/**`, which astro check may not walk) | `npx tsc --noEmit -p tsconfig.json` | exit 0, no output |
 | Unit tests | `npx vitest run` | 4 files, 50 tests, all pass, 184 ms |
 | Production build | `npm run build` | 11 pages, complete. The only output besides Astro's progress lines is the prelaunch check's 52 `WARN` lines (section 2). No Vite, React or Astro warnings |
-| Prelaunch check | `node scripts/prelaunch-check.mjs` | 52 warnings, exit 0 (section 2) |
+| Prelaunch check | `node scripts/prelaunch-check.mjs` | 51 warnings, exit 0 (section 2; 52 before Luke Erickson's photo was added) |
 | Per-page checks on `dist/` | script in section 3 | 11 pages, 0 failures |
 | Availability function, fixture and live | section 6 | 200 in both modes, correct cache headers |
 
@@ -72,7 +72,7 @@ WARN  No photo for Luke Erickson (PEOPLE in src/config/site.ts). The About page 
 WARN  No photo for Christy Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Amber Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 
-Prelaunch check: 52 warnings.
+Prelaunch check: 51 warnings on 2026-10-10 (52 on 2026-10-09, before Luke Erickson's photo was added).
 ```
 
 Every `[CONFIRM: ...]` marker is inside a code comment. None reaches the built HTML (section 3). The list shrinks as Luke closes items in `CONTENT-TODO.md`; the Zeffy, font and photo warnings close when the launch checklist items land.
@@ -159,6 +159,9 @@ Shared pieces: `src/layouts/BaseLayout.astro` (head, canonical, Open Graph and T
 Photos: 25 of the 30 registered photos are rendered through `picture()` (122 WebP renditions, every `<img>` with `width`, `height`, `srcset` and `sizes`; heroes `loading="eager"`, `decoding="sync"`, `fetchpriority="high"`; everything else `loading="lazy"`). Nine photos are also cropped to 1200 x 630 JPEG cards.
 
 ## 5. Islands and what hydrates them
+
+
+**Update 2026-10-10.** The header no longer hydrates. `SiteHeaderIsland` and `PageHero` render statically on every page and `src/scripts/header-menu.ts` (inlined once from `BaseLayout.astro`) drives the menu toggle under 1100px, so Home, About, History, FAQ, Terms, the 404 and the booking confirmation page ship no React at all. `GalleryLightbox` hydrates with `client:idle` instead of `client:visible`. The islands that remain: `AvailabilityCalendar` (client:visible, lazy-loads `CalBooker`), `ContactForm` (client:visible), `ZeffyEmbed` (client:visible) and the two `GalleryLightbox` mosaics (client:idle).
 
 Everything else on the site is static HTML rendered from `src/components/ds/` at build time. Seven React islands hydrate, each only where it is interactive:
 
