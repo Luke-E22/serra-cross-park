@@ -85,7 +85,8 @@
   align-items: flex-start;
   gap: var(--space-2);
 }
-.booking-fee__note {
+/* .caption in bundle.css sets ink-muted, which fails on navy; the extra class wins the cascade. */
+.booking-fee__note.caption {
   margin: 0;
   color: var(--ink-on-dark-muted);
 }

@@ -2,6 +2,7 @@
 // Global CSS, in this order: tokens, then the component bundle (its digit-only font faces
 // must follow the full faces), then site styles.
 import '../../design-system/tokens.css';
+import '../styles/fonts.css';
 import '../../design-system/components/bundle.css';
 import '../styles/site.css';
 import strongGlasgowBold from '../../design-system/fonts/StrongGlasgow-Bold.ttf?url';
@@ -119,10 +120,8 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#1d2944" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href={strongGlasgowBold} as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href="/fonts/eb-garamond/eb-garamond-normal-400-600-latin.woff2" as="font" type="font/woff2" crossorigin />
 
     <script is:inline type="application/ld+json" set:html={structuredDataJson} />
     <slot name="head" />

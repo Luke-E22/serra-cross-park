@@ -51,6 +51,9 @@ export interface Picture {
   imgProps: PictureImgProps;
 }
 
+/** WebP quality for photos. 75 keeps park photos clean and cuts about a third off the default. */
+const WEBP_QUALITY = 75;
+
 export async function picture(src: ImageMetadata, opts: PictureOptions): Promise<Picture> {
   // An imported image is a Proxy: reading any field but `clone` or `fsPath` marks the original
   // as referenced, and the build then copies the untouched JPEG into dist. Measure a clone instead.
@@ -59,7 +62,7 @@ export async function picture(src: ImageMetadata, opts: PictureOptions): Promise
   const largest = Math.min(widths[widths.length - 1] ?? meta.width, meta.width);
 
   // `width` pins the fallback src to the largest candidate, so the original is never served as is.
-  const image = await getImage({ src, format: 'webp', widths, width: largest, sizes: opts.sizes });
+  const image = await getImage({ src, format: 'webp', widths, width: largest, sizes: opts.sizes, quality: WEBP_QUALITY });
 
   // Dimensions come from the largest generated candidate, then the transform, then the source,
   // so the browser can reserve the box before any bytes arrive.

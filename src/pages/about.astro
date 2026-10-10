@@ -24,7 +24,7 @@ const SIGN_SIZES = '(min-width: 1200px) 470px, (min-width: 721px) 42vw, 100vw';
 // paragraph beside it, about keeping the park open to everyone.
 const introPhoto = photosFor('about').find((p) => p.file === 'bench-ocean.jpg') ?? PHOTOS['bench-ocean'];
 const intro = await picture(introPhoto.image, {
-  widths: [480, 940, 1400],
+  widths: [480, 720, 940],
   sizes: INTRO_SIZES,
   alt: introPhoto.alt,
 });
@@ -32,7 +32,7 @@ const intro = await picture(introPhoto.image, {
 // The stone sphere the text mentions, with the Cross whole and the Channel Islands behind.
 const stonePhoto = PHOTOS['stone-sphere-cross-islands-wide'];
 const stone = await picture(stonePhoto.image, {
-  widths: [480, 940, 1400],
+  widths: [480, 720, 940],
   sizes: SIGN_SIZES,
   alt: stonePhoto.alt,
 });
@@ -40,7 +40,7 @@ const stone = await picture(stonePhoto.image, {
 // After the fire: a 4:3 frame, so the SignPanel's 4:3 figure shows it whole and never crops the Cross.
 const firePhoto = PHOTOS['burned-shrubs-cross-islands-2017'];
 const fire = await picture(firePhoto.image, {
-  widths: [480, 940, 1400],
+  widths: [480, 720, 940],
   sizes: SIGN_SIZES,
   alt: firePhoto.alt,
 });

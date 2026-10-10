@@ -97,7 +97,7 @@ async function mosaic(slots: Slot[]): Promise<LightboxImage[]> {
   return Promise.all(
     slots.map(async ({ key, layout = 'normal', position }) => {
       const p = PHOTOS[key];
-      const pic = await picture(p.image, { widths: [480, 960, 1440], sizes: SIZES[layout], position, alt: p.alt });
+      const pic = await picture(p.image, { widths: [480, 640, 960, 1440], sizes: SIZES[layout], position, alt: p.alt });
       const item: LightboxImage = {
         src: pic.src,
         srcSet: pic.imgProps.srcSet,
