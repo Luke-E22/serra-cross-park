@@ -90,7 +90,18 @@ export async function picture(src: ImageMetadata, opts: PictureOptions): Promise
  * A 1200 x 630 JPEG crop for Open Graph and Twitter cards. Returns a site-relative path;
  * BaseLayout turns it into an absolute URL. `position` is sharp's gravity, "centre" by default.
  */
+export const OG_WIDTH = 1200;
+export const OG_HEIGHT = 630;
+
 export async function ogImage(src: ImageMetadata, position = 'centre'): Promise<string> {
-  const image = await getImage({ src, width: 1200, height: 630, fit: 'cover', position, format: 'jpg', quality: 82 });
+  // Sharp never upscales: a smaller source gives a smaller JPEG and a broken card. Fail the build
+  // instead, so the page picks a larger photo (sizes are listed in src/content/photos.ts).
+  const meta = (src as ImageMetadata & { clone?: ImageMetadata }).clone ?? src;
+  if (meta.width < OG_WIDTH || meta.height < OG_HEIGHT) {
+    throw new Error(
+      `ogImage: ${meta.src} is ${meta.width}x${meta.height}; an Open Graph card needs at least ${OG_WIDTH}x${OG_HEIGHT}.`,
+    );
+  }
+  const image = await getImage({ src, width: OG_WIDTH, height: OG_HEIGHT, fit: 'cover', position, format: 'jpg', quality: 82 });
   return image.src;
 }

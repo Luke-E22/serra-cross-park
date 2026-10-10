@@ -8,6 +8,8 @@ import strongGlasgowBold from '../../design-system/fonts/StrongGlasgow-Bold.ttf?
 import { SiteFooter } from '../components/ds';
 import SiteHeaderIsland from '../components/SiteHeaderIsland';
 import { CREDIT, FOOTER_COLUMNS, SITE } from '../config/site';
+import { ogImage as buildOgImage } from '../lib/images';
+import ogFallbackPhoto from '../assets/photos/cross-olive-panorama.jpg';
 
 interface Props {
   /** Page title. Rendered as "<title> | Serra Cross Park" unless titleSuffix is false. */
@@ -15,8 +17,10 @@ interface Props {
   description: string;
   /** Site path for the canonical URL, for example "/about/". A trailing slash is added. */
   path: string;
-  /** Open Graph image: an absolute URL or a site-relative path. */
+  /** Open Graph image: an absolute URL or a site-relative path. Pages make one with ogImage() from src/lib/images; without it, a 1200x630 crop of the olive panorama. */
   ogImage?: string;
+  /** What is in the Open Graph image, for og:image:alt and twitter:image:alt. */
+  ogImageAlt?: string;
   /** The header link to mark as current, by label. */
   active?: string;
   /** True when the page renders its own hero that carries the header. */
@@ -25,12 +29,67 @@ interface Props {
   titleSuffix?: boolean;
 }
 
-const { title, description, path, ogImage, active, hero = false, titleSuffix = true } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  ogImage,
+  ogImageAlt = 'The Cross at Serra Cross Park above Ventura',
+  active,
+  hero = false,
+  titleSuffix = true,
+} = Astro.props;
 
 const pageTitle = titleSuffix ? `${title} | ${SITE.name}` : title;
 const normalizedPath = ('/' + path.replace(/^\/+/, '')).replace(/\/?$/, '/');
 const canonical = new URL(normalizedPath, SITE.url).href;
-const ogImageUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
+// Every page gets a card image. A page passes its own crop as ogImage; the rest share the panorama.
+const ogImageUrl = new URL(ogImage ?? (await buildOgImage(ogFallbackPhoto)), SITE.url).href;
+
+// Site-wide structured data: the Conservancy and the park. Pages add their own nodes (FAQPage,
+// EventVenue) through the head slot and point at these two by @id.
+const ORG_ID = `${SITE.url}#org`;
+const PARK_ID = `${SITE.url}#park`;
+const homeUrl = new URL('/', SITE.url).href;
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'NGO',
+      '@id': ORG_ID,
+      name: SITE.org,
+      url: homeUrl,
+      email: SITE.email,
+      taxID: SITE.ein,
+      nonprofitStatus: 'Nonprofit501c3',
+      address: {
+        '@type': 'PostalAddress',
+        postOfficeBoxNumber: '48',
+        addressLocality: 'Ventura',
+        addressRegion: 'CA',
+        postalCode: '93002-0048',
+        addressCountry: 'US',
+      },
+      sameAs: [SITE.facebook],
+    },
+    {
+      '@type': 'TouristAttraction',
+      '@id': PARK_ID,
+      name: SITE.name,
+      url: homeUrl,
+      description:
+        'A one-acre hilltop park around the Cross, above Mission San Buenaventura in Grant Park, Ventura, with views of the Pacific and the Channel Islands.',
+      geo: { '@type': 'GeoCoordinates', latitude: SITE.geo.lat, longitude: SITE.geo.lng },
+      address: { '@type': 'PostalAddress', addressLocality: 'Ventura', addressRegion: 'CA', addressCountry: 'US' },
+      isAccessibleForFree: true,
+      publicAccess: true,
+      image: ogImageUrl,
+      maintainer: { '@id': ORG_ID },
+    },
+  ],
+};
+// "<" is escaped so no string in the data can close the script element early.
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -47,8 +106,16 @@ const ogImageUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={SITE.name} />
-    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    {/* Google Search Console: the old site's verification tag, carried over so the property stays verified. */}
+    <meta name="google-site-verification" content="A-x5km0fMWxUOoZC8MGXWaXg5TPJSZ1A3ulxehcSjS8" />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#1d2944" />
@@ -57,6 +124,7 @@ const ogImageUrl = ogImage ? new URL(ogImage, SITE.url).href : undefined;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href={strongGlasgowBold} as="font" type="font/ttf" crossorigin />
 
+    <script is:inline type="application/ld+json" set:html={structuredDataJson} />
     <slot name="head" />
   </head>
   <body>

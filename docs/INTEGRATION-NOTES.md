@@ -26,22 +26,30 @@ Response: `{ "status": "success", "data": { "2026-10-10": [{ "start": "2026-10-1
 
 **Embed (`@calcom/embed-react` 1.5.x).** `getCalApi({ namespace })` then `cal("ui", {...})`. Documented `ui` options: `theme` ("light" | "dark" | "auto"), `layout` ("month_view" | "week_view" | "column_view"), `hideEventTypeDetails`, `showTimezoneWhenEventDetailsHidden`, `styles`, `cssVarsPerTheme` ({ light: {...}, dark: {...} }), `colorScheme`, `disableAutoScroll`, `useSlotsViewOnSmallScreen`. Documented `cssVarsPerTheme` keys: `cal-brand`, `cal-brand-emphasis`, `cal-brand-text`, `cal-bg`, `cal-bg-emphasis`, `cal-bg-subtle`, `cal-bg-booker`, `cal-border`, `cal-border-emphasis`, `cal-border-booker`, `cal-border-booker-width`, `cal-text-emphasis`, `cal-text-default`, `cal-text-muted`. The brief also names `cal-text`, `cal-text-subtle`, `cal-border-subtle` and `radius`; set both spellings, the embed ignores unknown keys. Prefill goes through the `config` prop (`name`, `email`, `location`, `metadata[...]`); `date` and `month` as query params on `calLink` are not documented, so the booking page must be tested in a real browser (the public page at `/reserve?month=2026-11&date=2026-11-14` does echo the date in its HTML, which is promising). Embed events for `cal("on", { action, callback })`: `linkReady`, `linkFailed` ({ code, msg, data }), `bookerReady`, `bookerViewed`, `bookingSuccessfulV2` ({ uid, title, startTime, endTime, eventTypeId, status, ... }), `eventTypeSelected`, `navigatedToBooker`.
 
+**Booking page query parameters (checked in a real browser, 2026-10-09).** https://cal.com/serra-cross-park/reserve?month=2026-11&date=2026-11-14 opens on November 2026 with the 14th selected and its times listed (8:00 AM, 11:00 AM, 2:00 PM, 5:00 PM), so `month` and `date` are honored by the public page. The embed passes the same query through `calLink`, and it works there too (checked in a real browser on 2026-10-09 against the dev server: picking Saturday, October 24 in the availability calendar mounted the embed at `app.cal.com/serra-cross-park/reserve/embed?month=2026-10&date=2026-10-24&...`, and the booker opened on October 2026 with the 24th selected and 8:00am, 11:00am, 2:00pm and 5:00pm listed). The "Choose <date> in the calendar below" hint in `CalBooker.tsx` is therefore off (`SHOW_PICK_HINT = false`); turn it back on if a Cal.com update stops honoring `date`.
+
+**Durations.** The event page shows "$300.00 per hour with a minimum of two hours" and offers 2h, 3h, 4h and 5h, with 3h selected by default. The slots API without a `duration` parameter answers for the default (180 minutes), which is what the availability calendar counts. If the Conservancy wants the calendar to reflect another length, set `BOOKING.slotDuration` in minutes. The event description also says "You Must Agree to the Terms and Conditions at Checkout" and "All reservations must include time needed for vendor/client set up, event, and vendor/client break-down".
+
 ## Zeffy
 
 **Placeholder form.** `https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura` is Startup Ventura's form (amounts $500, $1,000, $2,500, $5,000, one-time or yearly). The embed URL `https://www.zeffy.com/en-US/embed/donation-form/donate-to-startup-ventura` loads in a browser; curl gets a Cloudflare 403, so server-side checks are not possible.
 
 **Embed script v2** (`https://www.zeffy.com/embed/v2/zeffy-embed.js`, version 2.0.0, read on 2026-10-09). The script:
 
-- finds `[data-zeffy-embed]:not([data-zeffy-initialized])`, reads `data-form-url` (the `/embed/...` URL) and optional `data-min-height` (a number or px), draws a skeleton loader, then injects an `<iframe>` whose src is the form URL plus `embed-version=v2&embedId=<id>` (and `disableExpressCheckout=true` on iPhone), with `allowpaymentrequest` and `allowTransparency`;
+- finds `[data-zeffy-embed]:not([data-zeffy-initialized])`, reads `data-form-url` (a PATH such as `/en-US/embed/donation-form/<slug>`: the script prepends `/` when missing and resolves the value against `https://www.zeffy.com`, so a full URL becomes `https://www.zeffy.com/https://www.zeffy.com/...` and the form 404s inside the iframe; seen in the browser on 2026-10-09) and optional `data-min-height` (a number or px), draws a skeleton loader, then injects an `<iframe>` whose src is the form URL plus `embed-version=v2&embedId=<id>` (and `disableExpressCheckout=true` on iPhone), with `allowpaymentrequest` and `allowTransparency`;
 - removes every `[data-zeffy-embed-fallback]` element (blanking any iframe inside it first), so a fallback iframe can sit in such a wrapper for no-script visitors;
 - listens for `postMessage` from `https://www.zeffy.com` (`zeffy-embed:connected`, `zeffy-embed:resized` with `height`, `zeffy-embed:step-changed`, `zeffy-embed:thank-you-page-shown`, `zeffy-embed:loading`) and sets the container height, so the host page needs no fixed height;
 - exposes `window.Zeffy.embed.init()` to scan for new containers (useful after client-side mounting);
-- if it never connects, it shows the iframe at 800px after a timeout.
+- if it never connects, it shows the iframe at 800px after a timeout;
+- styles its container inline (`border-radius: 16px`, `outline: 1px solid #e0e0e0` while loading, white background, a 600px centered card): the Donate page overrides the radius and outline color with `!important` in `src/styles/pages/donate.css`;
+- calls `scrollIntoView({ behavior: 'smooth' })` on step changes and on the thank-you page, motion our side cannot stop under `prefers-reduced-motion`.
+
+`ZeffyEmbed.tsx` exports `toZeffyEmbedPath(formUrl)` for the attribute and `toZeffyEmbedUrl(formUrl)` (the full URL) for the plain fallback iframe.
 
 Markup that matches the script:
 
 ```html
-<div data-zeffy-embed data-form-url="https://www.zeffy.com/embed/donation-form/<slug>" data-min-height="800"></div>
+<div data-zeffy-embed data-form-url="/en-US/embed/donation-form/<slug>" data-min-height="800"></div>
 <script src="https://www.zeffy.com/embed/v2/zeffy-embed.js" async></script>
 ```
 
