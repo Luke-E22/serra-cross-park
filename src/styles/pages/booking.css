@@ -1,0 +1,117 @@
+/* Plan your event page. Every value reads a token from design-system/tokens.css.
+   Square corners, borders not shadows, status never by color alone. Nothing here moves,
+   and site.css already stops every transition under reduced motion. */
+
+/* ------------------------------------------------------------ what to know before you book */
+/* The rules list after the fact grid: one measure wide, a square ochre mark on each line. */
+.booking-rules {
+  max-width: var(--measure);
+  margin: var(--space-7) 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+}
+.booking-rules li {
+  position: relative;
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+.booking-rules li:last-child { margin-bottom: 0; }
+.booking-rules li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: var(--radius-none);
+}
+
+/* The two caution notices side by side; stacked under 720px. */
+.booking-notices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+@media (max-width: 720px) {
+  .booking-notices { grid-template-columns: 1fr; }
+}
+
+/* The line that points to the FAQ and the terms. Links take the global navy underline. */
+.booking-more {
+  max-width: var(--measure);
+  margin: var(--space-6) 0 0;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------ availability */
+/* The static Netlify copy of the inquiry form is only there for build-time detection.
+   It carries the hidden attribute too; this keeps it out of the layout regardless. */
+.booking-netlify-form { display: none; }
+
+/* The no-JavaScript block (inside <noscript> on the page): a notice and a link to Cal.com,
+   one measure wide. The page's noscript style hides the island itself. */
+.booking-noscript {
+  display: grid;
+  gap: var(--space-5);
+  max-width: var(--measure);
+}
+.booking-noscript__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .booking-noscript__actions .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ how booking works (the navy section) */
+/* The site-fee row under the five steps: the give button on the left, its line on the right,
+   a hairline above in the on-dark line color. One column under 720px. */
+.booking-fee {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-4) var(--space-7);
+  align-items: center;
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line-on-dark);
+}
+.booking-fee__action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+.booking-fee__note {
+  margin: 0;
+  color: var(--ink-on-dark-muted);
+}
+.booking-fee__text {
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--ink-on-dark-muted);
+}
+@media (max-width: 720px) {
+  .booking-fee { grid-template-columns: 1fr; }
+  .booking-fee__action { align-items: stretch; }
+  .booking-fee__action .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ gallery */
+/* Six photos in nine cells on three columns: normal, tall, normal, tall, wide, normal.
+   On two columns the wide cell drops to one, so the eight cells fill four rows with no gap. */
+.booking-gallery__more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+@media (max-width: 720px) {
+  .booking-gallery .sc-gallery__item--wide { grid-column: span 1; }
+  .booking-gallery__more .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ booking questions */
+.booking-faq__more { margin-top: var(--space-6); }

@@ -1,0 +1,285 @@
+---
+import '../../styles/pages/booking.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero';
+import AvailabilityCalendar from '../../components/booking/AvailabilityCalendar';
+import { Button, FactGrid, FAQList, Gallery, Notice, SectionHeading, Steps } from '../../components/ds';
+import type { GalleryImage } from '../../components/ds';
+import { BOOKING, CAL_BOOKING_PAGE_URL, PAYMENTS, SITE } from '../../config/site';
+import { FAQ } from '../../content/faq';
+import { PHOTOS } from '../../content/photos';
+import type { PhotoKey } from '../../content/photos';
+import { ogImage, picture } from '../../lib/images';
+
+// Plan your event: the site's first job (BRIEF.md section 7). Every fact comes from section 9.
+// The rules sit above the calendar on purpose. The AvailabilityCalendar island renders the legend,
+// the month grid and the Cal.com booker; the hidden Netlify form under it is the static copy of
+// the island's fallback inquiry form, so Netlify detects it at build time (sections 7d and 12).
+// The site fee is not a donation, so the 501(c)(3) line stays in the footer rather than beside
+// the fee button, the same as /booking/requested/.
+//
+// Open questions (CONTENT-TODO.md) that shaped the wording here:
+// [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
+// [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
+// [CONFIRM: items 11 and 38, Cal.com offers 3-hour slots at 8, 11, 2 and 5; the page states the published hours]
+// [CONFIRM: item 15, the three weekend blocks are fixed and the 7:30 PM end applies to weekend events]
+// [CONFIRM: item 19, insurance is stated for receptions only]
+
+// Rendered widths of each slot, for the sizes attribute (same slots as src/pages/index.astro).
+// Gallery cells: three columns, two under 720px. Tall cells crop a portrait to a thin column,
+// so the browser needs more pixels than the cell is wide; 80vw covers that. The wide cell drops
+// to one column under 720px (booking.css), so it reads 50vw there.
+const GALLERY_CELL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 50vw';
+const GALLERY_TALL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 80vw';
+const GALLERY_WIDE = '(min-width: 1200px) 764px, (min-width: 721px) 66vw, 50vw';
+
+const heroPhoto = PHOTOS['reception-umbrellas'];
+// The Cross stands upper-center in this frame (about 45% across, from 10% to 45% down), so the
+// focal point sits there and the Cross stays whole at every width.
+const hero = await picture(heroPhoto.image, {
+  widths: [640, 960, 1280],
+  sizes: '100vw',
+  priority: true,
+  alt: heroPhoto.alt,
+});
+const og = await ogImage(heroPhoto.image);
+
+// One gallery cell from photos.ts: alt and caption come from there.
+async function cell(
+  key: PhotoKey,
+  opts: { widths: number[]; sizes: string; layout?: GalleryImage['layout']; position?: string },
+): Promise<GalleryImage> {
+  const p = PHOTOS[key];
+  const pic = await picture(p.image, { widths: opts.widths, sizes: opts.sizes, position: opts.position, alt: p.alt });
+  return { src: pic.src, alt: pic.alt, imgProps: pic.imgProps, caption: p.caption, layout: opts.layout ?? 'normal' };
+}
+
+// Six photos in nine cells: normal, tall, normal, tall, wide, normal fills three rows of three.
+// The photos with the Cross in frame take normal or tall cells, which crop them least; the
+// bridal-party detail takes the wide strip, where a Cross would be cut through.
+const gallery = await Promise.all([
+  cell('reception-umbrellas', { widths: [400, 752, 1128], sizes: GALLERY_CELL }),
+  cell('ceremony-floral-arch', { widths: [400, 752, 1128], sizes: GALLERY_TALL, layout: 'tall', position: '47% 45%' }),
+  cell('reception-lawn', { widths: [400, 752, 1128], sizes: GALLERY_CELL, position: '50% 40%' }),
+  cell('reception-table-view', { widths: [400, 752, 1128], sizes: GALLERY_TALL, layout: 'tall' }),
+  cell('bridesmaids-gold', { widths: [800, 1200, 1600], sizes: GALLERY_WIDE, layout: 'wide', position: '50% 38%' }),
+  cell('ceremony-rose-arch-wedding-party', { widths: [400, 752, 1128], sizes: GALLERY_CELL }),
+]);
+
+const facts = [
+  { icon: 'users', label: 'Guests', value: '300', note: 'seated, up to 500 standing' },
+  { icon: 'clock', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
+  { icon: 'calendar', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
+  // Non-breaking spaces keep each block whole, so the long value wraps at the commas:
+  // "9 to 12," / "1 to 4," / "5 to 8" instead of breaking inside a block.
+  { icon: 'sunset', label: 'Weekends', value: '9 to 12, 1 to 4, 5 to 8', note: 'three blocks, events end by 7:30 PM' },
+] as const;
+
+const steps = [
+  { title: 'Pick a date and time', text: 'Choose an open day in the calendar, then one of its times.' },
+  { title: 'Send your request', text: 'Book the time and tell us a little about your event.' },
+  {
+    title: 'We confirm and hold your date for 14 days',
+    text: 'The park office checks the date with you, then holds it while the site fee arrives.',
+  },
+  { title: 'Pay the site fee', text: '$300 per hour, two-hour minimum. The fee reserves your date and is non-refundable.' },
+  { title: 'Get your confirmation letter', text: 'When the site fee arrives, we send your letter. Your date is reserved.' },
+];
+
+const faqItems = FAQ.booking.map(({ q, a }) => ({ q, a }));
+
+// EventVenue structured data. BaseLayout carries the NGO (#org) and the park (#park); this node
+// points at both by @id.
+const bookingUrl = new URL('/booking/', SITE.url).href;
+const venue = {
+  '@context': 'https://schema.org',
+  '@type': 'EventVenue',
+  '@id': `${SITE.url}#venue`,
+  name: SITE.name,
+  url: bookingUrl,
+  description:
+    'A hilltop park for weddings and events above Mission San Buenaventura in Ventura, with the Pacific and the Channel Islands below. Up to 300 seated or 500 standing guests.',
+  image: new URL(og, SITE.url).href,
+  address: { '@type': 'PostalAddress', addressLocality: 'Ventura', addressRegion: 'CA', addressCountry: 'US' },
+  geo: { '@type': 'GeoCoordinates', latitude: SITE.geo.lat, longitude: SITE.geo.lng },
+  maximumAttendeeCapacity: 500,
+  publicAccess: true,
+  isAccessibleForFree: true,
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'Wheelchair access', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Disabled parking', value: true },
+  ],
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '09:00',
+    closes: '20:00',
+  },
+  containedInPlace: { '@id': `${SITE.url}#park` },
+  maintainer: { '@id': `${SITE.url}#org` },
+};
+// "<" is escaped so no string in the data can close the script element early.
+const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
+---
+
+<BaseLayout
+  title="Plan your event"
+  description="Book a wedding or event at Serra Cross Park in Ventura: up to 300 seated guests, $300 per hour, with the ocean and the Channel Islands below. See open dates."
+  path="/booking/"
+  ogImage={og}
+  ogImageAlt={heroPhoto.alt}
+  hero
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={venueJson} />
+  </Fragment>
+
+  <PageHero
+    client:media="(max-width: 1100px)"
+    height="tall"
+    image={hero.src}
+    imageAlt={hero.alt}
+    imgProps={hero.imgProps}
+    focal="45% 25%"
+    eyebrow="Weddings and events"
+    title="Married on the hill"
+    lede="Ceremonies and receptions for up to 300 seated guests, with the ocean and the Channel Islands below. The rate is $300 per hour, with a two-hour minimum."
+    caption={heroPhoto.caption}
+    actions={{ primary: { label: 'See availability', href: '#availability' } }}
+  />
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          size="lg"
+          eyebrow="Rates and rules"
+          title="What to know before you book"
+          intro="We welcome weddings, memorials, family picnics and school field trips. Here is what every event plans around."
+        />
+      </div>
+      <FactGrid columns={4} items={[...facts]} />
+      <ul class="booking-rules body" role="list">
+        <li>Weekend events end by 7:30 PM.</li>
+        <li>Guests and equipment are off the hill by 8 PM, when the gates lock.</li>
+        <li>Booked time includes setup and breakdown for you and your vendors.</li>
+        <li>The grounds stay open to the public during your event.</li>
+        <li>The site fee reserves your date and is non-refundable.</li>
+      </ul>
+      <div class="booking-notices">
+        <Notice tone="caution" icon="droplet" title="No restrooms or water on site">
+          Rent portable restrooms and bring water for guests and vendors.
+        </Notice>
+        <Notice tone="caution" icon="shield-check" title="Receptions need event insurance">
+          A $1 million one-day special event policy. Alcohol needs insurance and a licensed caterer.
+        </Notice>
+      </div>
+      <p class="booking-more body">
+        Read the <a href="/faq/">frequently asked questions</a> and the <a href="/terms-and-conditions/">terms and conditions</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" id="availability">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          eyebrow="Availability"
+          title="Pick a date"
+          intro="Choose an open day to see its times. Partly booked days still have time free. The park office confirms every request."
+        />
+      </div>
+      {/* Without JavaScript the island below never leaves its loading state, so a noscript style
+          hides it and this block offers the Cal.com page and the park office instead (BRIEF.md 7d). */}
+      <noscript>
+        <style is:inline>
+          .avail { display: none; }
+        </style>
+        <div class="booking-noscript">
+          <Notice tone="info" title="The calendar needs JavaScript">
+            {/* One line on purpose: a source line break before the <a> is collapsed to nothing, not a space. */}
+            <p>You can still book. Pick your date and time on Cal.com, or email the park office at <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the date you have in mind.</p>
+          </Notice>
+          <div class="booking-noscript__actions">
+            <Button variant="secondary" href={CAL_BOOKING_PAGE_URL} icon="arrow-up-right">Book on Cal.com</Button>
+          </div>
+        </div>
+      </noscript>
+      <AvailabilityCalendar
+        client:visible
+        horizonMonths={BOOKING.horizonMonths}
+        timeZone={BOOKING.timeZone}
+        emailHref={`mailto:${SITE.email}`}
+      />
+      {/* Static copy of the island's fallback inquiry form, so Netlify registers it at build time.
+          The island posts the same field names to "/" with form-name=event-inquiry. */}
+      <form
+        class="booking-netlify-form"
+        name="event-inquiry"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        hidden
+      >
+        <input type="hidden" name="form-name" value="event-inquiry" />
+        <input type="text" name="name" />
+        <input type="text" name="partner" />
+        <input type="email" name="email" />
+        <input type="tel" name="phone" />
+        <input type="text" name="eventType" />
+        <input type="date" name="date" />
+        <input type="number" name="guests" />
+        <input type="text" name="block" />
+        <textarea name="message"></textarea>
+        <input type="text" name="bot-field" />
+      </form>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--dark">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading onDark as="h2" eyebrow="Step by step" title="How booking works" />
+      </div>
+      <Steps tone="dark" steps={steps} />
+      <div class="booking-fee">
+        <div class="booking-fee__action">
+          <Button variant="give" size="lg" icon="hand-heart" href={PAYMENTS.siteFeeUrl} target="_blank" rel="noopener">
+            Pay the site fee<span class="sc-visually-hidden"> (opens in a new tab)</span>
+          </Button>
+          {/* The sighted note. The link already says it, so assistive tech skips this copy. */}
+          <span class="booking-fee__note caption" aria-hidden="true">Opens in a new tab.</span>
+        </div>
+        <p class="booking-fee__text body">
+          The site fee is $300 per hour with a two-hour minimum. It reserves your date and is non-refundable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section booking-gallery">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading as="h2" eyebrow="Gallery" title="Weddings at the Cross" />
+      </div>
+      <Gallery images={gallery} />
+      <div class="booking-gallery__more">
+        <Button variant="secondary" href="/gallery/" icon="arrow-right">See the gallery</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading as="h2" eyebrow="FAQ" title="Booking questions" />
+      </div>
+      <FAQList items={faqItems} defaultOpen={0} />
+      <div class="booking-faq__more">
+        <Button variant="link" href="/faq/" icon="arrow-right">See all questions</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

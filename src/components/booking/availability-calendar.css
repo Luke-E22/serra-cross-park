@@ -1,0 +1,257 @@
+/* Availability calendar island (src/components/booking/AvailabilityCalendar.tsx).
+   Every value reads a token from design-system/tokens.css. Square corners, borders not
+   shadows, and every status is told by a mark and words as well as by color: an open day has
+   a line-strong border on surface-raised; a partly booked day adds a half-filled square and
+   "2 of 3 open"; a booked day sits on sandstone with the date struck through and the word
+   "booked"; a day not available online is muted, borderless and inert. The selected day is
+   navy with paper text and the check icon, like a checked ChoiceChip.
+   The only motion is the 150ms color fade on cells and the scroll to the booker. The global
+   reduced-motion rule in site.css stops the fade; the island reads the same media query
+   before it scrolls. */
+
+/* ------------------------------------------------------------ frame */
+.avail { color: var(--ink); }
+
+/* One month wide until two fit side by side. The cap keeps a lone month's cells from
+   ballooning on a tablet; the booker below the grid is not capped. */
+.avail__cal { max-width: 600px; }
+@media (min-width: 1100px) {
+  .avail__cal { max-width: none; }
+}
+
+/* ------------------------------------------------------------ legend and month buttons */
+.avail__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.avail__key {
+  display: grid;
+  gap: var(--space-2);
+}
+.avail__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.avail__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.avail__zone { margin: 0; }
+
+/* A sample day drawn exactly like its cells, so the legend and the grid agree. */
+.avail__swatch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-none);
+  color: var(--ink);
+}
+.avail__swatch--open,
+.avail__swatch--partial {
+  background: var(--surface-raised);
+  border-color: var(--line-strong);
+}
+.avail__swatch--booked {
+  background: var(--sandstone);
+  border-color: var(--line);
+}
+.avail__swatch--booked .avail__num {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.avail__swatch--na { color: var(--ink-muted); }
+
+.avail__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------------ months */
+.avail__months {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+@media (min-width: 1100px) {
+  .avail__months {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+}
+/* The skeleton draws two months; the second shows only once two fit. */
+@media (max-width: 1099px) {
+  .avail__months > .avail__month:nth-child(2) { display: none; }
+}
+
+/* Each month is a container, so the cells can grow a second line when they are wide enough. */
+.avail__month {
+  min-width: 0;
+  container-type: inline-size;
+  container-name: avail-month;
+}
+.avail__heading {
+  margin: 0 0 var(--space-4);
+  color: var(--ink);
+}
+.avail__heading--skeleton {
+  display: block;
+  width: 180px;
+  height: 28px;
+  background: var(--surface-alt);
+}
+
+/* The weekday row and every week share one seven-column grid, so the columns line up. */
+.avail__weekdays,
+.avail__week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+.avail__weekdays {
+  margin-bottom: var(--space-2);
+  color: var(--ink-muted);
+  text-align: center;
+}
+.avail__weekdays abbr { text-decoration: none; }
+.avail__grid {
+  display: grid;
+  gap: var(--space-1);
+}
+/* At 375px wide the seven columns need a 1px gap to keep every cell 48px square. */
+@media (max-width: 480px) {
+  .avail__weekdays,
+  .avail__week,
+  .avail__grid { gap: 1px; }
+}
+
+/* ------------------------------------------------------------ days */
+.avail__day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: var(--tap-target);
+  margin: 0;
+  padding: var(--space-1);
+  background: var(--surface-raised);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-none);
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.avail__pad { min-height: var(--tap-target); }
+.avail__num {
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.avail__day--booked {
+  background: var(--sandstone);
+  border-color: var(--line);
+}
+.avail__day--booked .avail__num {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+.avail__day--na {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-muted);
+  cursor: default;
+}
+.avail__day--skeleton {
+  background: var(--surface-alt);
+  border-color: transparent;
+  cursor: default;
+}
+
+.avail__day:not([disabled]):hover { border-color: var(--ink); }
+.avail__day.is-selected,
+.avail__day.is-selected:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--ink-on-dark);
+}
+/* The design system's ring: a 2px surface gap inside a 2px focus ring. Raised above its neighbours. */
+.avail__day:focus-visible {
+  z-index: 1;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--focus);
+}
+
+/* The partly booked mark sits top left and the selected check top right, so both can show. */
+.avail__mark {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: block;
+}
+.avail__swatch .avail__mark {
+  top: 2px;
+  left: 2px;
+}
+.avail__check {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+/* "2 of 3 open" and "booked" appear under the number once a cell is at least 64px wide
+   (seven 64px columns plus six gaps). Narrower cells keep the mark alone. */
+.avail__day .avail__detail {
+  display: none;
+  line-height: 1.1;
+  color: var(--ink-muted);
+}
+.avail__day.is-selected .avail__detail { color: var(--ink-on-dark-muted); }
+@container avail-month (min-width: 472px) {
+  .avail__day { min-height: 64px; }
+  .avail__day .avail__detail { display: block; }
+}
+
+/* ------------------------------------------------------------ messages and the booker */
+/* The status line stays in the tree so screen readers hear it; it takes space only with text. */
+.avail__status { margin: 0; }
+.avail__status:not(:empty) { margin-top: var(--space-5); }
+.avail__status p { margin: 0; }
+
+.avail__book {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+.avail--fallback .avail__book { margin-top: var(--space-6); }
+.avail__book-heading {
+  margin: 0 0 var(--space-5);
+  color: var(--ink);
+}
+/* The heading takes focus when the booker opens. It is a target, not a control, so no ring. */
+.avail__book-heading:focus {
+  outline: none;
+  box-shadow: none;
+}
+.avail__loading {
+  margin: 0;
+  color: var(--ink-muted);
+}
