@@ -12,7 +12,7 @@ Three jobs, in this order: 1. Book weddings and events. 2. Tell the story of the
 In this order, before changing anything:
 
 1. `BRIEF.md`: the whole brief. Section 9 is the only source of facts.
-2. `CONTENT-TODO.md`: 39 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
+2. `CONTENT-TODO.md`: 40 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
 3. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
 4. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
 5. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.
@@ -37,7 +37,7 @@ In this order, before changing anything:
 - Sentence case for headings, labels and buttons; the display styles set the capitals.
 - No em dashes (use a period, comma or colon). No exclamation marks. Nothing from the "Not" column of the brand book's table.
 - "We" is the Conservancy. "You" is the couple, the family or the visitor.
-- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 9 AM, 7:30 PM, March 31, 1782, 300 guests). Time blocks read "9 to 12".
+- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 9 AM, 7:30 PM, March 31, 1782, 300 guests). A time range reads "9 to 8".
 - Names: Serra Cross Park (the place), Serra Cross Conservancy (the nonprofit), the Cross (capital C when it means this one), Father Junípero Serra with the accent, Mission San Buenaventura, the Channel Islands, the Thomas Fire.
 
 **Money words**
@@ -68,6 +68,8 @@ In this order, before changing anything:
 - `FactGrid` sets the words "to" and "or" inside a value in the serif (logged).
 - The Home page has no fact grid under the hero. The booking page keeps its fact grid.
 - Luke Erickson has a photo on his About card. The park Instagram (`SITE.instagram`) shows in the footer and on the Contact page.
+- There are no fixed weekend slots. Events run 9 AM to 8 PM every day, at any start time, with a two-hour minimum at $300 per hour; setup and breakdown sit inside booked time. Weekend events still end by 7:30 PM and everyone is off the hill by 8 PM, when the gates lock. Never reintroduce the old fixed weekend times or any "blocks" wording, on the site or in the documents.
+- The booking flow asks people to agree to the terms and conditions before the Cal.com booker opens, and the fallback inquiry form has a required `terms` checkbox (the hidden Netlify twin in `src/pages/booking/index.astro` carries it too).
 
 ## 4. How the site is built
 
@@ -78,8 +80,8 @@ In this order, before changing anything:
 - Images: `picture()` and `ogImage()` in `src/lib/images.ts`. Photos are registered in `src/content/photos.ts` (file, alt, caption, orientation, archival, uses). To add one: drop the file in `src/assets/photos/`, import it there, add an entry.
 - Content: `src/content/faq.ts` (also feeds the FAQPage JSON-LD), `src/content/timeline.ts`, and `src/config/site.ts` (SITE, BOOKING, PAYMENTS, PEOPLE, CREDIT, NAV, FOOTER_COLUMNS).
 - Availability: `netlify/functions/availability.mts` fetches Cal.com's public slots API (no key; `CAL_API_KEY` only if Cal.com ever refuses) and answers at `/api/availability` with CDN caching. All status logic is pure in `src/lib/availability.ts` and tested. `?fixture=1` returns a fixture outside production.
-- Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist), 180-minute default with 2h to 5h offered, four slots a day at 8, 11, 2 and 5 Pacific. `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked, 0 of 4". Booking rules live in Cal.com, never in code.
-- Dev bridge: `scripts/dev-availability-plugin.mjs` serves `/api/availability` in `astro dev`. `npm run preview` does not serve it, so the booking page in preview takes the fallback path (Notice plus booker). `npx netlify-cli serve --offline` (port 8888) runs the real function on the built site.
+- Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist). As read on 2026-10-09: a 180-minute default with 2h to 5h offered and four fixed slots a day at 8, 11, 2 and 5 Pacific. That must change to match the published rule: a two-hour minimum (default 120 minutes), flexible start times in 30-minute steps, 9 AM to 8 PM (CONTENT-TODO items 11, 38 and 39). `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked, 0 of 4". Booking rules live in Cal.com, never in code.
+- Dev bridge: `scripts/dev-availability-plugin.mjs` serves `/api/availability` in `astro dev`. `npm run preview` does not serve it, so the booking page in preview takes the fallback path (Notice, the terms agreement, then the booker). `npx netlify-cli serve --offline` (port 8888) runs the real function on the built site.
 - Vite cache: `astro.config.mjs` sets `vite.cacheDir` per npm script (`node_modules/.vite-dev`, `.vite-build`). If an island crashes with "_jsxDEV is not a function": `rm -rf node_modules/.vite*` and restart dev.
 - Fonts: EB Garamond is self-hosted from `public/fonts/eb-garamond/` through `src/styles/fonts.css`; `scripts/strip-google-fonts-plugin.mjs` removes the Google Fonts import from `bundle.css` at build time. Strong Glasgow in `design-system/fonts/` is the personal-use demo; the three digit-only `@font-face` rules at the top of `bundle.css` go when the licensed files arrive.
 - Forms: Netlify Forms `contact` and `event-inquiry`. Each island form has a static copy in the page HTML with the same `name` and field names. They do not run locally; test on a deploy preview.
@@ -92,7 +94,7 @@ Run from the repo root:
 export PATH="$HOME/.local/node/bin:$PATH"
 npm run check                        # astro check: 0 errors, 0 warnings
 npx tsc --noEmit -p tsconfig.json    # also walks netlify/ and scripts/
-npm test                             # vitest: 50 tests pass
+npm test                             # vitest: 56 tests pass
 npm run build                        # prebuild runs scripts/prelaunch-check.mjs
 grep -rn $'\xe2\x80\x94' src                      # em dashes: must print nothing
 grep -rnE $'\x21[[:space:]"\'<]|\x21$' src        # exclamation marks in prose: must print nothing

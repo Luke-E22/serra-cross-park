@@ -6,7 +6,7 @@
 //   2. Site fee receipts: the fee is stated as non-refundable and not tax-deductible, per the brief. [CONFIRM: receipt setup with the accountant]
 //   4. Insurance price, insurance vendor and the portable restroom vendor are left out on purpose. [CONFIRM: before naming any vendor or price]
 //   7. Parking: no car count is published. [CONFIRM: a number to publish]
-//  11. Cal.com offers slots at 8, 11, 2 and 5; the FAQ states the published hours from the brief. [CONFIRM: Cal.com matches the published hours]
+//  11, 38, 39. Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5 (read 2026-10-09); the FAQ states the owner's rule of 2026-10-10: any start time between 9 AM and 8 PM, two-hour minimum. [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
 //  18. Public access: the brief's wording (open during every event) is used; the old FAQ said daylight hours. [CONFIRM: visitor hours]
 //  19. Insurance scope: the reception rule only; nothing is said about other event types. [CONFIRM: rule for ceremonies, picnics, memorials]
 //  20. 805-258-3153 is labeled only as the number for non-emergencies. [CONFIRM: whose phone and how to label it]
@@ -39,12 +39,12 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'How do I book, and how long will you hold my date?',
-    a: 'Pick a date and time on the Plan your event page and send your request. The park office confirms your date and holds it for 14 days while the site fee arrives, then sends your confirmation letter.',
+    a: 'Pick a date on the Plan your event page, agree to the terms and conditions, then choose your time and send your request. The park office confirms your date and holds it for 14 days while the site fee arrives, then sends your confirmation letter.',
     more: { label: 'Plan your event', href: '/booking/' },
   },
   {
     q: 'What hours can we book?',
-    a: '9 AM to 8 PM, every day of the year. On Saturdays and Sundays, events run in three blocks: 9 to 12, 1 to 4 and 5 to 8. Weekend events end by 7:30 PM.',
+    a: '9 AM to 8 PM, every day of the year. Start at any time that suits you, with a two-hour minimum. Weekend events end by 7:30 PM, and everyone is off the hill by 8 PM, when the gates lock.',
   },
   {
     q: 'How many guests can the park hold?',

@@ -438,7 +438,7 @@ export function ChoiceChips({ label, name, options, value, defaultValue, onChang
 }
 
 /* ----------------------------------------------------------- InquiryForm */
-export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean }
+export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean; blockLabel?: string; blockOptions?: Choice[] }
 const EVENT_TYPES: Choice[] = [
   { value: 'wedding', label: 'Wedding' },
   { value: 'vows', label: 'Vow renewal' },
@@ -452,7 +452,7 @@ const TIME_BLOCKS: Choice[] = [
   { value: 'evening', label: 'Evening', note: '5 to 8' },
 ];
 /** The event inquiry: who, what, when, how many. The park office follows up to confirm. */
-export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp }: InquiryFormProps) {
+export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp, blockLabel = 'Time of day', blockOptions = TIME_BLOCKS }: InquiryFormProps) {
   const [sent, setSent] = React.useState(!!sentProp);
   const submit = (e: any) => {
     e.preventDefault();
@@ -483,7 +483,7 @@ export function InquiryForm({ title = 'Tell us about your day', defaultEventType
         <Field label="Preferred date" name="date" type="date" help="Weekend events end by 7:30 PM." />
         <Field label="Guests" name="guests" type="number" min={1} max={500} inputMode="numeric" help="Up to 300 seated or 500 standing." />
       </div>
-      <ChoiceChips label="Time of day" name="block" options={TIME_BLOCKS} defaultValue="afternoon" columns={3} />
+      <ChoiceChips label={blockLabel} name="block" options={blockOptions} defaultValue="afternoon" columns={3} />
       <Field label="Anything else" name="message" type="textarea" rows={4} optional placeholder="Ceremony only, or ceremony and reception? Caterer, rentals, questions." />
       <div className="sc-form__footer">
         <Button type="submit" variant="primary" size="lg" icon="arrow-right">Send inquiry</Button>

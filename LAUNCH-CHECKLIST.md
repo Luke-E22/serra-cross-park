@@ -5,7 +5,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 ## Content and facts
 
 - [ ] Every item in `CONTENT-TODO.md` answered.
-  39 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
+  40 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
 - [ ] Tax ID checked against the IRS determination letter (item 12).
   The old Donate page printed 20-861526, eight digits. The site uses 20-8615264 from `SITE.ein` in `src/config/site.ts`, which feeds the footer of every page, the Donate page and the NGO `taxID` in the JSON-LD.
 - [ ] Board and staff photos in place, or the initials placeholders signed off.
@@ -21,8 +21,8 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 ## Cal.com
 
-- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the slot; booking questions cover event type, guest count and a terms checkbox linking to `/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
-  The items below break this one into the settings read from the live event on 2026-10-09 (CONTENT-TODO items 38 and 39, docs/INTEGRATION-NOTES.md).
+- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time; availability is 9 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
+  The items below break this one into the settings read from the live event on 2026-10-09 (CONTENT-TODO items 11, 38, 39 and 40, docs/INTEGRATION-NOTES.md).
 - [ ] Requires confirmation turned on, with unconfirmed bookings blocking the slot.
   Off today. The booking steps on `/booking/` and `/booking/requested/` promise that the park office reviews each request and holds the date, so a booking must not confirm itself. Cal.com dashboard, event `reserve`, Advanced.
 - [ ] Future booking limit set to a rolling 12 months, or `horizonMonths` changed to match.
@@ -31,14 +31,14 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
   None today. That page explains the hold, carries the Pay the site fee button and is noindex (`src/pages/booking/requested.astro`); without the redirect visitors stay on Cal.com's own success screen.
 - [ ] Event title and description rewritten in the brand voice.
   Today the title is "Private Event / Wedding" and the description has an asterisk, title case and an all-caps warning. Both show inside the booker because `hideEventTypeDetails` is false (`src/components/booking/CalBooker.tsx`). Items 38 and 39.
-- [ ] Duration options confirmed: 2, 3, 4 and 5 hours with 3 hours as the default.
-  The brief names a two-hour minimum and three-hour weekend blocks. The availability calendar counts slots for the default length; to count another length set `BOOKING.slotDuration` in minutes. Items 16 and 39.
-- [ ] Slot times matched to the published hours.
-  Cal.com offers 8 AM, 11 AM, 2 PM and 5 PM Pacific every day. The site says events run 9 AM to 8 PM, weekend blocks are 9 to 12, 1 to 4 and 5 to 8, and weekend events end by 7:30 PM (booking page, FAQ, terms and the EventVenue hours in the JSON-LD). Change the Cal.com availability schedule or the copy. Items 11 and 15.
+- [ ] Durations set to a two-hour minimum: default length 2 hours (120 minutes), longer lengths still offered.
+  Today the event offers 2, 3, 4 and 5 hours with 3 hours as the default (read 2026-10-09). The site says $300 per hour with a two-hour minimum and no fixed length, so the default must be 2 hours. The availability calendar counts slots for the default length; to count another length set `BOOKING.slotDuration` in minutes. Items 16 and 39.
+- [ ] Start times made flexible and the schedule matched to the published hours.
+  Today Cal.com offers four fixed 180-minute slots at 8 AM, 11 AM, 2 PM and 5 PM Pacific every day. The site says events run 9 AM to 8 PM every day at any start time, with a two-hour minimum, and weekend events end by 7:30 PM (booking page, FAQ, terms and the EventVenue hours in the JSON-LD). In Cal.com: set the event's time-slot interval to 30 minutes, set the availability schedule to 9 AM to 8 PM every day, and end Saturday and Sunday at 7:30 PM if that rule stays (item 15). Items 11, 15 and 38.
 - [ ] Minimum notice set in Cal.com and mirrored in `BOOKING.minNoticeDays`.
   It is 0 in `src/config/site.ts`, so today reads "Booked, 0 of 4" once its last start time has passed. Setting Cal.com to one day or more and `minNoticeDays` to the same number shows those days as Not available online instead.
-- [ ] Booking questions set: event type, guest count, a terms checkbox linking to `/terms-and-conditions/`.
-  Item 17 asks whether phone number and mailing address should be asked too; the old form asked for both.
+- [ ] Booking questions set: event type, guest count, and a required "I agree to the terms and conditions" checkbox linking to `https://serracrosspark.com/terms-and-conditions/`.
+  The site asks for the agreement before the booker opens and the fallback inquiry form has its own required checkbox, but only a Cal.com question stores the agreement with the booking (item 40). Item 17 asks whether phone number and mailing address should be asked too; the old form asked for both.
 - [ ] The 24 existing bookings from the old WordPress calendar entered or blocked in Cal.com (item 13).
   24 approved bookings on 23 dates from Sat Oct 10, 2026 to Sun Apr 16, 2028, listed under Calendar in `CONTENT-INVENTORY.md` as a snapshot from 2026-10-09. Export a fresh list from the WP Booking Calendar plugin at migration time and enter each one; until then the availability calendar shows those dates as Open. Two of them fall outside the published hours (item 14).
 - [ ] Booking flow checked on the deploy preview after the settings change.
@@ -97,7 +97,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Google Search Console verification tag kept (item 32).
   `src/layouts/BaseLayout.astro` carries the old site's `google-site-verification` meta tag so the property stays verified. Keep it, or switch the property to DNS verification before DNS changes.
 - [ ] Final `npm run build` with the prelaunch check reading zero warnings except any accepted ones.
-  `export PATH="$HOME/.local/node/bin:$PATH"` first. `npm test` (50 tests) and `npm run check` should pass too. If dev islands ever crash with "_jsxDEV is not a function" after a build, `rm -rf node_modules/.vite*` and restart dev.
+  `export PATH="$HOME/.local/node/bin:$PATH"` first. `npm test` (56 tests) and `npm run check` should pass too. If dev islands ever crash with "_jsxDEV is not a function" after a build, `rm -rf node_modules/.vite*` and restart dev.
 - [ ] Browser checks from docs/BUILD-REPORT.md section 12 run on the deploy preview.
   The booking flow by keyboard alone, the Zeffy fallback, the gallery lightbox, and every page at 375, 768, 1280 and 1440 pixels wide.
 - [ ] Lighthouse run on the deploy preview, mobile, every page.

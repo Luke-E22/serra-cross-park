@@ -5,6 +5,8 @@
    "2 of 3 open"; a booked day sits on sandstone with the date struck through and the word
    "booked"; a day not available online is muted, borderless and inert. The selected day is
    navy with paper text and the check icon, like a checked ChoiceChip.
+   Before the booker mounts, the terms agreement gate stands in its place: a square panel on
+   surface-raised with a line-strong border, like an open day, and a native 24px checkbox.
    The only motion is the 150ms color fade on cells and the scroll to the booker. The global
    reduced-motion rule in site.css stops the fade; the island reads the same media query
    before it scrolls. */
@@ -254,4 +256,76 @@
 .avail__loading {
   margin: 0;
   color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------ terms agreement */
+/* The gate before the booker (TermsGate in AvailabilityCalendar.tsx). It stands where the booker
+   will appear; once the box is ticked the booker mounts under it, and on later views the panel
+   is the one line in .avail__terms-done. */
+.avail__terms {
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-none);
+  scroll-margin-top: var(--space-6);
+}
+.avail__terms:not(:last-child),
+.avail__terms-done { margin-bottom: var(--space-6); }
+.avail__terms-title {
+  margin: 0 0 var(--space-3);
+  color: var(--ink);
+}
+/* The title takes focus when a day is picked before agreeing. A target, not a control, so no ring. */
+.avail__terms-title:focus {
+  outline: none;
+  box-shadow: none;
+}
+.avail__terms-text {
+  max-width: var(--measure);
+  margin: 0 0 var(--space-4);
+  color: var(--ink);
+}
+/* The line left once the visitor has agreed: a check mark and the words. */
+.avail__terms-done {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: 0;
+  color: var(--ink);
+}
+.avail__terms-done .sc-icon {
+  flex: none;
+  margin-top: 5px;
+}
+
+/* The checkbox and its label (TermsCheckbox.tsx), shared with the fallback inquiry form. The label
+   wraps the box so the whole row is the target. The box is native: 24px, navy accent, square by the
+   browser's own drawing, and the design system's ring on focus. The 2px top margin centres it on the
+   first 28px line of body-sm. */
+.terms-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+.terms-check__box {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 2px 0 0;
+  accent-color: var(--navy);
+  cursor: pointer;
+}
+.terms-check__box:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--focus);
+}
+.terms-check__text { min-width: 0; }
+/* After a refused send: a brick ring on the box, paired with the caution notice's icon and words. */
+.terms-check__box[aria-invalid='true']:not(:focus-visible) {
+  box-shadow: 0 0 0 2px var(--danger);
 }

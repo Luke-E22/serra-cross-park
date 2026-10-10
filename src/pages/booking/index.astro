@@ -21,8 +21,8 @@ import { ogImage, picture } from '../../lib/images';
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
 // [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
 // [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
-// [CONFIRM: items 11 and 38, Cal.com offers 3-hour slots at 8, 11, 2 and 5; the page states the published hours]
-// [CONFIRM: item 15, the three weekend blocks are fixed and the 7:30 PM end applies to weekend events]
+// [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 9 AM and 8 PM, as the page states]
+// [CONFIRM: item 15, whether weekend events still end by 7:30 PM]
 // [CONFIRM: item 19, insurance is stated for receptions only]
 
 // Rendered widths of each slot, for the sizes attribute (same slots as src/pages/index.astro).
@@ -68,15 +68,16 @@ const gallery = await Promise.all([
 
 const facts = [
   { icon: 'users', label: 'Guests', value: '300', note: 'seated, up to 500 standing' },
-  { icon: 'clock', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
-  { icon: 'calendar', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
-  // Non-breaking spaces keep each block whole, so the long value wraps at the commas:
-  // "9 to 12," / "1 to 4," / "5 to 8" instead of breaking inside a block.
-  { icon: 'sunset', label: 'Weekends', value: '9 to 12, 1 to 4, 5 to 8', note: 'three blocks, events end by 7:30 PM' },
+  { icon: 'sunset', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
+  { icon: 'landmark', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
+  { icon: 'clock', label: 'Minimum', value: '2 hours', note: 'any start time, setup and breakdown included' },
 ] as const;
 
 const steps = [
-  { title: 'Pick a date and time', text: 'Choose an open day in the calendar, then one of its times.' },
+  {
+    title: 'Pick a date and time',
+    text: 'Choose an open day in the calendar and agree to the terms and conditions. Then choose a start time.',
+  },
   { title: 'Send your request', text: 'Book the time and tell us a little about your event.' },
   {
     title: 'We confirm and hold your date for 14 days',
@@ -232,6 +233,7 @@ const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
         <input type="number" name="guests" />
         <input type="text" name="block" />
         <textarea name="message"></textarea>
+        <input type="checkbox" name="terms" value="yes" />
         <input type="text" name="bot-field" />
       </form>
     </div>

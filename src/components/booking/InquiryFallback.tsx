@@ -5,15 +5,34 @@
  *
  * Netlify Forms only sees forms in the built HTML, so the booking page renders a hidden static twin:
  *   <form name="event-inquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
- * with inputs named form-name, bot-field, name, partner, email, phone, eventType, date, guests, block
- * and message. This island posts the same field names to "/" as application/x-www-form-urlencoded.
+ * with inputs named form-name, bot-field, name, partner, email, phone, eventType, date, guests, block,
+ * message and terms. This island posts the same field names to "/" as application/x-www-form-urlencoded.
+ *
+ * The visitor agrees to the terms before sending: a required checkbox above the form (TermsCheckbox.tsx),
+ * with the same words and link as the gate ahead of the booker. The ported InquiryForm owns its form
+ * element and its submit button, and shows its confirmation as soon as its own submit handler runs, so
+ * the check happens ahead of that handler: onSubmitCapture on the wrapper stops an unticked send, shows
+ * a caution notice and puts focus on the box. A ticked send posts terms=yes with the rest of the fields.
+ *
+ * Time of day: since 2026-10-10 events start at any time from 9 AM to 8 PM with a two-hour minimum, so
+ * the "block" chips carry no hours. The field name and its three values are unchanged.
  */
-import { useState } from 'react';
+import { useId, useRef, useState } from 'react';
+import type { FormEvent } from 'react';
 import { Button, InquiryForm, Notice } from '../ds';
+import type { Choice } from '../ds';
 import { CAL_BOOKING_PAGE_URL, SITE } from '../../config/site';
+import { TermsCheckbox } from './TermsCheckbox';
 
 /** The Netlify form name. The hidden static form on the booking page must use the same one. */
 export const INQUIRY_FORM_NAME = 'event-inquiry';
+
+/** Roughly when in the day. The park office settles the hours with the couple. */
+const TIMES_OF_DAY: Choice[] = [
+  { value: 'morning', label: 'Morning' },
+  { value: 'afternoon', label: 'Afternoon' },
+  { value: 'evening', label: 'Evening' },
+];
 
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -30,20 +49,49 @@ async function postInquiry(data: Record<string, string>): Promise<void> {
 
 export default function InquiryFallback() {
   const [send, setSend] = useState<SendState>('idle');
+  const [agreed, setAgreed] = useState(false);
+  const [termsError, setTermsError] = useState(false);
+  const boxRef = useRef<HTMLInputElement>(null);
+  const errorId = 'inquiry-terms-error-' + useId().replace(/[^a-zA-Z0-9]/g, '');
+
+  /** An unticked send: say why and put the visitor on the box. */
+  const refuse = () => {
+    setTermsError(true);
+    boxRef.current?.focus();
+  };
+
+  // Runs in the capture phase, before the InquiryForm's own submit handler. With the box empty the
+  // submit stops here, so the form stays open with everything typed in it.
+  const guardSubmit = (e: FormEvent<HTMLDivElement>) => {
+    if (agreed) return;
+    e.preventDefault();
+    e.stopPropagation();
+    refuse();
+  };
 
   // InquiryForm calls onSubmit, then shows its own confirmation right away. The post runs after
   // that; if it fails, the caution notice below tells the visitor and offers email instead.
   const handleSubmit = (data: Record<string, string>) => {
+    if (!agreed) {
+      // guardSubmit stops an unticked send before this runs; this keeps the post honest if it ever did not.
+      refuse();
+      return;
+    }
     setSend('sending');
-    postInquiry(data)
+    postInquiry({ ...data, terms: 'yes' })
       .then(() => setSend('sent'))
       .catch(() => setSend('error'));
+  };
+
+  const agree = (checked: boolean) => {
+    setAgreed(checked);
+    if (checked) setTermsError(false);
   };
 
   const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent('Event inquiry')}`;
 
   return (
-    <div className="inquiry-fallback" style={{ display: 'grid', gap: 'var(--space-6)' }}>
+    <div className="inquiry-fallback" style={{ display: 'grid', gap: 'var(--space-6)' }} onSubmitCapture={guardSubmit}>
       <Notice tone="info" title="The booking calendar did not load">
         <p>You can book on Cal.com or send us your details and we will reply.</p>
       </Notice>
@@ -72,7 +120,33 @@ export default function InquiryFallback() {
         </div>
       )}
 
-      <InquiryForm onSubmit={handleSubmit} sent={send === 'sent'} />
+      {/* The agreement sits above the form because the form element and its button are the component's. */}
+      {send === 'idle' && (
+        <div className="inquiry-fallback__terms" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+          <TermsCheckbox
+            checked={agreed}
+            onChange={agree}
+            required
+            invalid={termsError}
+            describedBy={termsError ? errorId : undefined}
+            inputRef={boxRef}
+          />
+          {termsError && (
+            <div id={errorId} role="alert">
+              <Notice tone="caution" title="One thing before you send">
+                <p>Tick the box to agree to the terms before sending.</p>
+              </Notice>
+            </div>
+          )}
+        </div>
+      )}
+
+      <InquiryForm
+        onSubmit={handleSubmit}
+        sent={send === 'sent'}
+        blockLabel="Preferred time of day"
+        blockOptions={TIMES_OF_DAY}
+      />
     </div>
   );
 }

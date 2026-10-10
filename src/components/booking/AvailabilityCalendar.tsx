@@ -1,9 +1,14 @@
 /**
  * The availability calendar on the booking page: a month grid of Open, Partly booked and
  * Booked days drawn over GET /api/availability (netlify/functions/availability.mts; the
- * response is typed in src/lib/availability.ts). Picking an open or partly booked day mounts
- * the Cal.com booker (CalBooker) under the grid. Booking never depends on the endpoint: when
- * the fetch fails, the booker renders at once with no date.
+ * response is typed in src/lib/availability.ts). Picking an open or partly booked day opens the
+ * booking area under the grid. Booking never depends on the endpoint: when the fetch fails, the
+ * booking area renders at once with no date.
+ *
+ * Before the Cal.com booker (CalBooker) mounts, on either path, the visitor agrees to the terms
+ * and conditions: TermsGate stands where the booker will appear, and ticking its box mounts the
+ * booker beneath it. The agreement is kept for the visit in sessionStorage (terms-agreement.ts),
+ * so choosing another day shows one line instead of the panel.
  *
  * Dates are 'YYYY-MM-DD' strings and all date math runs through Date.UTC in calendar-grid.ts,
  * never the visitor's local time zone, so every label matches the key it describes.
@@ -34,6 +39,8 @@ import {
   ymOf,
   ymd,
 } from './calendar-grid';
+import { readAgreement, sessionStore, writeAgreement } from './terms-agreement';
+import { TermsCheckbox, TermsLink } from './TermsCheckbox';
 import './availability-calendar.css';
 
 export { monthGrid } from './calendar-grid';
@@ -170,6 +177,44 @@ function SkeletonMonth() {
   );
 }
 
+interface TermsGateProps {
+  agreed: boolean;
+  /** True from the tick until the next pick: the panel stays up with the box checked and the booker beneath. */
+  fresh: boolean;
+  onChange: (checked: boolean) => void;
+  panelRef: React.RefObject<HTMLDivElement>;
+  titleRef: React.RefObject<HTMLHeadingElement>;
+}
+
+/**
+ * The agreement before the booker. Until the visitor ticks the box the booker does not mount. Once
+ * agreed in an earlier view (sessionStorage, see terms-agreement.ts) the panel is one line.
+ */
+function TermsGate({ agreed, fresh, onChange, panelRef, titleRef }: TermsGateProps) {
+  if (agreed && !fresh) {
+    return (
+      <p className="avail__terms-done body-sm">
+        <Icon name="check" size={18} />
+        <span>
+          You agreed to the <TermsLink />.
+        </span>
+      </p>
+    );
+  }
+  return (
+    <div className="avail__terms" ref={panelRef}>
+      <h3 className="avail__terms-title heading-sm" tabIndex={-1} ref={titleRef}>
+        Before you book
+      </h3>
+      <p className="avail__terms-text body-sm">
+        Reserving a date means agreeing to the park's terms and conditions. They cover the site fee, hours, insurance and
+        what to bring.
+      </p>
+      <TermsCheckbox checked={agreed} onChange={onChange} />
+    </div>
+  );
+}
+
 interface DayCellProps {
   date: Ymd;
   day: DaySummary | undefined;
@@ -271,8 +316,18 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
   const [bookedPick, setBookedPick] = React.useState<Ymd | null>(null);
   const [announcement, setAnnouncement] = React.useState('');
   const [focusRequest, setFocusRequest] = React.useState<{ date: Ymd; n: number } | null>(null);
+  // Whether the visitor has agreed to the terms. Read from sessionStorage once, lazily: the gate is
+  // never in the server markup or the first client render (nothing is picked and the endpoint has
+  // not answered yet), so the stored value cannot cause a hydration mismatch.
+  const [agreed, setAgreed] = React.useState<boolean>(() => readAgreement(sessionStore()));
+  // True from the tick until the next pick: the panel stays up, box checked, booker beneath.
+  const [freshAgree, setFreshAgree] = React.useState(false);
+  // Counts ticks so the booker heading takes focus each time the box is checked.
+  const [agreeCount, setAgreeCount] = React.useState(0);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const headingRef = React.useRef<HTMLHeadingElement>(null);
+  const termsRef = React.useRef<HTMLDivElement>(null);
+  const termsTitleRef = React.useRef<HTMLHeadingElement>(null);
 
   // Fetch once on mount. ?fixture=1 on the page URL, or the prop, asks for fixture data.
   React.useEffect(() => {
@@ -368,9 +423,19 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
       setBookedPick(null);
       setSelected(date);
       setPickCount((n) => n + 1);
+      // A new view of the gate: an agreement from before shows as the one line.
+      setFreshAgree(false);
     } else if (day.status === 'booked') {
       setBookedPick(date);
     }
+  };
+
+  /** The checkbox in the gate. Ticking it mounts the booker; clearing it takes the booker down again. */
+  const agree = (checked: boolean) => {
+    setAgreed(checked);
+    setFreshAgree(checked);
+    writeAgreement(sessionStore(), checked);
+    if (checked) setAgreeCount((n) => n + 1);
   };
 
   const noteFocus = (date: Ymd) => setActive(date);
@@ -481,15 +546,33 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
     root.querySelector<HTMLElement>(`[data-ym="${ymOf(focusRequest.date)}"]`)?.focus();
   }, [focusRequest]);
 
-  // After a pick: bring the booker's heading into view and give it focus.
+  // After a pick: bring the booking area into view and give it focus. Once the visitor has agreed
+  // that is the booker's heading; before, the gate stands in its place and its title takes the
+  // focus. `agreed` is read here, not depended on: ticking the box has its own effect below and
+  // must not scroll the panel away.
   React.useEffect(() => {
     if (!selected || pickCount === 0) return;
-    const heading = headingRef.current;
-    if (!heading) return;
     const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    heading.focus({ preventScroll: true });
-    heading.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
+    if (agreed) {
+      const heading = headingRef.current;
+      if (!heading) return;
+      heading.focus({ preventScroll: true });
+      heading.scrollIntoView({ behavior, block: 'start' });
+      return;
+    }
+    const title = termsTitleRef.current;
+    if (!title) return;
+    title.focus({ preventScroll: true });
+    (termsRef.current ?? title).scrollIntoView({ behavior, block: 'start' });
   }, [selected, pickCount]);
+
+  // Ticking the box mounts the booker. Its heading takes focus so the visitor lands on it; the
+  // browser scrolls only as far as it must, so the panel stays in view above.
+  React.useEffect(() => {
+    if (agreeCount === 0) return;
+    headingRef.current?.focus();
+  }, [agreeCount]);
 
   /** One tab stop per month: the day last focused there, else the selected day, else the first enabled day. */
   const tabbableIn = (month: Ym): Ymd | null => {
@@ -506,6 +589,9 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
     </h3>
   );
   const loadingLine = <p className="avail__loading body-sm">Loading the booking calendar</p>;
+  const termsGate = (
+    <TermsGate agreed={agreed} fresh={freshAgree} onChange={agree} panelRef={termsRef} titleRef={termsTitleRef} />
+  );
 
   if (phase === 'error') {
     return (
@@ -514,10 +600,15 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
           You can still pick a date below.
         </Notice>
         <div className="avail__book">
-          {bookingHeading('Pick a date and time')}
-          <React.Suspense fallback={loadingLine}>
-            <CalBooker date={null} headingId={BOOK_HEADING_ID} />
-          </React.Suspense>
+          {termsGate}
+          {agreed && (
+            <>
+              {bookingHeading('Book a date')}
+              <React.Suspense fallback={loadingLine}>
+                <CalBooker date={null} headingId={BOOK_HEADING_ID} />
+              </React.Suspense>
+            </>
+          )}
         </div>
       </div>
     );
@@ -592,10 +683,15 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
 
       {selected && (
         <div className="avail__book">
-          {bookingHeading(`Book ${formatBookDate(selected)}`)}
-          <React.Suspense fallback={loadingLine}>
-            <CalBooker date={selected} headingId={BOOK_HEADING_ID} />
-          </React.Suspense>
+          {termsGate}
+          {agreed && (
+            <>
+              {bookingHeading(`Book ${formatBookDate(selected)}`)}
+              <React.Suspense fallback={loadingLine}>
+                <CalBooker date={selected} headingId={BOOK_HEADING_ID} />
+              </React.Suspense>
+            </>
+          )}
         </div>
       )}
     </div>
