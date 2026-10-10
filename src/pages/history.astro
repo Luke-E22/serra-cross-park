@@ -1,0 +1,184 @@
+---
+import '../styles/pages/history.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero';
+import type { TimelineItem } from '../components/ds';
+import { Button, SectionHeading, SignPanel, Timeline } from '../components/ds';
+import { SITE } from '../config/site';
+import { PHOTOS } from '../content/photos';
+import { TIMELINE } from '../content/timeline';
+import { ogImage, picture } from '../lib/images';
+
+import crossSunset from '../assets/photos/cross-sunset.jpg';
+import serraPortrait from '../assets/photos/junipero-serra-portrait.jpg';
+import rampartCorner from '../assets/photos/stone-rampart-corner.jpg';
+
+// Every fact on this page comes from BRIEF.md section 9. The timeline text lives in
+// src/content/timeline.ts; this page only maps each entry to a photo through picture().
+//
+// Hero photo. The brief offers cross-channel-islands or cross-sunset. The tall hero is 680px
+// high with object-fit: cover, so on a 1440px screen a 3:4 portrait shows only a third of its
+// height and the Cross (about 40% of that frame, post included) would be cropped through at
+// every desktop width. cross-sunset is 1.27:1 and shows about 60% of its height there, which
+// keeps the Cross whole from 1024 to 1920px wide. The focal point sits low in the frame so the
+// Cross rides high in the hero, above the title's scrim. The same photo makes the card image,
+// for the same reason: a 1200x630 crop of the portrait cannot hold the whole Cross.
+//
+// Open questions (CONTENT-TODO.md) the wording here steps around:
+// [CONFIRM: items 6 and 22, who bought the Cross after the 2003 vote and when; nothing is claimed]
+// [CONFIRM: item 29, the replanting is still active; the giving band keeps the brief's wording]
+
+// Rendered widths of each slot, for the sizes attribute.
+// Timeline figures are capped at 340px by the component; under 640px they take the column.
+const TIMELINE_SIZES = '(max-width: 640px) 100vw, 340px';
+// The intro portrait: a 360px column, the container width under 760px.
+const PORTRAIT_SIZES = '(max-width: 760px) 100vw, 360px';
+// SignPanel photo: the narrower column of its two-column body, full width under 720px.
+const SIGN_SIZES = '(min-width: 1200px) 470px, (min-width: 721px) 42vw, 100vw';
+
+const hero = await picture(crossSunset, {
+  widths: [640, 960, 1280, 1600, 2000],
+  sizes: '100vw',
+  priority: true,
+  alt: PHOTOS['cross-sunset'].alt,
+});
+
+const portrait = await picture(serraPortrait, {
+  widths: [360, 720],
+  sizes: PORTRAIT_SIZES,
+  alt: PHOTOS['junipero-serra-portrait'].alt,
+});
+
+const rampart = await picture(rampartCorner, {
+  widths: [480, 760],
+  sizes: SIGN_SIZES,
+  alt: PHOTOS['stone-rampart-corner'].alt,
+});
+
+// Each timeline entry becomes a Timeline item. Archival photos are small originals and stay
+// small (widths 340 and 680); the modern photos get sharper candidates for the same 340px slot.
+const items: TimelineItem[] = await Promise.all(
+  TIMELINE.map(async (entry) => {
+    const item: TimelineItem = { year: entry.year, title: entry.title, text: entry.text };
+    if (entry.photo) {
+      const photo = PHOTOS[entry.photo];
+      const p = await picture(photo.image, {
+        widths: photo.archival ? [340, 680] : [480, 960],
+        sizes: TIMELINE_SIZES,
+        alt: photo.alt,
+      });
+      item.image = p.src;
+      item.imageAlt = p.alt;
+      item.caption = entry.caption ?? photo.caption;
+      item.imgProps = p.imgProps;
+    }
+    return item;
+  }),
+);
+
+const og = await ogImage(crossSunset);
+---
+
+<BaseLayout
+  title="History of the Serra Cross"
+  description="The history of the Cross above Mission San Buenaventura, year by year: from Easter Sunday 1782 to the stone ramparts, the Thomas Fire and the replanting."
+  path="/history/"
+  ogImage={og}
+  ogImageAlt={PHOTOS['cross-sunset'].alt}
+  active="History"
+  hero
+>
+  <PageHero
+    client:media="(max-width: 1100px)"
+    height="tall"
+    image={hero.src}
+    imageAlt={hero.alt}
+    imgProps={hero.imgProps}
+    focal="50% 70%"
+    eyebrow="History"
+    title="The Cross on the hill"
+    lede="A wooden cross has marked the hill above Mission San Buenaventura since the Mission's first years. The weather took two. Firefighters saved the one that stands today."
+    active="History"
+  />
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading eyebrow="Since 1782" title="Two centuries on the hill" />
+      </div>
+      <div class="history-intro">
+        <div class="history-intro__text body">
+          <p>
+            On Easter Sunday, March 31, 1782, Father Junípero Serra founded Mission San Buenaventura. He planted a
+            wooden cross on the beach south of the present church. Soon after, a large wooden cross went up on the
+            hill above the Mission, a landmark for travelers.
+          </p>
+          <p>
+            The hill has held a cross for most of the years since. The weather wore out the first, a storm took the
+            second, and a women's club raised the third. The Cross that stands today went up in 1941, and firefighters
+            kept it standing through the Thomas Fire. Here is the story, year by year.
+          </p>
+        </div>
+        <figure class="history-figure">
+          <img
+            src={portrait.src}
+            alt={portrait.alt}
+            srcset={portrait.imgProps.srcSet}
+            sizes={portrait.imgProps.sizes}
+            width={portrait.width}
+            height={portrait.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="caption">{PHOTOS['junipero-serra-portrait'].caption}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading eyebrow="Timeline" title="Year by year" />
+      </div>
+      <Timeline items={items} />
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <SignPanel
+        tone="green"
+        as="h2"
+        title="The stonework"
+        image={rampart.src}
+        imageAlt={rampart.alt}
+        imgProps={rampart.imgProps}
+        caption={PHOTOS['stone-rampart-corner'].caption}
+      >
+        <p>
+          In January 2010, stoneworkers from around the world built the ramparts in ten days. A family from Japan
+          that has built castle walls for eight generations led the work. The walls are dry-stone from an Ojai
+          quarry: no mortar, held by gravity alone. The Stone Foundation brought rock knockers from several states to
+          learn the method. A hand-carved stone sphere sits on one rampart.
+        </p>
+        <Button variant="link" href="/about/#stonework" icon="arrow-right">Read about the stonework</Button>
+      </SignPanel>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--dark">
+    <div class="sc-container site-dark__inner">
+      <SectionHeading onDark eyebrow="Give" title="Keep the hill cared for" />
+      <div class="site-dark__body body">
+        <p>
+          Every gift replants what the Thomas Fire took and keeps the park open to everyone, all year.
+        </p>
+        <div class="site-dark__actions">
+          <Button variant="give" size="lg" icon="hand-heart" href="/donate/">Give to the hill</Button>
+        </div>
+        <p class="site-dark__legal body-sm">Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID {SITE.ein}.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

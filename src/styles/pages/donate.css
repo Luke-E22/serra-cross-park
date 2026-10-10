@@ -1,0 +1,85 @@
+/* Donate page. Every value reads a token from design-system/tokens.css.
+   Square corners, borders not shadows, status in words, no motion. */
+
+/* ------------------------------------------------------------ why give */
+/* Two short paragraphs at the measure with a photo beside them; stacked under 860px. */
+.donate-why {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+.donate-why__text { max-width: var(--measure); }
+.donate-why__text p { margin: 0 0 var(--space-4); }
+.donate-why__text > :last-child { margin-bottom: 0; }
+
+.donate-why__figure { margin: 0; }
+.donate-why__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-none);
+}
+.donate-why__figure figcaption { margin-top: var(--space-2); }
+
+@media (max-width: 860px) {
+  .donate-why { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
+/* ------------------------------------------------------------ the gift form */
+/* The Zeffy island sits on a paper panel with a hairline border, a little wider than the
+   measure so the form's amount tiles have room. The nonprofit line follows at the measure. */
+.donate-form { max-width: calc(var(--measure) + 2 * var(--space-8)); }
+
+.zeffy {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: var(--space-4);
+}
+
+/* Zeffy's script styles its container inline: a 16px radius, a grey outline while loading, white
+   background, 600px max width, centered. Corners are square here, and the outline reads a token.
+   !important is the only way past an inline style; the iframe inherits the radius. */
+.zeffy [data-zeffy-embed] {
+  border-radius: var(--radius-none) !important;
+  outline-color: var(--line) !important;
+}
+
+/* Status in words: "Loading the donation form." or the fallback note. Empty when the form is up. */
+.zeffy__status { margin: 0 0 var(--space-3); }
+.zeffy__status:empty { margin: 0; }
+
+/* The give button and its note, in the fallback and for visitors without JavaScript. */
+.zeffy__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.zeffy__note { margin: 0; }
+
+.zeffy__iframe { display: block; }
+
+@media (max-width: 640px) {
+  .zeffy { padding: var(--space-3); }
+  .zeffy__actions .sc-btn { width: 100%; }
+}
+
+/* The nonprofit line under the form. */
+.donate-legal {
+  max-width: var(--measure);
+  margin: var(--space-6) 0 0;
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------ give your time */
+.donate-time { max-width: var(--measure); }
+.donate-time p { margin: 0 0 var(--space-5); }
+.donate-time__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

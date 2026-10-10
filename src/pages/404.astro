@@ -1,0 +1,34 @@
+---
+import '../styles/pages/not-found.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Button, SectionHeading } from '../components/ds';
+
+// Astro writes this page to dist/404.html, which Netlify serves for any missing path.
+// BaseLayout always renders a canonical from `path`, so the canonical points at the home page
+// rather than at a /404/ URL, and the robots meta keeps the page out of search results.
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page is not here. Go to the home page, plan your event, or contact the park office."
+  path="/"
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <section class="sc-section not-found">
+    <div class="sc-container">
+      <SectionHeading
+        as="h1"
+        title="That page is not here"
+        intro="The link may be old, or the address may have a typo. Here are three places to go next."
+      />
+      <div class="not-found__actions">
+        <Button variant="secondary" href="/">Visit the home page</Button>
+        <Button variant="primary" href="/booking/" icon="arrow-right">Plan your event</Button>
+        <Button variant="secondary" href="/contact/">Contact the park office</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

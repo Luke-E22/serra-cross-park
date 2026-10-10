@@ -1,0 +1,168 @@
+---
+/**
+ * PersonCard: one person on the About page. A static Astro component, no React.
+ *
+ * Built from tokens, not from the design system (DESIGN-SYSTEM-CHANGES.md, "Site components"):
+ * square corners, a 1px line border, no shadow, a surface-raised ground. The photo slot is square.
+ * With a photo it shows the file named in `person.photo` from src/assets/people/, cropped square
+ * through Astro's <Image>. Without one it shows the person's initials in the display face, navy on
+ * sandstone. Either way the slot is decorative (empty alt, aria-hidden) because the name sits right
+ * under it. Styles are global on purpose (is:global) so the card carries them wherever it is used.
+ * The social links open in a new tab, so their accessible name says so. The links list carries
+ * role="list" because Safari drops list semantics from a list with list-style: none.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { Icon, type IconName } from './ds';
+import type { Person } from '../config/site';
+
+interface Props {
+  person: Person;
+}
+
+const { person } = Astro.props;
+
+// Every photo in src/assets/people/. Adding one is one line in PEOPLE (src/config/site.ts): set
+// `photo` to the file name. Square files of at least 560px look best; Astro crops others square.
+// The folder holds only a .gitkeep until photos arrive.
+// [CONFIRM: CONTENT-TODO item 8, photos for all eight people and any officer titles]
+const PEOPLE_PHOTOS = import.meta.glob<{ default: ImageMetadata }>('../assets/people/*.{jpg,png,webp}', {
+  eager: true,
+});
+const photo = person.photo ? PEOPLE_PHOTOS[`../assets/people/${person.photo}`]?.default : undefined;
+if (person.photo && !photo) {
+  console.warn(`[PersonCard] ${person.name}: src/assets/people/${person.photo} is missing; showing initials.`);
+}
+
+// The first letter of the first and last words of the name: "Barbara Asbell" reads "BA".
+const words = person.name.trim().split(/\s+/).filter(Boolean);
+const first = words[0] ?? '';
+const last = words.length > 1 ? (words[words.length - 1] ?? '') : '';
+const initials = (first.charAt(0) + last.charAt(0)).toUpperCase();
+
+// Icons for the link labels the config uses. Any other label renders as a plain text link.
+const LINK_ICONS: Record<string, IconName> = { linkedin: 'linkedin', instagram: 'instagram' };
+const links = (person.links ?? []).map((link) => ({ ...link, icon: LINK_ICONS[link.label.toLowerCase()] }));
+
+// Rendered width of the slot: four cards across the 1200px container, two across under 720px.
+const PHOTO_SIZES = '(min-width: 1200px) 270px, (min-width: 721px) 25vw, 50vw';
+---
+
+<article class="person-card">
+  <div class="person-card__photo">
+    {
+      photo ? (
+        <Image
+          src={photo}
+          alt=""
+          width={560}
+          height={560}
+          widths={[280, 560]}
+          sizes={PHOTO_SIZES}
+          fit="cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="person-card__initials display-lg" aria-hidden="true">
+          {initials}
+        </div>
+      )
+    }
+  </div>
+  <div class="person-card__body">
+    <h3 class="person-card__name label">{person.name}</h3>
+    {person.title && <p class="person-card__title body-sm">{person.title}</p>}
+    {
+      links.length > 0 && (
+        <ul class="person-card__links body-sm" role="list">
+          {links.map((link) => (
+            <li>
+              <a
+                class="person-card__link"
+                href={link.href}
+                target="_blank"
+                rel="noopener"
+                aria-label={`${person.name} on ${link.label} (opens in a new tab)`}
+              >
+                {link.icon && <Icon name={link.icon} size={18} />}
+                <span>{link.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>
+
+<style is:global>
+  /* Every value reads a token from design-system/tokens.css. Square corners, a border, no shadow.
+     Nothing here moves, so there is nothing to stop under reduced motion. */
+  .person-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-none);
+  }
+
+  /* The square slot. Sandstone shows behind the initials and while a photo loads. */
+  .person-card__photo {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--sandstone);
+    border-bottom: 1px solid var(--line);
+  }
+  .person-card__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .person-card__initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--navy);
+    user-select: none;
+  }
+
+  .person-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-4) var(--space-5);
+  }
+  .person-card__name {
+    margin: 0;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .person-card__title {
+    margin: 0;
+    color: var(--ink-muted);
+  }
+
+  /* Small text links, icon before the word. The bundle's link rules set the colors. */
+  .person-card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .person-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-block: var(--space-1);
+  }
+  .person-card__link .sc-icon {
+    flex: none;
+  }
+</style>

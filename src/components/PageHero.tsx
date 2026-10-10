@@ -19,8 +19,10 @@ export type PageHeroProps = Omit<HeroProps, 'header' | 'actions'> & {
 
 /**
  * A Hero that carries the overlay SiteHeader. Pages render it with
- * client:media="(max-width: 1099px)" so the header's menu toggle works on small
- * screens while the hero stays static HTML on desktop.
+ * client:media="(max-width: 1100px)" so the header's menu toggle works on small
+ * screens while the hero stays static HTML on desktop. The query matches bundle.css,
+ * which shows the toggle at max-width: 1100px; a narrower query left the toggle
+ * visible but inert at exactly 1100px and at fractional widths under browser zoom.
  */
 export default function PageHero({ active, actions, ...hero }: PageHeroProps) {
   const header = (

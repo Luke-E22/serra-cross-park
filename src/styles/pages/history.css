@@ -1,0 +1,37 @@
+/* History page. Every value reads a token from design-system/tokens.css.
+   The intro sets two paragraphs beside a small captioned portrait. The timeline, the sign panel
+   and the giving band use the bundle's own classes and the shared .site-dark__* rules in site.css.
+   Square corners, borders not shadows. Nothing here moves, so there is nothing to stop under
+   reduced motion; the global rules in site.css still apply. */
+
+/* ------------------------------------------------------------ intro */
+/* Text at the measure on the left, the portrait on the right. Stacked under 760px. */
+.history-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+.history-intro__text { max-width: var(--measure); }
+.history-intro__text p { margin: 0 0 var(--space-4); }
+.history-intro__text > :last-child { margin-bottom: 0; }
+
+/* An archival portrait: small, captioned, with the same hairline the timeline gives its photos. */
+.history-figure {
+  margin: 0;
+  max-width: 360px;
+}
+.history-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+.history-figure figcaption { margin-top: var(--space-2); }
+
+@media (max-width: 760px) {
+  .history-intro {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}

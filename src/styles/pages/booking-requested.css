@@ -1,0 +1,22 @@
+/* Booking requested page (where Cal.com sends people after they book).
+   Tokens only, square corners, borders not shadows, no motion. */
+
+/* Space between the heading and the steps. */
+.requested__steps { margin-top: var(--space-7); }
+
+/* The site-fee block: heading, button, then two short lines at the measure. */
+.requested-fee { max-width: var(--measure); }
+.requested-fee__title { margin: 0 0 var(--space-5); color: var(--ink); }
+.requested-fee__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.requested-fee__note { margin: 0; }
+.requested-fee p { margin: 0 0 var(--space-4); }
+.requested-fee > :last-child { margin-bottom: 0; }
+@media (max-width: 640px) {
+  .requested-fee__actions .sc-btn { width: 100%; }
+}

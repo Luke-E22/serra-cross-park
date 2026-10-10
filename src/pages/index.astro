@@ -116,13 +116,13 @@ const og = await ogImage(panorama);
 <BaseLayout
   title="Serra Cross Park: weddings and history on the hill above Ventura"
   titleSuffix={false}
-  description="A one-acre park around the Cross above Mission San Buenaventura. Book a wedding or event, read the history of the Cross, and help the Conservancy care for the hill."
+  description="A one-acre park around the Cross above Mission San Buenaventura. Book a wedding or event, read the history, and help the Conservancy care for the hill."
   path="/"
   ogImage={og}
   hero
 >
   <PageHero
-    client:media="(max-width: 1099px)"
+    client:media="(max-width: 1100px)"
     height="full"
     image={hero.src}
     imageAlt={hero.alt}
@@ -134,7 +134,7 @@ const og = await ogImage(panorama);
     caption="The Cross among the olive trees, the ocean beyond."
     actions={{
       primary: { label: 'Plan your event', href: '/booking/' },
-      secondary: { label: 'Our history', href: '/history/' },
+      secondary: { label: 'Read our history', href: '/history/' },
     }}
   />
 

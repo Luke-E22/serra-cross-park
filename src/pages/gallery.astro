@@ -1,0 +1,186 @@
+---
+import '../styles/pages/gallery.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero';
+import GalleryLightbox, { type LightboxImage } from '../components/GalleryLightbox';
+import { Button, SectionHeading } from '../components/ds';
+import { PHOTOS, type Photo, type PhotoKey, type PhotoUse } from '../content/photos';
+import { ogImage, picture } from '../lib/images';
+
+import coastlineSalvia from '../assets/photos/coastline-salvia.jpg';
+
+// The page has no facts of its own: every caption and alt comes from src/content/photos.ts.
+// The old gallery (CONTENT-INVENTORY.md) was thirteen untitled photos with no captions, alt
+// text or lightbox; the two groups below carry every one of them that is not archival or from
+// the fire, plus the design system's photographs.
+// [CONFIRM: item 33, permission and credits for the West Cooke rainbow photo and the "-SCP" wedding set]
+
+type Layout = 'normal' | 'wide' | 'tall';
+interface Slot {
+  key: PhotoKey;
+  layout?: Layout;
+  /** object-position for the thumbnail crop, when the centre would cut something that matters. */
+  position?: string;
+}
+
+// Rendered widths of each cell, for the sizes attribute. Three columns in the 1200px container
+// (376px cells, 764px wide cells). Under 720px gallery.css makes every cell full width.
+const SIZES: Record<Layout, string> = {
+  normal: '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 100vw',
+  tall: '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 100vw',
+  wide: '(min-width: 1200px) 764px, (min-width: 721px) 66vw, 100vw',
+};
+
+// Each mosaic is three columns with dense packing; a tall cell is one column by two rows and a
+// wide cell two columns by one row, so the cells of a group must add up to whole rows of three.
+// The order below is the order the browser packs them in.
+//
+// Weddings and events: 2 tall + 3 wide + 2 normal = 12 cells, four rows.
+//   row 1  wide (guests banner)      | tall (floral arch)
+//   row 2  wide (umbrellas)          | tall (floral arch)
+//   row 3  tall (table view)         | wide (bridesmaids)
+//   row 4  tall (table view)         | rose arch | reception lawn
+// Portraits are tall and the banner is wide. Two landscapes are wide as well so the rows close:
+// the umbrellas (the Cross above the umbrella tops, cropped from the top) and the bridesmaids
+// (faces and bouquets, cropped from the top). The rose arch and the reception lawn stay normal,
+// because a wide strip would cut through the Cross in both.
+const WEDDINGS: Slot[] = [
+  { key: 'ceremony-guests-banner', layout: 'wide' },
+  { key: 'ceremony-floral-arch', layout: 'tall', position: '50% 45%' },
+  { key: 'reception-umbrellas', layout: 'wide', position: '50% 8%' },
+  { key: 'reception-table-view', layout: 'tall' },
+  { key: 'bridesmaids-gold', layout: 'wide', position: '50% 0%' },
+  { key: 'ceremony-rose-arch-wedding-party' },
+  { key: 'reception-lawn', position: '50% 40%' },
+];
+
+// The park: 2 tall + 2 wide + 7 normal = 15 cells, five rows.
+//   row 1  tall (Cross and islands)  | wide (olive panorama)
+//   row 2  tall (Cross and islands)  | stone sphere | sunset
+//   row 3  salvia and coast | coastline | tall (rampart and salvia)
+//   row 4  wide (volunteers)         | tall (rampart and salvia)
+//   row 5  bench | double rainbow | stone sphere, wide view
+// The two stone-sphere frames sit three rows apart. Positions keep the Cross whole in the
+// squarer cells between 720 and 1000px wide, where a normal cell is close to 1:1.
+const PARK: Slot[] = [
+  { key: 'cross-channel-islands', layout: 'tall' },
+  { key: 'cross-olive-panorama', layout: 'wide', position: '50% 30%' },
+  { key: 'stone-sphere-cross', position: '60% 50%' },
+  { key: 'cross-sunset', position: '50% 55%' },
+  { key: 'coastline-salvia', position: '50% 60%' },
+  { key: 'ventura-coastline', position: '50% 70%' },
+  { key: 'stone-rampart-salvia', layout: 'tall' },
+  { key: 'volunteers-replanting', layout: 'wide' },
+  { key: 'bench-ocean' },
+  { key: 'cross-double-rainbow', position: '60% 50%' },
+  { key: 'stone-sphere-cross-islands-wide', position: '60% 50%' },
+];
+
+/** Keys of every photo tagged with a use in photos.ts. */
+function keysFor(use: PhotoUse): PhotoKey[] {
+  return (Object.entries(PHOTOS) as [PhotoKey, Photo][]).filter(([, p]) => p.uses.includes(use)).map(([k]) => k);
+}
+
+/** Every photo tagged for the group is shown. A photo tagged later lands at the end as a normal cell. */
+function withEveryPhoto(slots: Slot[], use: PhotoUse, group: string): Slot[] {
+  const missing = keysFor(use).filter((key) => !slots.some((s) => s.key === key));
+  if (missing.length) {
+    console.warn(
+      `[gallery] ${group}: ${missing.join(', ')} tagged "${use}" in photos.ts but not placed in the mosaic. ` +
+        'Appended as normal cells; give each a slot in src/pages/gallery.astro so the rows close.',
+    );
+  }
+  return [...slots, ...missing.map((key) => ({ key }))];
+}
+
+async function mosaic(slots: Slot[]): Promise<LightboxImage[]> {
+  return Promise.all(
+    slots.map(async ({ key, layout = 'normal', position }) => {
+      const p = PHOTOS[key];
+      const pic = await picture(p.image, { widths: [480, 960, 1440], sizes: SIZES[layout], position, alt: p.alt });
+      const item: LightboxImage = {
+        src: pic.src,
+        srcSet: pic.imgProps.srcSet,
+        sizes: pic.imgProps.sizes,
+        width: pic.width,
+        height: pic.height,
+        alt: pic.alt,
+        caption: p.caption,
+        layout,
+      };
+      if (position) item.position = position;
+      return item;
+    }),
+  );
+}
+
+const [weddings, park] = await Promise.all([
+  mosaic(withEveryPhoto(WEDDINGS, 'gallery-weddings', 'Weddings and events')),
+  mosaic(withEveryPhoto(PARK, 'gallery-park', 'The park')),
+]);
+
+const heroPhoto = PHOTOS['coastline-salvia'];
+const hero = await picture(coastlineSalvia, {
+  widths: [640, 960, 1280, 1600, 2000],
+  sizes: '100vw',
+  priority: true,
+  alt: heroPhoto.alt,
+});
+
+const og = await ogImage(coastlineSalvia);
+---
+
+<BaseLayout
+  title="Gallery"
+  description="Photographs of Serra Cross Park: weddings and receptions at the Cross, the dry-stone ramparts, the salvia, and the Channel Islands from the hill above Ventura."
+  path="/gallery/"
+  ogImage={og}
+  ogImageAlt={heroPhoto.alt}
+  hero
+>
+  <PageHero
+    client:media="(max-width: 1100px)"
+    height="short"
+    image={hero.src}
+    imageAlt={hero.alt}
+    imgProps={hero.imgProps}
+    focal="50% 62%"
+    eyebrow="Gallery"
+    title="The park in pictures"
+    lede="Weddings at the Cross, the stonework and the coast below. Every photo was taken here in the park."
+    caption="Salvia above the lawn, the coastline below."
+  />
+
+  <section class="sc-section" id="weddings">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          eyebrow="Married on the hill"
+          title="Weddings and events"
+          intro="Ceremonies on the stone platform and receptions on the lawn, with the ocean behind your guests. Open any photo to see it full size."
+        />
+      </div>
+      <div class="gallery-mosaic">
+        <GalleryLightbox client:visible images={weddings} label="Weddings and events" />
+      </div>
+      <div class="gallery-more">
+        <Button variant="secondary" href="/booking/" icon="arrow-right">Plan your event</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" id="park">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          eyebrow="The hill"
+          title="The park"
+          intro="The Cross among the olive trees, the dry-stone ramparts, the salvia, and the Channel Islands beyond."
+        />
+      </div>
+      <div class="gallery-mosaic">
+        <GalleryLightbox client:visible images={park} label="The park" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

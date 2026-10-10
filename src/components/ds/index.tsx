@@ -184,7 +184,7 @@ export interface HeroProps {
 /** Full-bleed photo with the title slide set over a navy scrim. */
 export function Hero({ image, imageAlt = '', eyebrow, title, lede, actions, height = 'tall', focal = '50% 50%', caption, header, align = 'left', imgProps }: HeroProps) {
   return (
-    <section className={cx('sc-hero', 'sc-hero--' + height, 'sc-hero--' + align)}>
+    <div className={cx('sc-hero', 'sc-hero--' + height, 'sc-hero--' + align)}>
       <img className="sc-hero__img" src={image} alt={imageAlt} style={{ objectPosition: focal }} {...imgProps} />
       <div className="sc-hero__top" aria-hidden="true" />
       {header && <div className="sc-hero__header">{header}</div>}
@@ -202,7 +202,7 @@ export function Hero({ image, imageAlt = '', eyebrow, title, lede, actions, heig
         </div>
         {caption && <p className="sc-hero__caption caption"><span>{caption}</span></p>}
       </div>
-    </section>
+    </div>
   );
 }
 

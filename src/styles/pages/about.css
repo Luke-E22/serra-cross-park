@@ -1,0 +1,54 @@
+/* About page. Every value reads a token from design-system/tokens.css.
+   Sections, the container and the SignPanels come from the bundle, and the person card carries
+   its own styles in src/components/PersonCard.astro. This file only lays out the page: the intro's
+   text and photo columns, the board grid and the staff row. Square corners, borders not shadows.
+   Nothing here moves, so there is nothing to stop under reduced motion; the global rules in
+   site.css still apply. */
+
+/* ------------------------------------------------------------ intro */
+/* Paragraphs on the left, the photo on the right. Stacked under 900px. */
+.about-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+.about-intro__text { max-width: var(--measure); }
+.about-intro__text p { margin: 0 0 var(--space-4); }
+.about-intro__text > :last-child { margin-bottom: 0; }
+.about-intro__text .about-intro__legal {
+  margin-top: var(--space-6);
+  color: var(--ink-muted);
+}
+
+/* The photo keeps its own shape; width and height attributes reserve the box. */
+.about-intro__figure { margin: 0; }
+.about-intro__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.about-intro__figure figcaption { margin-top: var(--space-2); }
+
+@media (max-width: 900px) {
+  .about-intro { grid-template-columns: 1fr; gap: var(--space-6); }
+}
+
+/* ------------------------------------------------------------ people */
+/* The board: four across, two across under 720px. The staff row uses the same grid so its one
+   card is the same width as a board card. */
+.about-people {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.about-people > li { min-width: 0; }
+@media (max-width: 720px) {
+  .about-people { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* The Staff heading sits between the two grids. */
+.about-staff__head { margin: var(--space-8) 0 var(--space-6); }

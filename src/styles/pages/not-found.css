@@ -1,0 +1,15 @@
+/* 404 page. Tokens only: a short section, three buttons in a row that stack on small screens. */
+
+/* Enough height that the footer does not sit right under the heading. */
+.not-found { min-height: 40vh; }
+
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  max-width: var(--measure);
+}
+@media (max-width: 640px) {
+  .not-found__actions .sc-btn { width: 100%; }
+}

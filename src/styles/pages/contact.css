@@ -1,0 +1,102 @@
+/* Contact page. Every value reads a token from design-system/tokens.css.
+   The form itself is the bundle's .sc-form shell with Field, ChoiceChips and Button inside;
+   this file lays out the page around it: the two columns, the ways to reach us, the directions.
+   Square corners, borders not shadows, and status shown by icon and words as well as color.
+   Nothing here moves, so the reduced-motion rules in bundle.css and site.css cover the page. */
+
+/* ------------------------------------------------------------ two columns */
+/* The form on the left, the ways to reach us on the right. Stacked under 900px. */
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-7);
+  }
+}
+
+/* ------------------------------------------------------------ ways to reach us */
+.contact-ways__title {
+  margin: 0 0 var(--space-5);
+  color: var(--ink);
+}
+
+/* A definition list ruled like the sign: a hairline above the list and under each item. */
+.contact-ways__list {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.contact-ways__item {
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+.contact-ways__item dt {
+  margin: 0 0 var(--space-1);
+  color: var(--accent-text);
+}
+.contact-ways__item dd {
+  margin: 0;
+  color: var(--ink);
+}
+.contact-ways__item dd p { margin: 0 0 var(--space-2); }
+.contact-ways__item dd p:last-child { margin-bottom: 0; }
+
+/* A link with its icon beside the word. Long addresses may break anywhere rather than overflow. */
+.contact-ways__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  vertical-align: bottom;
+  overflow-wrap: anywhere;
+}
+.contact-ways__link .sc-icon { flex: none; }
+
+/* Keeps a link and the period after it on one line, so the period never wraps alone. */
+.contact-ways__hold { white-space: nowrap; }
+
+/* ------------------------------------------------------------ the form */
+/* The regarding check sits right under the chips in the Field error style: danger, icon and words. */
+.contact-form__regarding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.contact-form__error { margin: 0; }
+
+/* "All fields are required." under the form title: ink-muted on the form's surface-alt, 5.8:1. */
+.contact-form__required {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+}
+
+/* The confirmation takes focus when it replaces the form. It is a target, not a control, so no ring. */
+.contact-form__sent:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------ directions */
+/* The ordered list inside the brick SignPanel: lining figures in ochre for the step numbers. */
+.contact-directions {
+  margin: 0 0 var(--space-4);
+  padding-left: 1.4em;
+}
+.contact-directions li { margin: 0 0 var(--space-2); }
+.contact-directions li:last-child { margin-bottom: 0; }
+.contact-directions li::marker {
+  color: var(--accent-text);
+  font-variant-numeric: lining-nums;
+}
+.contact-directions__notice { margin: 0 0 var(--space-5); }
+.contact-directions__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .contact-directions__actions .sc-btn { width: 100%; }
+}

@@ -1,0 +1,112 @@
+---
+import '../styles/pages/donate.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ZeffyEmbed from '../components/ZeffyEmbed';
+import { Button, SectionHeading } from '../components/ds';
+import { PAYMENTS, SITE } from '../config/site';
+import { PHOTOS } from '../content/photos';
+import { ogImage, picture } from '../lib/images';
+
+// Facts come from BRIEF.md section 9: the Thomas Fire on December 5, 2017, firefighters saving
+// the Cross, volunteers replanting since, and what donations pay for (insurance, water, electricity,
+// landscaping, litter pickup and improvements). Gifts are tax-deductible; the site fee is not, and
+// it is not mentioned here. The Zeffy form handles amounts (BRIEF.md section 8), so no GivingForm.
+// [CONFIRM: item 1, PAYMENTS.donateUrl is still Startup Ventura's placeholder Zeffy form]
+// [CONFIRM: item 12, Tax ID 20-8615264 against the IRS determination letter]
+// [CONFIRM: item 29, whether replanting is still active and whether a current project should be named]
+
+// Beside the text: one of the `giving` photos (photosFor('giving')), the only one at 4:3 that
+// shows the whole Cross. The photo column is 5/12 of the container, full width under 860px.
+const why = PHOTOS['burned-shrubs-cross-islands-2017'];
+const whyPhoto = await picture(why.image, {
+  widths: [480, 940, 1400],
+  sizes: '(min-width: 1200px) 453px, (min-width: 861px) 38vw, 100vw',
+  alt: why.alt,
+});
+
+// The card is the same photo, cropped from the top so the whole Cross stays in the 1200x630 frame.
+// volunteers-replanting is an 1800x460 banner and cannot fill a 630px tall card without upscaling.
+const og = await ogImage(why.image, 'top');
+---
+
+<BaseLayout
+  title="Donate to Serra Cross Conservancy"
+  description="Give to Serra Cross Conservancy, the nonprofit that cares for Serra Cross Park. Gifts replant the hill after the Thomas Fire and pay for year-round upkeep."
+  path="/donate/"
+  ogImage={og}
+  ogImageAlt={why.alt}
+>
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h1"
+          eyebrow="Give"
+          title="Give to the hill"
+          intro="Your gift replants what the Thomas Fire took and keeps the park open to everyone, all year."
+        />
+      </div>
+      <div class="donate-why">
+        <div class="donate-why__text body">
+          <p>
+            On December 5, 2017, the Thomas Fire burned much of the park. Firefighters saved the Cross.
+            Volunteers have been replanting the hillside ever since, and gifts pay for what they put in the
+            ground.
+          </p>
+          <p>
+            Gifts also pay for the year-round work: insurance, water, electricity, landscaping, litter pickup
+            and improvements. We are a small grassroots nonprofit. The park stays open to everyone because
+            people who love it give.
+          </p>
+        </div>
+        <figure class="donate-why__figure">
+          <img src={whyPhoto.src} alt={whyPhoto.alt} {...whyPhoto.imgProps} />
+          <figcaption class="caption">{why.caption}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          size="md"
+          title="Make a gift"
+          intro="Pick an amount on the form. Zeffy handles the payment for us."
+        />
+      </div>
+      <div class="donate-form">
+        {/* Without JavaScript the island's script container stays empty at its reserved height; this
+            collapses it so the island's own noscript give button sits where the form would be. */}
+        <noscript>
+          <style is:inline>
+            .zeffy [data-zeffy-embed] { display: none; }
+          </style>
+        </noscript>
+        <ZeffyEmbed client:visible formUrl={PAYMENTS.donateUrl} label="Donation form" />
+        <p class="donate-legal body-sm">
+          Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID {SITE.ein}. Gifts are tax-deductible to
+          the extent the law allows.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading size="md" title="Give your time" />
+      </div>
+      <div class="donate-time body">
+        <p>
+          Not every gift is money. Volunteers do the park's routine care and its special projects, replanting
+          among them. If you would like to help, write to us and choose Volunteering on the form.
+        </p>
+        <div class="donate-time__actions">
+          <Button variant="link" href="/contact/" icon="arrow-right">Write to us</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

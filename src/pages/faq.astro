@@ -1,0 +1,121 @@
+---
+import '../styles/pages/faq.css';
+import { createElement, Fragment as ReactFragment } from 'react';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Button, FAQList, SectionHeading } from '../components/ds';
+import type { FAQItem } from '../components/ds';
+import { FAQ_GROUPS } from '../content/faq';
+import type { FAQEntry } from '../content/faq';
+import { SITE } from '../config/site';
+import { PHOTOS } from '../content/photos';
+import { ogImage } from '../lib/images';
+
+import coastline from '../assets/photos/ventura-coastline.jpg';
+
+// Every answer comes from src/content/faq.ts, which takes its facts from BRIEF.md section 9.
+// The old FAQ (CONTENT-INVENTORY.md) named vendors and prices that are left out on purpose;
+// the open questions behind the wording are listed at the top of faq.ts.
+// [CONFIRM: item 4, the insurance price, insurance vendor and portable restroom vendor before naming any]
+// [CONFIRM: item 7, a parking count to publish]
+// [CONFIRM: item 20, whose phone 805-258-3153 is and how to label it]
+
+// FAQList takes a ReactNode for each answer. Answers are plain strings, wrapped in a paragraph
+// so every item has the same markup; an entry with a follow-on link gets a second paragraph.
+function toItems(entries: FAQEntry[]): FAQItem[] {
+  return entries.map((entry) => ({
+    q: entry.q,
+    a: entry.more
+      ? createElement(
+          ReactFragment,
+          null,
+          createElement('p', null, entry.a),
+          createElement('p', { className: 'faq-more' }, createElement('a', { href: entry.more.href }, entry.more.label)),
+        )
+      : createElement('p', null, entry.a),
+  }));
+}
+
+// FAQPage structured data from all three groups. Answer text is the plain string, so no markup
+// reaches the schema. The page points at the park and the Conservancy by the @ids BaseLayout
+// gives them. "<" is escaped so the JSON can never close the script element early.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': `${SITE.url}/faq/#faq`,
+  url: `${SITE.url}/faq/`,
+  name: 'Frequently asked questions about Serra Cross Park',
+  about: { '@id': `${SITE.url}#park` },
+  publisher: { '@id': `${SITE.url}#org` },
+  mainEntity: FAQ_GROUPS.flatMap((group) =>
+    group.items.map((entry) => ({
+      '@type': 'Question',
+      name: entry.q,
+      acceptedAnswer: { '@type': 'Answer', text: entry.a },
+    })),
+  ),
+};
+const faqJson = JSON.stringify(faqSchema).replace(/</g, '\\u003c');
+
+const og = await ogImage(coastline);
+const ogAlt = PHOTOS['ventura-coastline'].alt;
+---
+
+<BaseLayout
+  title="Frequently asked questions"
+  description="Plain answers about booking Serra Cross Park, planning the day, and visiting the Cross: rates, hours, guest counts, insurance, power, restrooms and parking."
+  path="/faq/"
+  ogImage={og}
+  ogImageAlt={ogAlt}
+  active="FAQ"
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={faqJson} />
+  </Fragment>
+
+  <section class="sc-section" aria-label="Frequently asked questions">
+    <div class="sc-container">
+      <SectionHeading
+        as="h1"
+        size="lg"
+        title="Questions people ask"
+        intro="Short answers about booking the park, the day of your event, and visiting the Cross."
+      />
+      {/* One line on purpose: a line break before the link would be dropped, leaving no space after the comma. */}
+      <p class="faq-intro__links body">
+        For dates, rates and the calendar, see <a href="/booking/">Plan your event</a>. For anything else, <a href="/contact/">contact the park office</a>.
+      </p>
+    </div>
+  </section>
+
+  {
+    FAQ_GROUPS.map((group, i) => (
+      <section class:list={['sc-section', i % 2 === 0 && 'sc-section--alt']} id={group.id}>
+        <div class="sc-container">
+          <div class="faq-group__head">
+            <SectionHeading as="h2" size="md" title={group.title} />
+          </div>
+          <FAQList items={toItems(group.items)} defaultOpen={i === 0 ? 0 : -1} />
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="faq-close">
+        <SectionHeading
+          as="h2"
+          size="md"
+          title="Still have a question"
+          intro="If your answer is not here, write to the park office and we will help."
+        />
+        <p class="faq-close__text body">
+          Use the contact form, or email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+        <div class="faq-close__actions">
+          <Button variant="primary" href="/contact/" icon="arrow-right">Contact the park office</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

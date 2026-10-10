@@ -1,0 +1,131 @@
+---
+import '../styles/pages/terms.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Button, SectionHeading } from '../components/ds';
+import { PAYMENTS, SITE } from '../config/site';
+import { ogImage } from '../lib/images';
+
+import { PHOTOS } from '../content/photos';
+
+// Every rule below comes from BRIEF.md section 9. The old terms page (CONTENT-INVENTORY.md)
+// had no cancellation, weather, damage, decoration, sound or open-flame rules, so none are
+// stated here (CONTENT-TODO item 37). Nothing is invented.
+// [CONFIRM: item 5, whether the terms should name Amber Weir or keep "the park office"]
+// [CONFIRM: item 19, whether ceremony-only weddings, picnics and memorials also need an insurance policy]
+// [CONFIRM: item 37, whether the Conservancy has a fuller rental agreement to publish here]
+
+// Card image: stone-sphere-cross is tagged og-image in photos.ts and is large enough for the
+// 1200x630 crop (stone-rampart-corner is only 760px wide).
+const ogPhoto = PHOTOS['stone-sphere-cross'];
+const og = await ogImage(ogPhoto.image);
+---
+
+<BaseLayout
+  title="Terms and conditions"
+  description="The rules for booking and using Serra Cross Park: reserving a date, the $300 per hour site fee, hours, the grounds, insurance and alcohol, and parking."
+  path="/terms-and-conditions/"
+  ogImage={og}
+  ogImageAlt={ogPhoto.alt}
+>
+  <section class="sc-section">
+    <div class="sc-container">
+      <SectionHeading
+        as="h1"
+        title="Terms and conditions"
+        intro="These are the rules for booking and using the park. Read them before you reserve a date."
+      />
+
+      <div class="terms body">
+        <p>
+          We welcome events of every kind, from family picnics and school field trips to weddings and
+          memorials. Here is what to know before you hold yours at the Cross.
+        </p>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-reserving">Reserving a date</h2>
+          <ul class="terms__list" role="list">
+            <li>Pick a date and time on the booking page and send your request. The park office reviews it.</li>
+            <li>Once we confirm the date with you, we hold it for 14 days while the site fee arrives.</li>
+            <li>When the site fee arrives, we send your confirmation letter. Your date is reserved.</li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-fee">The site fee</h2>
+          <ul class="terms__list" role="list">
+            <li>The site fee is $300 per hour, with a two-hour minimum.</li>
+            <li>Booked time includes setup and breakdown for you and your vendors.</li>
+            <li>The site fee reserves your date. It is non-refundable.</li>
+            <li>The site fee is not a donation and is not tax-deductible.</li>
+            <li>
+              Pay it online through our <a href={PAYMENTS.siteFeeUrl}>site-fee payment page</a>.
+            </li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-hours">Hours</h2>
+          <ul class="terms__list" role="list">
+            <li>Events run 9 AM to 8 PM, daily, year-round.</li>
+            <li>Weekend blocks are 9 to 12, 1 to 4 and 5 to 8.</li>
+            <li>Weekend events end by 7:30 PM.</li>
+            <li>Everyone and everything is off the property by 8 PM, when the gates lock.</li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-grounds">The grounds</h2>
+          <ul class="terms__list" role="list">
+            <li>The grounds hold up to 300 seated or 500 standing.</li>
+            <li>The grounds stay open to the public during every event.</li>
+            <li>There are no restrooms or water on site. Rent portable restrooms and bring your own water.</li>
+            <li>Power is two 20-amp circuits at the base of the Cross, enough for a small sound system.</li>
+            <li>The park is not lit. Evening events bring their own lighting.</li>
+            <li>There are no changing rooms.</li>
+            <li>Seating is not provided. Rent chairs and tables from a rental company.</li>
+            <li>There are trash cans on site, but all event trash leaves with you.</li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-insurance">Insurance and alcohol</h2>
+          <ul class="terms__list" role="list">
+            <li>Receptions need a $1 million one-day special event policy.</li>
+            <li>Alcohol is allowed with event insurance and a licensed caterer.</li>
+            <li>No self-service alcohol.</li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-parking">Parking</h2>
+          <ul class="terms__list" role="list">
+            <li>Park along one side of the entrance street and keep the fire lane open.</li>
+            <li>For more than 100 guests, we suggest a valet service.</li>
+            <li>Shuttles are yours to arrange.</li>
+          </ul>
+        </section>
+
+        <section class="terms__section">
+          <h2 class="terms__title heading-sm" id="terms-questions">Changes and questions</h2>
+          <p>
+            Need to change something about your booking, or have a question about these terms? Email the park
+            office at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" aria-label="Plan your event">
+    <div class="sc-container">
+      <div class="terms-close">
+        <p class="terms-close__text lede">
+          Ready to pick a date? The booking page has the calendar, the rates and the steps.
+        </p>
+        <div class="terms-close__actions">
+          <Button variant="secondary" href="/booking/" icon="arrow-right">Plan your event</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

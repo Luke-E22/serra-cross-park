@@ -1,0 +1,191 @@
+---
+import '../styles/pages/about.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PersonCard from '../components/PersonCard.astro';
+import { Button, SectionHeading, SignPanel } from '../components/ds';
+import { PEOPLE, SITE } from '../config/site';
+import { PHOTOS, photosFor } from '../content/photos';
+import { ogImage, picture } from '../lib/images';
+
+// Facts come from BRIEF.md section 9. The old About page (CONTENT-INVENTORY.md) named no board
+// members, officers, founding date or purchase details, so the intro states none of them.
+// [CONFIRM: item 8, photos for all eight people and any officer titles to show on the cards]
+// [CONFIRM: item 22, who bought the Cross and when the Conservancy formed; the page says neither]
+// [CONFIRM: item 25, funding wording: "all of our funding" is dropped, gifts are described on their own]
+// [CONFIRM: item 29, whether the replanting is still active and whether a current project should be named]
+
+// Rendered widths of each photo slot, for the sizes attribute.
+// Intro photo: the narrower of two columns (5 of 12) in the 1200px container, full width under 900px.
+const INTRO_SIZES = '(min-width: 1200px) 453px, (min-width: 901px) 40vw, 100vw';
+// SignPanel photo: the narrower column of its two-column body, full width under 720px.
+const SIGN_SIZES = '(min-width: 1200px) 470px, (min-width: 721px) 42vw, 100vw';
+
+// The intro photo comes from the photos tagged for this page. The bench facing the Cross fits the
+// paragraph beside it, about keeping the park open to everyone.
+const introPhoto = photosFor('about').find((p) => p.file === 'bench-ocean.jpg') ?? PHOTOS['bench-ocean'];
+const intro = await picture(introPhoto.image, {
+  widths: [480, 940, 1400],
+  sizes: INTRO_SIZES,
+  alt: introPhoto.alt,
+});
+
+// The stone sphere the text mentions, with the Cross whole and the Channel Islands behind.
+const stonePhoto = PHOTOS['stone-sphere-cross-islands-wide'];
+const stone = await picture(stonePhoto.image, {
+  widths: [480, 940, 1400],
+  sizes: SIGN_SIZES,
+  alt: stonePhoto.alt,
+});
+
+// After the fire: a 4:3 frame, so the SignPanel's 4:3 figure shows it whole and never crops the Cross.
+const firePhoto = PHOTOS['burned-shrubs-cross-islands-2017'];
+const fire = await picture(firePhoto.image, {
+  widths: [480, 940, 1400],
+  sizes: SIGN_SIZES,
+  alt: firePhoto.alt,
+});
+
+const og = await ogImage(introPhoto.image);
+---
+
+<BaseLayout
+  title="About the Conservancy"
+  description="Serra Cross Conservancy is the nonprofit that keeps the Cross where it stands, keeps the park open to everyone, and cares for the hill. Meet the board."
+  path="/about/"
+  active="About"
+  ogImage={og}
+  ogImageAlt={introPhoto.alt}
+>
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h1"
+          size="lg"
+          eyebrow="About"
+          title="The Conservancy"
+          intro="Serra Cross Conservancy is a grassroots nonprofit. We care for Serra Cross Park, one acre on the hill above Mission San Buenaventura, with the Pacific and the Channel Islands below."
+        />
+      </div>
+      <div class="about-intro">
+        <div class="about-intro__text body">
+          <p>
+            The work comes down to three things. We keep the Cross where it stands. We keep the land an open
+            park for everyone. And we improve it over time.
+          </p>
+          <p>
+            Donations pay for insurance, water, electricity, landscaping, litter pickup and improvements. Every
+            gift is tax-deductible.
+          </p>
+          <p>
+            {/* One line on purpose: a source line break before the <a> is collapsed to nothing, not a space. */}
+            Volunteers do the routine care and the special projects. If you would like to join them, <a href="/contact/">tell us on the contact page</a>.
+          </p>
+          <p class="about-intro__legal body-sm">Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID {SITE.ein}.</p>
+        </div>
+        <figure class="about-intro__figure">
+          <img
+            src={intro.src}
+            alt={intro.alt}
+            srcset={intro.imgProps.srcSet}
+            sizes={intro.imgProps.sizes}
+            width={intro.imgProps.width}
+            height={intro.imgProps.height}
+            loading={intro.imgProps.loading}
+            decoding={intro.imgProps.decoding}
+          />
+          <figcaption class="caption">{introPhoto.caption}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" id="stonework">
+    <div class="sc-container">
+      <SignPanel
+        tone="navy"
+        as="h2"
+        title="The stonework"
+        image={stone.src}
+        imageAlt={stone.alt}
+        imgProps={stone.imgProps}
+        caption={stonePhoto.caption}
+      >
+        <p>
+          In January 2010, stoneworkers from around the world came to the hill and built the ramparts in ten
+          days. A family from Japan led the work. They have built castle walls for eight generations.
+        </p>
+        <p>
+          The stone came from a quarry in Ojai. The walls are dry-stone: no mortar, every block held in place by
+          gravity alone.
+        </p>
+        <p>
+          The Stone Foundation brought “rock knockers” from several states to learn the method. Look for the
+          hand-carved stone sphere that sits on one of the ramparts.
+        </p>
+      </SignPanel>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <SignPanel
+        tone="ochre"
+        as="h2"
+        title="After the Thomas Fire"
+        image={fire.src}
+        imageAlt={fire.alt}
+        imgProps={fire.imgProps}
+        caption={firePhoto.caption}
+      >
+        <p>On December 5, 2017, the Thomas Fire burned much of the park. Firefighters saved the Cross.</p>
+        <p>
+          The hill has been coming back ever since. Pete Dufau of Dufau Landscape in Ventura donated and
+          installed part of the new landscaping. Volunteers keep replanting.
+        </p>
+        <p>Every gift replants what the fire took.</p>
+        <Button variant="link" href="/donate/" icon="arrow-right">Help replant the hill</Button>
+      </SignPanel>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" id="board">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading eyebrow="The people" title="Board of directors" />
+      </div>
+      <ul class="about-people" role="list">
+        {
+          PEOPLE.board.map((person) => (
+            <li>
+              <PersonCard person={person} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="about-staff__head">
+        <SectionHeading as="h2" size="md" title="Staff" />
+      </div>
+      <ul class="about-people" role="list">
+        {
+          PEOPLE.staff.map((person) => (
+            <li>
+              <PersonCard person={person} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <SignPanel tone="brick" as="h2" title="Visit the park">
+        <p>Serra Cross Park is open to the public every day. The gates lock at 8 PM.</p>
+        <p>You will find it in Grant Park, on the hill above Mission San Buenaventura, in Ventura.</p>
+        <Button variant="link" href="/contact/#directions" icon="arrow-right">Get directions</Button>
+      </SignPanel>
+    </div>
+  </section>
+</BaseLayout>

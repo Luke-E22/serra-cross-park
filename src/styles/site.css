@@ -131,3 +131,16 @@ astro-static-slot { display: contents; }
   .site-strip .sc-gallery__item:last-child { grid-column: span 2; }
   .site-strip__more .sc-btn { width: 100%; }
 }
+
+/* Footer columns between the bundle's 900px stack point and the site's 1100px breakpoint.
+   bundle.css keeps the brand beside three link columns down to 901px, but with the email
+   address (an inline-flex link about 203px wide that cannot wrap) the columns run out of room
+   under about 1105px and the page scrolls sideways by up to 16px at 1024px. Stack the brand
+   above the columns up to 1100px, as the bundle does under 900px. Logged in
+   DESIGN-SYSTEM-CHANGES.md under Site-level overrides. */
+@media (max-width: 1100px) {
+  .sc-footer__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}

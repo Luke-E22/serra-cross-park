@@ -1,0 +1,161 @@
+---
+import '../styles/pages/contact.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm, { CONTACT_FORM_NAME, REGARDING_OPTIONS } from '../components/ContactForm';
+import { Button, Icon, Notice, SectionHeading, SignPanel } from '../components/ds';
+import { SITE } from '../config/site';
+import { PHOTOS } from '../content/photos';
+import { ogImage, picture } from '../lib/images';
+
+import crossSunset from '../assets/photos/cross-sunset.jpg';
+
+// Every fact here comes from BRIEF.md section 9: the email, the mailing address, the Facebook
+// group, the emergency numbers, parking and the driving directions. Nothing is invented.
+// [CONFIRM: item 20, whose phone 805-258-3153 is and how to label it; it reads "for anything else at the park" until then]
+// [CONFIRM: item 30, that Brakey Road is still closed to vehicles, and whether to add a route from the north]
+// [CONFIRM: item 36, that the Facebook group is still the Conservancy's active page]
+// [CONFIRM: item 27, whether a second address should get the form notifications; that is set in the Netlify UI, not here]
+
+// SignPanel photo: the narrower column of its two-column body, full width under 720px.
+const SIGN_SIZES = '(min-width: 1200px) 470px, (min-width: 721px) 42vw, 100vw';
+
+// The photo tagged for this page: the coastline and the pier from the hilltop, where the directions lead.
+const coastPhoto = PHOTOS['ventura-coastline'];
+const coast = await picture(coastPhoto.image, {
+  widths: [480, 940, 1280],
+  sizes: SIGN_SIZES,
+  position: '50% 65%',
+  alt: coastPhoto.alt,
+});
+
+const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SITE.geo.lat},${SITE.geo.lng}`;
+const phoneHref = `tel:+1${SITE.emergencyPhone.replace(/\D/g, '')}`;
+
+const og = await ogImage(crossSunset);
+---
+
+<BaseLayout
+  title="Contact and directions"
+  description="Send a message to the park office, find the mailing address and the Facebook group, and get driving directions to Serra Cross Park from the 101."
+  path="/contact/"
+  active="Contact"
+  ogImage={og}
+  ogImageAlt="The Cross silhouetted against an orange and blue sunset sky"
+>
+  <section class="sc-section" aria-label="Contact the park office">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h1"
+          title="Contact the park office"
+          intro="Questions about a date, a gift, volunteering or the history of the Cross: send us a message and we will reply by email."
+        />
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-grid__form">
+          <ContactForm client:visible />
+        </div>
+
+        <div class="contact-ways">
+          <h2 class="contact-ways__title heading">Other ways to reach us</h2>
+          <dl class="contact-ways__list">
+            <div class="contact-ways__item">
+              <dt class="label">Email</dt>
+              <dd class="body">
+                <a class="contact-ways__link" href={`mailto:${SITE.email}`}>
+                  <Icon name="mail" size={20} />
+                  <span>{SITE.email}</span>
+                </a>
+              </dd>
+            </div>
+            <div class="contact-ways__item">
+              <dt class="label">Mail</dt>
+              <dd class="body">
+                {SITE.org}<br />
+                {SITE.mailingAddress}
+              </dd>
+            </div>
+            <div class="contact-ways__item">
+              <dt class="label">Facebook</dt>
+              <dd class="body">
+                <a class="contact-ways__link" href={SITE.facebook}>
+                  <Icon name="facebook" size={20} />
+                  <span>Serra Cross Park on Facebook</span>
+                </a>
+              </dd>
+            </div>
+            <div class="contact-ways__item">
+              <dt class="label">Emergencies</dt>
+              <dd class="body">
+                <p>In an emergency, call 911.</p>
+                <p>
+                  For anything else at the park, call
+                  <span class="contact-ways__hold">
+                    <a class="contact-ways__link" href={phoneHref}>
+                      <Icon name="phone" size={20} />
+                      <span>{SITE.emergencyPhone}</span>
+                    </a>.
+                  </span>
+                </p>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt" id="directions" aria-label="Directions to the park">
+    <div class="sc-container">
+      <SignPanel
+        tone="brick"
+        as="h2"
+        title="Directions"
+        image={coast.src}
+        imageAlt={coast.alt}
+        imgProps={coast.imgProps}
+        caption={coastPhoto.caption}
+      >
+        <p>The park sits on the hill above Mission San Buenaventura, in Grant Park.</p>
+        <ol class="contact-directions">
+          <li>From the 101, exit California Street and turn right.</li>
+          <li>Head north on California toward City Hall.</li>
+          <li>In front of City Hall, turn right on Poli Street and follow it several blocks.</li>
+          <li>Turn left on Kalorama, then left on Summit.</li>
+          <li>Follow the signs to parking.</li>
+        </ol>
+        <p>
+          Park along one side of the entrance street and keep the fire lane open. There is wheelchair access and
+          disabled parking.
+        </p>
+        <div class="contact-directions__notice">
+          <Notice tone="caution" icon="circle-alert" title="Brakey Road is closed to vehicles">
+            <p>Come up Summit instead and follow the signs to parking.</p>
+          </Notice>
+        </div>
+        <div class="contact-directions__actions">
+          <Button variant="secondary" href={mapsUrl} icon="arrow-up-right" target="_blank" rel="noopener">
+            Get directions<span class="sc-visually-hidden"> (opens Google Maps in a new tab)</span>
+          </Button>
+        </div>
+      </SignPanel>
+    </div>
+  </section>
+
+  {/*
+    Netlify registers forms from the built HTML. The island above renders the real form without
+    data-netlify, so Netlify's build step leaves its markup alone and React hydrates cleanly.
+    This hidden copy carries the Netlify attributes and the same field names, so the build
+    detects the form and accepts the island's posts. Keep the names in step with ContactForm.tsx.
+  */}
+  <form name={CONTACT_FORM_NAME} data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value={CONTACT_FORM_NAME} />
+    <input type="text" name="first-name" />
+    <input type="text" name="last-name" />
+    <input type="email" name="email" />
+    {REGARDING_OPTIONS.map((option) => <input type="radio" name="regarding" value={option.value} />)}
+    <textarea name="message"></textarea>
+    <input type="text" name="bot-field" />
+  </form>
+</BaseLayout>

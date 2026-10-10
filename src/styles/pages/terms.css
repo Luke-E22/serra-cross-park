@@ -1,0 +1,54 @@
+/* Terms and conditions page. Every value reads a token from design-system/tokens.css.
+   One column of running text at the measure width, subsections headed in the display face,
+   short lists with a square ochre mark (square corners, no shadows, no motion). */
+
+/* The whole document sits at the measure so lines stay readable. */
+.terms { max-width: var(--measure); }
+
+/* A hairline rule above each subsection, the way the sign separates its bands. */
+.terms__section {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.terms__title { margin: 0 0 var(--space-4); color: var(--ink); }
+
+.terms p { margin: 0 0 var(--space-4); }
+.terms > :last-child,
+.terms__section > :last-child { margin-bottom: 0; }
+
+/* Lists: square ochre mark, text aligned to the measure. */
+.terms__list {
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.terms__list li {
+  position: relative;
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+.terms__list li:last-child { margin-bottom: 0; }
+.terms__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: var(--radius-none);
+}
+
+/* The closing line and its button. */
+.terms-close { max-width: var(--measure); }
+.terms-close__text { margin: 0 0 var(--space-6); }
+.terms-close__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .terms-close__actions .sc-btn { width: 100%; }
+}

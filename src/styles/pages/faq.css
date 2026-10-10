@@ -1,0 +1,37 @@
+/* FAQ page. Every value reads a token from design-system/tokens.css.
+   The accordions themselves use the bundle's .sc-faq classes (native <details>, so they open
+   and close without JavaScript). This file only lays out the page: the link line under the
+   title, the space between each group heading and its list, the follow-on link under an
+   answer, and the closing section. Square corners, borders not shadows. Nothing here moves,
+   so there is nothing to stop under reduced motion; the global rules in site.css still apply. */
+
+/* ------------------------------------------------------------ the opening section */
+/* One line of links under the lede: where to book, where to ask. */
+.faq-intro__links {
+  max-width: var(--measure);
+  margin: var(--space-5) 0 0;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------ each group */
+/* A medium heading sits closer to its list than the site's default section head. */
+.faq-group__head { margin-bottom: var(--space-5); }
+
+/* ------------------------------------------------------------ follow-on link under an answer */
+/* Rendered inside .sc-faq__a, which already spaces its paragraphs. The link keeps the
+   bundle's link color and underline; it only needs room to wrap on narrow screens. */
+.faq-more a { overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------ the closing section */
+.faq-close { max-width: var(--measure); }
+.faq-close__text { margin: var(--space-5) 0 0; color: var(--ink); }
+.faq-close__text a { overflow-wrap: anywhere; }
+.faq-close__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+@media (max-width: 640px) {
+  .faq-close__actions .sc-btn { width: 100%; }
+}
