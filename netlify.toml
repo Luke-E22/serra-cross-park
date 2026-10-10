@@ -74,3 +74,10 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# The board proposal is a private page: no link to it, not in the sitemap, not for search engines.
+
+[[headers]]
+  for = "/website-proposal/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

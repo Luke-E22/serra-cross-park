@@ -1,0 +1,129 @@
+---
+import '../styles/pages/proposal.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Button, FactGrid, Icon, SectionHeading, Steps } from '../components/ds';
+import type { IconName } from '../components/ds';
+import { PROPOSAL, usd } from '../content/proposal';
+
+// The proposal to the board for the new website. It is a private page: no link in the header
+// or footer, left out of the sitemap (astro.config.mjs), noindex in the head below and an
+// X-Robots-Tag header in netlify.toml. Board members read it on screen or print it, so
+// proposal.css ends with print rules that drop the header, footer, buttons and backgrounds.
+//
+// Every word, the fee and the payment split come from src/content/proposal.ts. This file only
+// lays them out. The payment split (PAYMENT in that file) is an editable value: change the two
+// numbers there and the figure, the paragraphs and the steps on this page follow.
+
+const { included, payment, sections, steps } = PROPOSAL;
+
+// The icon beside each included item, chosen from the title, so a reorder in proposal.ts keeps
+// the right icon on the right card.
+function includedIcon(title: string): IconName {
+  const t = title.toLowerCase();
+  if (t.includes('update')) return 'check';
+  if (t.includes('calendar') || t.includes('reservation')) return 'calendar';
+  if (t.includes('payment')) return 'hand-heart';
+  if (t.includes('hosting')) return 'plug-zap';
+  return 'check';
+}
+
+// The two amounts in the payment section, with their labels.
+const amounts = [
+  { label: 'On approval', value: usd(payment.onApproval) },
+  { label: 'When the site goes live', value: usd(payment.atLaunch) },
+];
+
+// After the opening section, the sections alternate surface-alt and surface. The steps sit
+// inside the payment section (its last paragraph introduces them), so the closing lands on alt.
+const sectionClass = (i: number) => (i % 2 === 0 ? 'sc-section sc-section--alt' : 'sc-section');
+---
+
+<BaseLayout
+  title="Website proposal"
+  description="A proposal to the board of Serra Cross Conservancy for the new Serra Cross Park website."
+  path="/website-proposal/"
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex" />
+  </Fragment>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <p class="proposal-meta label">Prepared for {PROPOSAL.preparedFor}, {PROPOSAL.date}</p>
+      <SectionHeading as="h1" size="lg" eyebrow={PROPOSAL.eyebrow} title={PROPOSAL.title} intro={PROPOSAL.lede} />
+      <div class="proposal-facts">
+        <FactGrid columns={4} items={PROPOSAL.facts} />
+      </div>
+    </div>
+  </section>
+
+  {
+    sections.map((section, i) => (
+      <section class={sectionClass(i)} id={section.id}>
+        <div class="sc-container">
+          <div class="proposal-section__head">
+            <SectionHeading as="h2" size="md" title={section.heading} />
+          </div>
+
+          {section.id === 'payment' && (
+            <dl class="proposal-amounts">
+              {amounts.map((a) => (
+                <div class="proposal-amount">
+                  <dt class="proposal-amount__label label">{a.label}</dt>
+                  <dd class="proposal-amount__value display-lg">{a.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          <div class="proposal-prose body">
+            {section.paragraphs.map((p) => <p>{p}</p>)}
+            {/* The included section shows its four items as cards below, not as bullets. */}
+            {section.id !== 'included' && section.bullets && (
+              <ul class="proposal-list" role="list">
+                {section.bullets.map((b) => <li>{b}</li>)}
+              </ul>
+            )}
+          </div>
+
+          {section.id === 'included' && (
+            <ul class="proposal-cards" role="list">
+              {included.map((item) => (
+                <li class="proposal-card">
+                  <h3 class="proposal-card__title heading-sm">
+                    <Icon name={includedIcon(item.title)} size={24} className="proposal-card__icon" />
+                    <span>{item.title}</span>
+                  </h3>
+                  <p class="proposal-card__text body-sm">{item.text}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {section.id === 'payment' && (
+            <div class="proposal-steps">
+              <Steps tone="light" steps={steps} />
+            </div>
+          )}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="sc-section sc-section--alt" aria-label="How to approve">
+    <div class="sc-container">
+      <div class="proposal-close body">
+        <p>{PROPOSAL.closing}</p>
+        <div class="proposal-close__actions">
+          <Button variant="primary" href={PROPOSAL.contactHref} icon="arrow-up-right" target="_blank" rel="noopener">
+            Contact Luke<span class="sc-visually-hidden"> (opens in a new tab)</span>
+          </Button>
+          {/* The sighted note. The link already says it, so assistive tech skips this copy. */}
+          <span class="proposal-close__note caption" aria-hidden="true">Opens in a new tab.</span>
+        </div>
+        <p class="proposal-close__by body-sm">Prepared by {PROPOSAL.preparedBy}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
