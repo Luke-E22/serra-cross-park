@@ -1,0 +1,123 @@
+# CLAUDE.md
+
+Rules for every Claude Code session on this repo, condensed from BRIEF.md. The brief wins any argument this file does not settle. Where docs/INTEGRATION-NOTES.md records a live check that contradicts the brief (the Cal.com event slug, for one), the notes win.
+
+## 1. What this is
+
+The new serracrosspark.com: a static Astro site for Serra Cross Park and Serra Cross Conservancy, a 501(c)(3) nonprofit (Tax ID 20-8615264), replacing a WordPress site. The owner is Luke Erickson (lukeericksonwork@gmail.com); the private repo is github.com/Luke-E22/serra-cross-park (branch `main`) and Netlify deploys it.
+Three jobs, in this order: 1. Book weddings and events. 2. Tell the story of the Cross. 3. Raise money to care for the hill. Every page pushes toward one of them.
+
+## 2. Read first
+
+In this order, before changing anything:
+
+1. `BRIEF.md`: the whole brief. Section 9 is the only source of facts.
+2. `CONTENT-TODO.md`: 39 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
+3. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
+4. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
+5. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.
+
+`CONTENT-INVENTORY.md` is the old site, verbatim. Open it only when you need the old wording.
+
+## 3. Hard rules
+
+**Design system**
+- Never edit anything under `design-system/`. It is a read-only snapshot (see `design-system/SNAPSHOT.md`).
+- Ported components live in `src/components/ds/` (`index.tsx`, `generated.ts`). Change one only by adding an optional prop; keep markup and class names as they are. Log every change in `DESIGN-SYSTEM-CHANGES.md` with what, why, which component, and an exact re-apply note.
+- Site styles go in `src/styles/site.css` and `src/styles/pages/*.css` and read tokens from `design-system/tokens.css`. No Tailwind, no other UI library.
+
+**Facts and content**
+- Every fact, link and setting comes from `src/config/site.ts`. Pages and the function import it. Never type a fact inline.
+- Facts come from `BRIEF.md` section 9 and nowhere else. Never invent one. Timeline dates stay exactly as written there.
+- An unconfirmed fact gets neutral wording, a `[CONFIRM: ...]` marker in a code comment (never in visible text, alt, aria-label or title) and a numbered entry in `CONTENT-TODO.md`. `scripts/prelaunch-check.mjs` lists the markers.
+- FAQ text lives in `src/content/faq.ts`, the timeline in `src/content/timeline.ts`, photo alt text and captions in `src/content/photos.ts`.
+
+**Voice** (`design-system/README.md`, Content fundamentals)
+- Warm, plain, rooted. Short sentences, one idea each. Concrete detail, no hype.
+- Sentence case for headings, labels and buttons; the display styles set the capitals.
+- No em dashes (use a period, comma or colon). No exclamation marks. Nothing from the "Not" column of the brand book's table.
+- "We" is the Conservancy. "You" is the couple, the family or the visitor.
+- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 9 AM, 7:30 PM, March 31, 1782, 300 guests). Time blocks read "9 to 12".
+- Names: Serra Cross Park (the place), Serra Cross Conservancy (the nonprofit), the Cross (capital C when it means this one), Father Junípero Serra with the accent, Mission San Buenaventura, the Channel Islands, the Thomas Fire.
+
+**Money words**
+- A gift or donation is tax-deductible. A site fee reserves a date, is non-refundable, and is never called a donation or tax-deductible.
+- The nonprofit line, "Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID 20-8615264.", appears in the footer of every page and on every donation surface.
+
+**Buttons**
+- One `primary` per view, counted in page content outside the header. `give` is only for money. Donate is the only `give` in the header.
+- `give` buttons link to `/donate/`, or to `PAYMENTS.siteFeeUrl` ("Pay the site fee") or `PAYMENTS.donateUrl` (the Zeffy fallback). Nowhere else.
+
+**Layout, shape, motion**
+- Alternate `.sc-section` and `.sc-section--alt`. At most one `.sc-section--dark` (navy) per page above the footer.
+- Square corners. Borders, not shadows. Status never relies on color alone: pair every color with a mark and words.
+- Motion is quiet: no parallax, autoplay or scroll animation. Everything stops under `prefers-reduced-motion`.
+
+**Photos**
+- Real park photos only, from `src/assets/photos/`. No stock. Never crop through the Cross; check hero crops at 375 and 1440.
+- Archival photos stay small (340px at most in the timeline), captioned and never colorized.
+- Alt text says what is in the frame. Every photo goes through `picture()` in `src/lib/images.ts`, which sets `srcset`, `sizes`, `width` and `height`. Lazy below the fold; only the hero is `priority`.
+- People photos: a square file in `src/assets/people/`, named in `PEOPLE[].photo` in `site.ts` (Luke Erickson is the worked example). No photo means the initials placeholder.
+
+**Structure and access**
+- URLs keep the old paths with trailing slashes (`trailingSlash: 'always'`). Every internal link ends in `/`.
+- One `h1` per page. Landmarks, the skip link, the design system's focus ring everywhere. WCAG 2.1 AA. Booking works with a keyboard alone.
+
+**Owner decisions already applied (2026-10-10). Do not undo them.**
+- Running text is one step larger than the token scale, set in `src/styles/site.css` (logged in `DESIGN-SYSTEM-CHANGES.md`).
+- `FactGrid` sets the words "to" and "or" inside a value in the serif (logged).
+- The Home page has no fact grid under the hero. The booking page keeps its fact grid.
+- Luke Erickson has a photo on his About card. The park Instagram (`SITE.instagram`) shows in the footer and on the Contact page.
+
+## 4. How the site is built
+
+- Astro 7.3, `output: 'static'`, `build.format: 'directory'`, TypeScript. One page per file in `src/pages/`; each imports its own CSS from `src/styles/pages/` at the top of its frontmatter.
+- React 18.3 islands only where something is interactive: `AvailabilityCalendar` (`client:visible`, `/booking/`), `ContactForm` (`client:visible`, `/contact/`), `ZeffyEmbed` (`client:visible`, `/donate/`), `GalleryLightbox` twice (`client:idle`, `/gallery/`). `CalBooker` and `InquiryFallback` load lazily inside the calendar. Everything else is static HTML.
+- The header: `SiteHeader` (through `SiteHeaderIsland.tsx` and `PageHero.tsx`) renders statically. `src/scripts/header-menu.ts`, loaded from `BaseLayout.astro`, drives the menu toggle, so no React ships for it.
+- `src/layouts/BaseLayout.astro` props: `title`, `description`, `path`, `ogImage`, `ogImageAlt`, `active`, `hero`, `titleSuffix`. It renders the head, canonical, Open Graph, the Search Console tag, site-wide JSON-LD (NGO and TouristAttraction), the skip link, the header on no-hero pages, `<main id="main">` and `SiteFooter`. Pages add their own JSON-LD or meta through `<Fragment slot="head">`.
+- Images: `picture()` and `ogImage()` in `src/lib/images.ts`. Photos are registered in `src/content/photos.ts` (file, alt, caption, orientation, archival, uses). To add one: drop the file in `src/assets/photos/`, import it there, add an entry.
+- Content: `src/content/faq.ts` (also feeds the FAQPage JSON-LD), `src/content/timeline.ts`, and `src/config/site.ts` (SITE, BOOKING, PAYMENTS, PEOPLE, CREDIT, NAV, FOOTER_COLUMNS).
+- Availability: `netlify/functions/availability.mts` fetches Cal.com's public slots API (no key; `CAL_API_KEY` only if Cal.com ever refuses) and answers at `/api/availability` with CDN caching. All status logic is pure in `src/lib/availability.ts` and tested. `?fixture=1` returns a fixture outside production.
+- Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist), 180-minute default with 2h to 5h offered, four slots a day at 8, 11, 2 and 5 Pacific. `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked, 0 of 4". Booking rules live in Cal.com, never in code.
+- Dev bridge: `scripts/dev-availability-plugin.mjs` serves `/api/availability` in `astro dev`. `npm run preview` does not serve it, so the booking page in preview takes the fallback path (Notice plus booker). `npx netlify-cli serve --offline` (port 8888) runs the real function on the built site.
+- Vite cache: `astro.config.mjs` sets `vite.cacheDir` per npm script (`node_modules/.vite-dev`, `.vite-build`). If an island crashes with "_jsxDEV is not a function": `rm -rf node_modules/.vite*` and restart dev.
+- Fonts: EB Garamond is self-hosted from `public/fonts/eb-garamond/` through `src/styles/fonts.css`; `scripts/strip-google-fonts-plugin.mjs` removes the Google Fonts import from `bundle.css` at build time. Strong Glasgow in `design-system/fonts/` is the personal-use demo; the three digit-only `@font-face` rules at the top of `bundle.css` go when the licensed files arrive.
+- Forms: Netlify Forms `contact` and `event-inquiry`. Each island form has a static copy in the page HTML with the same `name` and field names. They do not run locally; test on a deploy preview.
+
+## 5. Before you finish any change
+
+Run from the repo root:
+
+```sh
+export PATH="$HOME/.local/node/bin:$PATH"
+npm run check                        # astro check: 0 errors, 0 warnings
+npx tsc --noEmit -p tsconfig.json    # also walks netlify/ and scripts/
+npm test                             # vitest: 50 tests pass
+npm run build                        # prebuild runs scripts/prelaunch-check.mjs
+grep -rn $'\xe2\x80\x94' src                      # em dashes: must print nothing
+grep -rnE $'\x21[[:space:]"\'<]|\x21$' src        # exclamation marks in prose: must print nothing
+```
+
+- The prelaunch WARN lines (51 today: placeholder Zeffy URLs, demo fonts, `[CONFIRM` markers, missing people photos) are expected until launch. Any other build output is a bug.
+- After content or layout changes, run the per-page `dist/` script from `docs/BUILD-REPORT.md` section 3: one `h1`, the footer line, canonical, one dark section, one primary, no em dash, no exclamation mark, no `[CONFIRM`.
+- Open every changed page in a browser at 375 and 1440 (also 768 and 1280 for layout work). Use the production build for anything on `/booking/`: the Cal.com booker iframe is blank in `astro dev` and renders in `npm run preview` or on Netlify.
+- Tab through anything you touched. The focus ring must show; status must read without color.
+- Keep Lighthouse where it is (mobile, production build, 2026-10-09): performance 93 to 98 on every page except Gallery at 88, accessibility 100 and best practices 100 everywhere, SEO 100 on indexable pages. Details in `docs/BUILD-REPORT.md` section 13.
+- When Cal.com or Zeffy settings change, update `docs/INTEGRATION-NOTES.md` in the same change.
+
+## 6. Working on this Mac
+
+- Node 22 lives at `~/.local/node/bin` (no Homebrew, no nvm). Start every shell with `export PATH="$HOME/.local/node/bin:$PATH"`.
+- `/usr/bin/git` and `python3` are blocked by an unaccepted Xcode license (`sudo xcodebuild -license` fixes it). Until then, commit with `"/Applications/GitHub Desktop.app/Contents/Resources/app/git/bin/git"` (2.53). Pushing over https from the terminal fails with that binary (no credential helper). Pushes happen in GitHub Desktop, or from the terminal once the license is accepted and `gh auth login` has run. `gh` is installed but not signed in.
+- Luke also commits from GitHub Desktop while work is in progress. Check `status` and `log -3` with that git binary before you commit.
+- `astro dev` (Astro 7.3.8) detects an AI coding agent and starts the dev server detached, so in a Claude Code session `npm run dev` returns at once. (In Luke's own terminal it runs in the foreground unless he passes `--background`.) Use `npx astro dev status`, `npx astro dev logs` and `npx astro dev stop`. It listens on port 4321, on 127.0.0.1 through the launch entries below.
+- Preview in the Browser pane with the `serra-dev` (4321) and `serra-preview` (4322) entries, present in both `~/.claude/launch.json` and the repo's `.claude/launch.json`.
+- Dev-only quirk: the Cal.com booker iframe mounts with the right URL but paints blank in `astro dev`. In the production build it opens on the chosen date with its times (`?month=YYYY-MM&date=YYYY-MM-DD` is honored, verified 2026-10-09), so `SHOW_PICK_HINT` in `src/components/booking/CalBooker.tsx` stays `false`.
+- `curl "http://127.0.0.1:4321/api/availability?fixture=1"` checks the dev bridge without calling Cal.com.
+
+## 7. Commit style
+
+- Commit at the end of each piece of work, with a message that says what changed and why, in plain sentences. Then give Luke a three-line update.
+- Never commit secrets. `.env` is ignored; `.env.example` stays empty. `CAL_API_KEY`, if ever needed, goes in the Netlify UI only.
+- The repo stays private while the Strong Glasgow demo files are in `design-system/fonts/`.
+- Do not push from the terminal. Tell Luke what to push from GitHub Desktop.
