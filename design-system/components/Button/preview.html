@@ -1,0 +1,36 @@
+<!-- @dsCard group="Actions" height=300 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Button preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-stack' },
+      h('div', { className: 'pv-row' },
+        h(S.Button, { variant: 'primary', icon: 'arrow-right' }, 'Plan your wedding'),
+        h(S.Button, { variant: 'give', icon: 'hand-heart' }, 'Donate'),
+        h(S.Button, { variant: 'secondary' }, 'See the park'),
+        h(S.Button, { variant: 'link', icon: 'arrow-right' }, 'Read the history'),
+        h(S.Button, { variant: 'primary', disabled: true }, 'Send inquiry')),
+      h('div', { className: 'pv-row' },
+        h(S.Button, { variant: 'primary', size: 'lg', icon: 'arrow-right' }, 'Send inquiry'),
+        h(S.Button, { variant: 'give', size: 'lg', icon: 'hand-heart' }, 'Give $100')),
+      h('div', { className: 'pv-dark pv-row' },
+        h(S.Button, { variant: 'primary', onDark: true, icon: 'arrow-right' }, 'Plan your wedding'),
+        h(S.Button, { variant: 'secondary', onDark: true }, 'See the park'),
+        h(S.Button, { variant: 'give', icon: 'hand-heart' }, 'Donate'),
+        h(S.Button, { variant: 'link', onDark: true }, 'Visiting the park'))));
+</script>
+</body>
+</html>

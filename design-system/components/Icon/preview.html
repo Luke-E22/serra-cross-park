@@ -1,0 +1,28 @@
+<!-- @dsCard group="Brand" height=410 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Icon preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+  .pv-icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-2); }
+  .pv-icon { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); padding: var(--space-3) var(--space-2); color: var(--ink); background: var(--surface-raised); border: 1px solid var(--line); }
+  .pv-icon .caption { font-style: normal; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  var names = ['arrow-right','arrow-up-right','chevron-down','menu','x','plus','minus','check','circle-alert','info','calendar','clock','users','map-pin','sunset','accessibility','toilet','droplet','plug-zap','wine','shield-check','car','lamp','mail','phone','facebook','hand-heart','landmark'];
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-icons' }, names.map(function (n) {
+      return h('div', { key: n, className: 'pv-icon' }, h(S.Icon, { name: n, size: 28 }), h('span', { className: 'caption' }, n));
+    })));
+</script>
+</body>
+</html>

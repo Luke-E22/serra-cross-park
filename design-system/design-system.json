@@ -1,0 +1,485 @@
+{
+  "v": 3,
+  "assetGroups": {
+    "Icons": {
+      "files": {
+        "accessibility.svg": {
+          "blob": "d343a5e681f0bbf65f375e6882f478fe",
+          "name": "accessibility.svg",
+          "size": 424,
+          "type": "image/svg+xml"
+        },
+        "arrow-right.svg": {
+          "blob": "4073f36046f95c5de558cc643fa08aaf",
+          "name": "arrow-right.svg",
+          "size": 277,
+          "type": "image/svg+xml"
+        },
+        "arrow-up-right.svg": {
+          "blob": "3b726880a982fdb9511e5ad822442058",
+          "name": "arrow-up-right.svg",
+          "size": 279,
+          "type": "image/svg+xml"
+        },
+        "calendar.svg": {
+          "blob": "d3e277ae3eeb385724e32674cf8beed6",
+          "name": "calendar.svg",
+          "size": 347,
+          "type": "image/svg+xml"
+        },
+        "car.svg": {
+          "blob": "1a6803d89c98b2c0fbf56d86c50151ab",
+          "name": "car.svg",
+          "size": 502,
+          "type": "image/svg+xml"
+        },
+        "check.svg": {
+          "blob": "a8a838819eecacf9ef68dc72fc4d33fa",
+          "name": "check.svg",
+          "size": 247,
+          "type": "image/svg+xml"
+        },
+        "chevron-down.svg": {
+          "blob": "e8600b39a6e3646211572d87816918be",
+          "name": "chevron-down.svg",
+          "size": 251,
+          "type": "image/svg+xml"
+        },
+        "circle-alert.svg": {
+          "blob": "529d5892cc5717d2f8a7e461b0704e91",
+          "name": "circle-alert.svg",
+          "size": 353,
+          "type": "image/svg+xml"
+        },
+        "clock.svg": {
+          "blob": "df4f3cf3970e25908d58be03e59fc8c2",
+          "name": "clock.svg",
+          "size": 301,
+          "type": "image/svg+xml"
+        },
+        "droplet.svg": {
+          "blob": "844aec39c6223fabba4b854a4c6e3561",
+          "name": "droplet.svg",
+          "size": 335,
+          "type": "image/svg+xml"
+        },
+        "facebook.svg": {
+          "blob": "4503214d6ed624b734a7f115b8d336c8",
+          "name": "facebook.svg",
+          "size": 300,
+          "type": "image/svg+xml"
+        },
+        "hand-heart.svg": {
+          "blob": "838db41f3b80adeef34940f0293a5f2e",
+          "name": "hand-heart.svg",
+          "size": 538,
+          "type": "image/svg+xml"
+        },
+        "info.svg": {
+          "blob": "d62680467b16e32e29a97ef3fa72e932",
+          "name": "info.svg",
+          "size": 307,
+          "type": "image/svg+xml"
+        },
+        "lamp.svg": {
+          "blob": "99c7235181b04a0babf5e418ce1e1b18",
+          "name": "lamp.svg",
+          "size": 336,
+          "type": "image/svg+xml"
+        },
+        "landmark.svg": {
+          "blob": "db994c33729d7308b02452cad4842d05",
+          "name": "landmark.svg",
+          "size": 481,
+          "type": "image/svg+xml"
+        },
+        "mail.svg": {
+          "blob": "3657e8bc53897f32460dfcdabdd1e62d",
+          "name": "mail.svg",
+          "size": 327,
+          "type": "image/svg+xml"
+        },
+        "map-pin.svg": {
+          "blob": "44af9e4f3230d09c2d74a5e6cd15d864",
+          "name": "map-pin.svg",
+          "size": 373,
+          "type": "image/svg+xml"
+        },
+        "menu.svg": {
+          "blob": "41d0fcbae99fc0b9473ff0be5d90ce85",
+          "name": "menu.svg",
+          "size": 343,
+          "type": "image/svg+xml"
+        },
+        "minus.svg": {
+          "blob": "12b8ba5a54aca77c7742407adbcf3db8",
+          "name": "minus.svg",
+          "size": 240,
+          "type": "image/svg+xml"
+        },
+        "phone.svg": {
+          "blob": "91802d52030692bbe3b3b5610956a7ae",
+          "name": "phone.svg",
+          "size": 517,
+          "type": "image/svg+xml"
+        },
+        "plug-zap.svg": {
+          "blob": "66df82fbe21cbb4112c8b78bc4783607",
+          "name": "plug-zap.svg",
+          "size": 432,
+          "type": "image/svg+xml"
+        },
+        "plus.svg": {
+          "blob": "745ffc94cf5471ae3f751c46af82d64d",
+          "name": "plus.svg",
+          "size": 265,
+          "type": "image/svg+xml"
+        },
+        "shield-check.svg": {
+          "blob": "eccddbc4a77463cf215e0668efb49adf",
+          "name": "shield-check.svg",
+          "size": 432,
+          "type": "image/svg+xml"
+        },
+        "sunset.svg": {
+          "blob": "a19e1aea52071b18ff6d1d53df823d35",
+          "name": "sunset.svg",
+          "size": 466,
+          "type": "image/svg+xml"
+        },
+        "toilet.svg": {
+          "blob": "9ebeeb27e981d91b5916c572904e6da9",
+          "name": "toilet.svg",
+          "size": 429,
+          "type": "image/svg+xml"
+        },
+        "users.svg": {
+          "blob": "4cb7db471e742adbd3955931f90d2fec",
+          "name": "users.svg",
+          "size": 397,
+          "type": "image/svg+xml"
+        },
+        "wine.svg": {
+          "blob": "293ee739fb83fcd93bec08e50e79f67d",
+          "name": "wine.svg",
+          "size": 373,
+          "type": "image/svg+xml"
+        },
+        "x.svg": {
+          "blob": "05391e86a78fb6a0c4ac35ebd5a68c11",
+          "name": "x.svg",
+          "size": 266,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Icons",
+      "order": [
+        "arrow-right.svg",
+        "arrow-up-right.svg",
+        "chevron-down.svg",
+        "menu.svg",
+        "x.svg",
+        "plus.svg",
+        "minus.svg",
+        "check.svg",
+        "circle-alert.svg",
+        "info.svg",
+        "calendar.svg",
+        "clock.svg",
+        "users.svg",
+        "map-pin.svg",
+        "sunset.svg",
+        "accessibility.svg",
+        "toilet.svg",
+        "droplet.svg",
+        "plug-zap.svg",
+        "wine.svg",
+        "shield-check.svg",
+        "car.svg",
+        "lamp.svg",
+        "mail.svg",
+        "phone.svg",
+        "facebook.svg",
+        "hand-heart.svg",
+        "landmark.svg"
+      ],
+      "tile": "xs"
+    },
+    "Logos": {
+      "files": {
+        "lockup-navy.svg": {
+          "blob": "47759c3969345cbb1400ac30a036be75",
+          "name": "lockup-navy.svg",
+          "size": 18000,
+          "type": "image/svg+xml"
+        },
+        "lockup-paper.svg": {
+          "blob": "9bd1e720176fb81fdc3b2db4cd335599",
+          "name": "lockup-paper.svg",
+          "size": 18000,
+          "type": "image/svg+xml"
+        },
+        "stacked-navy.svg": {
+          "blob": "c4db8d2903532839255af2d06203e57c",
+          "name": "stacked-navy.svg",
+          "size": 7551,
+          "type": "image/svg+xml"
+        },
+        "stacked-paper.svg": {
+          "blob": "27de501220a07be70d110db2120a1855",
+          "name": "stacked-paper.svg",
+          "size": 7551,
+          "type": "image/svg+xml"
+        },
+        "wordmark-navy.svg": {
+          "blob": "e27fb3caf85e68372502ebcc8739ac4d",
+          "name": "wordmark-navy.svg",
+          "size": 7206,
+          "type": "image/svg+xml"
+        },
+        "wordmark-paper.svg": {
+          "blob": "218c11926cd3bd83bda46cd9fb958122",
+          "name": "wordmark-paper.svg",
+          "size": 7206,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Logos",
+      "order": [
+        "wordmark-navy.svg",
+        "wordmark-paper.svg",
+        "lockup-navy.svg",
+        "lockup-paper.svg",
+        "stacked-navy.svg",
+        "stacked-paper.svg"
+      ],
+      "tile": "l"
+    },
+    "Ornaments": {
+      "files": {
+        "dotted-o-navy.svg": {
+          "blob": "8bd43ec75384d665aba93c4e7b82933d",
+          "name": "dotted-o-navy.svg",
+          "size": 974,
+          "type": "image/svg+xml"
+        },
+        "dotted-o-ochre.svg": {
+          "blob": "bec93e9b166e1af3057b724709faa37c",
+          "name": "dotted-o-ochre.svg",
+          "size": 974,
+          "type": "image/svg+xml"
+        },
+        "dotted-o-paper.svg": {
+          "blob": "1442269e27f0723fd264ac10861c57f1",
+          "name": "dotted-o-paper.svg",
+          "size": 974,
+          "type": "image/svg+xml"
+        },
+        "ornament-rule-navy.svg": {
+          "blob": "7dcc38b31ad41b5ec6a47cf8d4dfb175",
+          "name": "ornament-rule-navy.svg",
+          "size": 1176,
+          "type": "image/svg+xml"
+        },
+        "ornament-rule-ochre.svg": {
+          "blob": "e2bc74a0a4c02655f7aa9fd98b09df56",
+          "name": "ornament-rule-ochre.svg",
+          "size": 1176,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Ornaments",
+      "order": [
+        "dotted-o-ochre.svg",
+        "dotted-o-navy.svg",
+        "dotted-o-paper.svg",
+        "ornament-rule-ochre.svg",
+        "ornament-rule-navy.svg"
+      ],
+      "tile": "s"
+    },
+    "Photography": {
+      "files": {
+        "archive-cross-gathering.jpg": {
+          "blob": "3b12db9416fb7b8cc6c70baafa8b5b0b",
+          "name": "archive-cross-gathering.jpg",
+          "size": 11744,
+          "type": "image/jpeg"
+        },
+        "archive-mission-church.jpg": {
+          "blob": "8cdf36cddbe0e1afac89ce0e4b7b8657",
+          "name": "archive-mission-church.jpg",
+          "size": 8475,
+          "type": "image/jpeg"
+        },
+        "bench-ocean.jpg": {
+          "blob": "36eae829912de547e6b47b9b75a7429d",
+          "name": "bench-ocean.jpg",
+          "size": 515216,
+          "type": "image/jpeg"
+        },
+        "bridesmaids-gold.jpg": {
+          "blob": "eed38f67b5acded16c2e298e3baa078b",
+          "name": "bridesmaids-gold.jpg",
+          "size": 99757,
+          "type": "image/jpeg"
+        },
+        "ceremony-floral-arch.jpg": {
+          "blob": "a4c196525861b0e4510e41bc59ce2c32",
+          "name": "ceremony-floral-arch.jpg",
+          "size": 171892,
+          "type": "image/jpeg"
+        },
+        "ceremony-guests-banner.jpg": {
+          "blob": "3901c5d4645943f55713fb6d97c22b4b",
+          "name": "ceremony-guests-banner.jpg",
+          "size": 177281,
+          "type": "image/jpeg"
+        },
+        "coastline-salvia.jpg": {
+          "blob": "8bf31ab63a7a5a82d444475c456a3f32",
+          "name": "coastline-salvia.jpg",
+          "size": 497081,
+          "type": "image/jpeg"
+        },
+        "cross-channel-islands.jpg": {
+          "blob": "00490811bdf90d5c991fc6de1a59516d",
+          "name": "cross-channel-islands.jpg",
+          "size": 258870,
+          "type": "image/jpeg"
+        },
+        "cross-olive-panorama.jpg": {
+          "blob": "ec9d3576155e887ee8c24b612e1c8f88",
+          "name": "cross-olive-panorama.jpg",
+          "size": 192259,
+          "type": "image/jpeg"
+        },
+        "cross-sunset.jpg": {
+          "blob": "ac392b591f411608c58fea42ebfed120",
+          "name": "cross-sunset.jpg",
+          "size": 268064,
+          "type": "image/jpeg"
+        },
+        "junipero-serra-portrait.jpg": {
+          "blob": "b01734b87918a74c53c2941ef1634e31",
+          "name": "junipero-serra-portrait.jpg",
+          "size": 67629,
+          "type": "image/jpeg"
+        },
+        "reception-lawn.jpg": {
+          "blob": "0185e08133b615731a7da734b11bdcdc",
+          "name": "reception-lawn.jpg",
+          "size": 99138,
+          "type": "image/jpeg"
+        },
+        "reception-table-view.jpg": {
+          "blob": "9139c0bbad1e12eb78675d5a75ca6609",
+          "name": "reception-table-view.jpg",
+          "size": 169539,
+          "type": "image/jpeg"
+        },
+        "reception-umbrellas.jpg": {
+          "blob": "13eaca8cbf758e04c1fe44d77be43f8d",
+          "name": "reception-umbrellas.jpg",
+          "size": 139031,
+          "type": "image/jpeg"
+        },
+        "restoration-plan.jpg": {
+          "blob": "e667aa409bcbdef855f099e97d98d8f9",
+          "name": "restoration-plan.jpg",
+          "size": 50760,
+          "type": "image/jpeg"
+        },
+        "stone-rampart-salvia.jpg": {
+          "blob": "9733c953292cec51e7955514df7040e2",
+          "name": "stone-rampart-salvia.jpg",
+          "size": 821089,
+          "type": "image/jpeg"
+        },
+        "stone-sphere-cross.jpg": {
+          "blob": "f4b35bfcabd362b7229cde9baa8ac255",
+          "name": "stone-sphere-cross.jpg",
+          "size": 270631,
+          "type": "image/jpeg"
+        },
+        "thomas-fire-cross.jpg": {
+          "blob": "4a15a0c2688ec152afe9143100f4b703",
+          "name": "thomas-fire-cross.jpg",
+          "size": 285265,
+          "type": "image/jpeg"
+        },
+        "ventura-coastline.jpg": {
+          "blob": "ae55a4f754eb90c85738eee32950da18",
+          "name": "ventura-coastline.jpg",
+          "size": 64075,
+          "type": "image/jpeg"
+        },
+        "volunteers-replanting.jpg": {
+          "blob": "871f92b628dbf48eb92be4e34f3032cb",
+          "name": "volunteers-replanting.jpg",
+          "size": 172198,
+          "type": "image/jpeg"
+        }
+      },
+      "name": "Photography",
+      "order": [
+        "reception-umbrellas.jpg",
+        "reception-lawn.jpg",
+        "ceremony-floral-arch.jpg",
+        "reception-table-view.jpg",
+        "bridesmaids-gold.jpg",
+        "ceremony-guests-banner.jpg",
+        "cross-olive-panorama.jpg",
+        "cross-channel-islands.jpg",
+        "cross-sunset.jpg",
+        "ventura-coastline.jpg",
+        "coastline-salvia.jpg",
+        "stone-sphere-cross.jpg",
+        "stone-rampart-salvia.jpg",
+        "bench-ocean.jpg",
+        "volunteers-replanting.jpg",
+        "restoration-plan.jpg",
+        "thomas-fire-cross.jpg",
+        "junipero-serra-portrait.jpg",
+        "archive-cross-gathering.jpg",
+        "archive-mission-church.jpg"
+      ],
+      "tile": "m"
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-10T00:36:50Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [
+    "Logos",
+    "Photography",
+    "Ornaments",
+    "Icons"
+  ],
+  "lastChange": {
+    "at": "2026-10-10T00:36:50Z",
+    "by": "Luke Erickson",
+    "note": "First version: Heritage Sign palette, Strong Glasgow and EB Garamond, 20 components for weddings, history and giving.",
+    "via": "Claude"
+  },
+  "layout": "files",
+  "libraries": [
+    {
+      "name": "react",
+      "version": "18"
+    },
+    {
+      "name": "react-dom",
+      "version": "18"
+    }
+  ],
+  "namespace": "SerraCross",
+  "sections": {},
+  "title": "Serra Cross Park"
+}

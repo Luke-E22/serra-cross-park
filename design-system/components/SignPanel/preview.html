@@ -1,0 +1,30 @@
+<!-- @dsCard group="Page" height=380 width=1200 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SignPanel preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+  .pv-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: var(--space-5); align-items: start; }
+  @media (max-width: 720px) { .pv-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-grid' },
+      h(S.SignPanel, { tone: 'green', title: 'Of the Cross' },
+        h('p', null, 'On Easter Sunday, March 31, 1782, Father Junípero Serra founded Mission San Buenaventura and planted a wooden cross on the beach below.'),
+        h('p', null, 'Soon after, a large cross went up on this hill above the church, a landmark for travelers looking for the Mission. The cross that stands here today was raised in 1941.')),
+      h(S.SignPanel, { tone: 'navy', title: 'Stonework', image: '/_blob/9733c953292cec51e7955514df7040e2', imageAlt: 'A dry-stone rampart above purple salvia.', caption: 'Ojai stone, set without mortar.' },
+        h('p', null, 'In January 2010, a family from Japan that has built castle walls for eight generations led stoneworkers from around the world in raising these ramparts.'),
+        h('p', null, 'They shaped the stone by hand and set it in ten days. No mortar. Gravity holds it.'))));
+</script>
+</body>
+</html>

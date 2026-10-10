@@ -1,0 +1,29 @@
+<!-- @dsCard group="Weddings" height=560 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FAQList preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { style: { maxWidth: '820px' } }, h(S.FAQList, { items: [
+      { q: 'How many guests can the park hold?', a: 'Up to 300 seated or 500 standing.' },
+      { q: 'Is the park private during our event?', a: 'No. The grounds stay open to the public at all times, so plan your layout with visitors in mind.' },
+      { q: 'Are there restrooms or water?', a: 'No. Rent portable restrooms and bring water for guests and vendors.' },
+      { q: 'Can we serve alcohol?', a: 'Yes, with a licensed caterer and a one-day event insurance policy. Self-service alcohol is not allowed.' },
+      { q: 'Is there power and lighting?', a: 'Two 20-amp circuits at the base of the Cross can run a small sound system. The park is not lit at night, so evening events bring their own lighting.' },
+      { q: 'Is the park accessible?', a: 'Yes. There is wheelchair access and disabled parking.' }
+    ] })));
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!-- @dsCard group="Forms" height=1000 width=900 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>InquiryForm preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(h(S.InquiryForm, null));
+</script>
+</body>
+</html>

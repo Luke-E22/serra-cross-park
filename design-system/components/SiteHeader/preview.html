@@ -1,0 +1,27 @@
+<!-- @dsCard group="Navigation" height=300 width=1280 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SiteHeader preview</title>
+<style>
+  body { padding: 0; }
+  .pv-photo { position: relative; height: 200px; margin-top: var(--space-5); overflow: hidden; }
+  .pv-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .pv-top { position: absolute; inset: 0 0 auto 0; height: 200px; background: linear-gradient(180deg, var(--scrim-soft), transparent); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', null,
+      h(S.SiteHeader, { active: 'Weddings' }),
+      h('div', { className: 'pv-photo' },
+        h('img', { src: '/_blob/ec9d3576155e887ee8c24b612e1c8f88', alt: '' }),
+        h('div', { className: 'pv-top' }),
+        h(S.SiteHeader, { overlay: true, active: 'History' }))));
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Forms" height=240 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ChoiceChips preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-stack', style: { maxWidth: '720px' } },
+      h(S.ChoiceChips, { label: 'Time of day', name: 'block', columns: 3, defaultValue: 'afternoon', options: [
+        { value: 'morning', label: 'Morning', note: '9 to 12' }, { value: 'afternoon', label: 'Afternoon', note: '1 to 4' }, { value: 'evening', label: 'Evening', note: '5 to 8' } ] }),
+      h(S.ChoiceChips, { label: 'Gift amount', name: 'amount', columns: 5, defaultValue: '100', options: [
+        { value: '50', label: '$50' }, { value: '100', label: '$100' }, { value: '250', label: '$250' }, { value: '500', label: '$500' }, { value: 'other', label: 'Other' } ] })));
+</script>
+</body>
+</html>

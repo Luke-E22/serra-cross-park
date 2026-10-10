@@ -1,0 +1,30 @@
+<!-- @dsCard group="Page" height=540 width=1200 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>FeatureCard preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+  .pv-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+  @media (max-width: 720px) { .pv-cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-cards' },
+      h(S.FeatureCard, { image: '/_blob/0185e08133b615731a7da734b11bdcdc', imageAlt: 'A reception on the lawn below the Cross.', eyebrow: 'Weddings', tone: 'navy',
+        title: 'Say your vows above the Pacific', text: 'Ceremonies and receptions for up to 300 seated guests, with the Channel Islands on the horizon.', href: '#weddings', linkLabel: 'Plan your wedding' }),
+      h(S.FeatureCard, { image: '/_blob/b01734b87918a74c53c2941ef1634e31', imageAlt: 'Painted portrait of Father Junípero Serra.', eyebrow: 'History', tone: 'green',
+        title: 'A landmark since 1782', text: "From Father Serra's first cross on the beach to the stoneworkers of 2010.", href: '#history', linkLabel: 'Read the history' }),
+      h(S.FeatureCard, { image: '/_blob/871f92b628dbf48eb92be4e34f3032cb', imageAlt: 'Volunteers planting on the burned hillside.', eyebrow: 'Give', tone: 'ochre',
+        title: 'Help the hill grow back', text: 'Gifts replant what the Thomas Fire burned and keep the park cared for.', href: '#donate', linkLabel: 'Donate' })));
+</script>
+</body>
+</html>

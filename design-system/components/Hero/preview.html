@@ -1,0 +1,32 @@
+<!-- @dsCard group="Page" height=700 width=1280 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hero preview</title>
+<style>
+  body { padding: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h(S.Hero, {
+      image: '/_blob/13eaca8cbf758e04c1fe44d77be43f8d',
+      imageAlt: 'Guests at round tables under white umbrellas on the lawn below the Cross, the ocean behind.',
+      focal: '50% 30%',
+      header: h(S.SiteHeader, { overlay: true, active: 'Weddings' }),
+      eyebrow: 'Weddings at Serra Cross Park',
+      title: 'Married on the hill',
+      lede: 'A one-acre park above Mission San Buenaventura, with the Pacific and the Channel Islands as your backdrop.',
+      actions: [
+        h(S.Button, { key: 'a', variant: 'primary', onDark: true, size: 'lg', icon: 'arrow-right' }, 'Plan your wedding'),
+        h(S.Button, { key: 'b', variant: 'secondary', onDark: true, size: 'lg' }, 'See the park')
+      ],
+      caption: 'A reception on the lawn below the Cross.'
+    }));
+</script>
+</body>
+</html>

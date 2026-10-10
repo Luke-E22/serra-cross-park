@@ -1,0 +1,50 @@
+<!-- @dsCard height=300 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Serra Cross Park</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--surface); color: var(--ink); overflow: hidden; }
+  .cover { position: relative; height: 300px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 300px; overflow: hidden; }
+  .art svg { display: block; width: 480px; height: 300px; }
+  .green { fill: var(--green); }
+  .brick { fill: var(--brick); }
+  .ochre { fill: var(--ochre); }
+  .navy { fill: var(--navy); }
+  .sand { fill: var(--sandstone); }
+  .cut { fill: var(--surface); }
+  .blk { rx: var(--radius-none); }
+  .words { position: absolute; left: var(--space-6); bottom: var(--space-6); max-width: 440px; }
+  .name { margin: 0; font-family: var(--font-display); font-size: 80px; line-height: 0.92; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
+  .tag { margin: var(--space-2) 0 0 2px; font-family: var(--font-serif); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 480 300" width="480" height="300">
+<!--
+  blocks      green 208x80, brick 96x80, ochre 176x80 bleeding off the top and right (the sign's header row) · navy slab 376x240 bleeding off the bottom · sandstone 96x96 relief · about 45% of 960x300
+  arrangement the sign's strip of unequal bands across the top, one tall navy slab below it with a sandstone satellite, gutters space-2
+  pattern     one oversized glyph: the dotted O from the display face, cut from the navy slab in surface and clipped by the slab's top edge, because the dotted O is the shape only this face has
+  scales      sides in space-2 (8px) multiples, gutters space-2, corners radius-none (the sign is square)
+-->
+<defs><clipPath id="slab"><rect x="0" y="72" width="376" height="240"/></clipPath></defs>
+<rect class="green blk" x="0" y="-16" width="208" height="80"/>
+<rect class="brick blk" x="216" y="-16" width="96" height="80"/>
+<rect class="ochre blk" x="320" y="-16" width="176" height="80"/>
+<rect class="navy blk" x="0" y="72" width="376" height="240"/>
+<rect class="sand blk" x="384" y="72" width="96" height="96"/>
+<g clip-path="url(#slab)"><path class="cut" transform="translate(148 20) scale(2.8)" d="M49.68 30.12Q49.68 26.25 48.2 22.84Q46.72 19.43 44.14 16.86Q41.57 14.29 38.16 12.81Q34.75 11.33 30.89 11.33Q27.03 11.33 23.55 12.81Q20.08 14.29 17.5 16.86Q14.93 19.43 13.45 22.84Q11.97 26.25 11.97 30.12Q11.97 33.98 13.45 37.45Q14.93 40.93 17.5 43.5Q20.08 46.07 23.49 47.55Q26.9 49.03 30.76 49.03Q34.62 49.03 38.1 47.55Q41.57 46.07 44.14 43.5Q46.72 40.93 48.2 37.45Q49.68 33.98 49.68 30.12ZM38.1 100H23.94V87.39H38.1ZM61.39 31.27Q61.39 37.71 59.07 43.11Q56.76 48.52 52.7 52.38Q48.65 56.24 43.11 58.37Q37.58 60.49 31.15 60.49Q24.71 60.49 19.05 58.37Q13.38 56.24 9.14 52.38Q4.89 48.52 2.45 43.11Q0 37.71 0 31.27Q0 24.84 2.25 19.11Q4.5 13.38 8.56 9.14Q12.61 4.89 18.15 2.45Q23.68 0 30.12 0Q36.55 0 42.28 2.45Q48.01 4.89 52.25 9.14Q56.5 13.38 58.94 19.11Q61.39 24.84 61.39 31.27Z"/></g>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Serra Cross Park</h1>
+<p class="tag">Weddings and history on the hill above Ventura.</p>
+</div>
+</div>
+</body>
+</html>

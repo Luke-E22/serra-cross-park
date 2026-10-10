@@ -1,0 +1,30 @@
+<!-- @dsCard group="Forms" height=420 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+  .pv-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); background: var(--surface-alt); padding: var(--space-5); }
+  @media (max-width: 720px) { .pv-form { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'pv-form' },
+      h(S.Field, { label: 'Your name', name: 'name', placeholder: 'First and last' }),
+      h(S.Field, { label: "Partner's name", name: 'partner', optional: true }),
+      h(S.Field, { label: 'Preferred date', name: 'date', type: 'date', help: 'Weekend events end by 7:30 PM.' }),
+      h(S.Field, { label: 'Guests', name: 'guests', type: 'number', defaultValue: '650', error: 'The park holds up to 500 standing guests.' }),
+      h(S.Field, { label: 'Hours', name: 'hours', type: 'select', defaultValue: '3', options: [{ value: '2', label: '2 hours ($600)' }, { value: '3', label: '3 hours ($900)' }, { value: '4', label: '4 hours ($1,200)' }] }),
+      h(S.Field, { label: 'Email', name: 'email', type: 'email', placeholder: 'you@example.com' })));
+</script>
+</body>
+</html>

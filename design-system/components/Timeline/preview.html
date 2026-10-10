@@ -1,0 +1,29 @@
+<!-- @dsCard group="History" height=1400 width=1100 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Timeline preview</title>
+<style>
+  body { padding: var(--space-5); }
+  .pv-stack { display: grid; gap: var(--space-5); }
+  .pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+  .pv-dark { background: var(--surface-dark); padding: var(--space-5); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SerraCross, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h(S.Timeline, { items: [
+      { year: '1782', title: 'Serra plants a cross', text: 'Father Junípero Serra founds Mission San Buenaventura on Easter Sunday and blesses a wooden cross on the beach. It is the ninth mission he founded, and his last.', image: '/_blob/8cdf36cddbe0e1afac89ce0e4b7b8657', imageAlt: 'Mission San Buenaventura in an old sepia photograph.', caption: 'Mission San Buenaventura.' },
+      { year: '1912', title: 'A new cross on Admissions Day', text: 'On September 9, the women of the E.C.O. Club raise a new wooden cross where this one stands.', image: '/_blob/3b12db9416fb7b8cc6c70baafa8b5b0b', imageAlt: 'A crowd gathered around the Cross in an early photograph.', caption: 'A gathering at the Cross.' },
+      { year: '1941', title: "Today's cross", text: 'The city replaces the 1912 cross with the one that stands here now.' },
+      { year: '2003', title: 'The Conservancy steps in', text: 'The city sells the Cross and the acre around it. Local supporters buy it, and Serra Cross Conservancy is formed to care for it.' },
+      { year: '2010', title: 'The stone ramparts', text: 'Stoneworkers led by a Japanese family of castle builders raise the dry-stone walls in ten days.' },
+      { year: '2017', title: 'The Thomas Fire', text: 'Fire burns much of the hillside planting. The Cross stands. Replanting continues today.' }
+    ] }));
+</script>
+</body>
+</html>
