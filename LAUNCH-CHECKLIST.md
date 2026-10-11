@@ -63,7 +63,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 - [ ] Strong Glasgow licensed (desktop and web), files swapped, the three digit rules removed from `bundle.css`.
   The items below are the steps. `design-system/fonts/LICENSE-NOTE.md` has the detail.
-- [ ] Strong Glasgow licensed from Herofonts for desktop and web.
+- [ ] Strong Glasgow licensed from Herofonts for desktop and web. Luke buys the license himself; the Conservancy pays nothing for it.
   The three files in `design-system/fonts/` are the free demo, personal use only, and they draw an "HF" badge in place of every digit. The repo stays private until this is done.
 - [ ] The three demo files replaced with the licensed ones.
   `StrongGlasgow-Light.ttf`, `StrongGlasgow-Regular.ttf` and `StrongGlasgow-Bold.ttf` in `design-system/fonts/`, referenced by the three `@font-face` rules at the top of `design-system/tokens.css`, by `type.fonts[].file` in `design-system/tokens.json`, and by the preload of the Bold file in `src/layouts/BaseLayout.astro` (`type="font/ttf"`). If the licensed names or format differ, update all three places. The prelaunch check warns while files named `StrongGlasgow-*.ttf` exist, so licensed files under the same names leave one accepted warning per file.

@@ -184,9 +184,8 @@ export const PROPOSAL: Proposal = {
     {
       id: 'not-included',
       heading: 'What the fee does not cover',
-      paragraphs: ['Three things sit outside the fee, so the board sees the whole picture.'],
+      paragraphs: ['Two things sit outside the fee, so the board sees the whole picture. The Strong Glasgow typeface license is not one of them: I cover it myself before launch.'],
       bullets: [
-        'The Strong Glasgow font license. The Conservancy buys it from Herofonts before launch, at the price the foundry sets.',
         'New photography. The site uses 30 existing park photographs. Taking new pictures is not part of the fee.',
         'The domain name renewal. serracrosspark.com stays with the Conservancy, renewed as it is today.',
       ],
