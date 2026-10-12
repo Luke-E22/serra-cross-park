@@ -12,7 +12,6 @@ export const SITE = {
   geo: { lat: 34.2846018, lng: -119.2962133 },
   facebook: 'https://www.facebook.com/groups/222411215009',
   instagram: 'https://www.instagram.com/serracrosspark/',
-  emergencyPhone: '805-258-3153',
 };
 
 export const BOOKING = {
@@ -32,6 +31,9 @@ export const CAL_BOOKING_PAGE_URL = `https://cal.com/${BOOKING.calUsername}/${BO
 
 // PLACEHOLDER: these are Startup Ventura's Zeffy form.
 // Replace both with Serra Cross Conservancy's own forms before launch.
+// siteFeeUrl: no page links it since 2026-10-12. The site fee is paid in full with the reservation
+// (docs/TERMS-SOURCE.md, 1.1), so there is no "Pay the site fee" button anywhere; the field waits on
+// CONTENT-TODO item 2, which decides whether a Zeffy form or a Cal.com payment step collects the fee.
 export const PAYMENTS = {
   donateUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura',
   siteFeeUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura',

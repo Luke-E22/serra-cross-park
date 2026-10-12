@@ -9,9 +9,10 @@ import { ogImage, picture } from '../lib/images';
 
 import crossSunset from '../assets/photos/cross-sunset.jpg';
 
-// Every fact here comes from BRIEF.md section 9: the email, the mailing address, the Facebook
-// group, the emergency numbers, parking and the driving directions. Nothing is invented.
-// [CONFIRM: item 20, whose phone 805-258-3153 is and how to label it; it reads "for anything else at the park" until then]
+// Every fact here comes from BRIEF.md section 9 (the email, the mailing address, the Facebook
+// group and the driving directions) or from docs/TERMS-SOURCE.md (parking, clause 3.7). Nothing is
+// invented. The phone number came off the site on 2026-10-12 (CONTENT-TODO item 20): emergencies
+// go to 911 and everything else to the office email.
 // [CONFIRM: item 30, that Brakey Road is still closed to vehicles, and whether to add a route from the north]
 // [CONFIRM: item 36, that the Facebook group is still the Conservancy's active page]
 // [CONFIRM: item 27, whether a second address should get the form notifications; that is set in the Netlify UI, not here]
@@ -29,7 +30,6 @@ const coast = await picture(coastPhoto.image, {
 });
 
 const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SITE.geo.lat},${SITE.geo.lng}`;
-const phoneHref = `tel:+1${SITE.emergencyPhone.replace(/\D/g, '')}`;
 
 const og = await ogImage(crossSunset);
 ---
@@ -99,13 +99,7 @@ const og = await ogImage(crossSunset);
               <dd class="body">
                 <p>In an emergency, call 911.</p>
                 <p>
-                  For anything else at the park, call
-                  <span class="contact-ways__hold">
-                    <a class="contact-ways__link" href={phoneHref}>
-                      <Icon name="phone" size={20} />
-                      <span>{SITE.emergencyPhone}</span>
-                    </a>.
-                  </span>
+                  For everything else, email <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
                 </p>
               </dd>
             </div>
@@ -135,8 +129,8 @@ const og = await ogImage(crossSunset);
           <li>Follow the signs to parking.</li>
         </ol>
         <p>
-          Park along one side of the entrance street and keep the fire lane open. There is wheelchair access and
-          disabled parking.
+          Parking is inside the park gates, in designated areas for 35 vehicles, with wheelchair access and disabled
+          parking. Stay off the grass. The park is not responsible for vehicles or anything left in them.
         </p>
         <div class="contact-directions__notice">
           <Notice tone="caution" icon="circle-alert" title="Brakey Road is closed to vehicles">

@@ -2,34 +2,37 @@
 import '../../styles/pages/booking-requested.css';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { Button, SectionHeading, Steps } from '../../components/ds';
-import { PAYMENTS, SITE } from '../../config/site';
+import { SITE } from '../../config/site';
 import { ogImage } from '../../lib/images';
 
 import { PHOTOS } from '../../content/photos';
 
 // Cal.com sends people here after they book (its success redirect, set by Luke; see
 // docs/INTEGRATION-NOTES.md). The page is noindex because nobody should land on it from search.
-// Facts come from BRIEF.md section 9: the park office confirms the date, holds it for 14 days
-// while the site fee arrives, then sends a confirmation letter. The site fee is $300 per hour,
-// two-hour minimum, reserves the date and is non-refundable. It is not a donation, so the
-// 501(c)(3) line stays in the footer rather than beside the fee button.
-// [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
+// The rules come from docs/TERMS-SOURCE.md (2026-10-12), clauses 1.1 to 1.3: the full payment
+// comes with the reservation, the reservation is confirmed once the payment is processed, the
+// payment is non-refundable, and the date can move once at no charge, subject to availability,
+// by email. Nothing here links to a payment form; the fee is collected with the reservation.
+// The site fee is not a donation, so the 501(c)(3) line stays in the footer.
 // [CONFIRM: item 5, whether these steps should name Amber Weir or keep "the park office"]
 
 const ogPhoto = PHOTOS['reception-lawn'];
 const og = await ogImage(ogPhoto.image);
 
 const steps = [
-  { title: 'We check the date', text: 'The park office reviews your request and makes sure the date and time work.' },
-  { title: 'We confirm and hold your date for 14 days', text: 'Once we confirm the date with you, we hold it while the site fee arrives.' },
-  { title: 'Pay the site fee', text: 'The site fee reserves your date. It is non-refundable.' },
-  { title: 'Get your confirmation letter', text: 'When the site fee arrives, we send your confirmation letter. Your date is reserved.' },
+  { title: 'We check the date and your details', text: 'The park office reviews your request and makes sure the date and time work.' },
+  { title: 'Your payment is processed', text: 'The site fee is collected with your reservation. It is non-refundable.' },
+  { title: 'We confirm by email', text: 'Once the payment is processed, the park office emails your confirmation. Your date is reserved.' },
+  {
+    title: 'Reschedule once for free if you need to',
+    text: `Subject to availability. Email the park office at ${SITE.email} with the new date and time.`,
+  },
 ];
 ---
 
 <BaseLayout
   title="Booking requested"
-  description="We have your request for a date at Serra Cross Park. Here is what happens next, and how to pay the site fee."
+  description="We have your request for a date at Serra Cross Park. Here is what happens next."
   path="/booking/requested/"
   ogImage={og}
   ogImageAlt={ogPhoto.alt}
@@ -43,7 +46,7 @@ const steps = [
       <SectionHeading
         as="h1"
         title="We have your request"
-        intro="Thank you. The park office will contact you to confirm your date. Here is what happens next."
+        intro="Thank you. The park office will confirm your reservation by email. Here is what happens next."
       />
       <div class="requested__steps">
         {/* Steps renders h3 titles, so a hidden h2 keeps the heading order without a visible repeat of the intro. */}
@@ -53,22 +56,14 @@ const steps = [
     </div>
   </section>
 
-  <section class="sc-section sc-section--alt" aria-labelledby="requested-fee-title">
+  <section class="sc-section sc-section--alt">
     <div class="sc-container">
-      <div class="requested-fee body">
-        <h2 class="requested-fee__title heading" id="requested-fee-title">Pay the site fee</h2>
-        <div class="requested-fee__actions">
-          <Button variant="give" size="lg" icon="hand-heart" href={PAYMENTS.siteFeeUrl} target="_blank" rel="noopener">
-            Pay the site fee<span class="sc-visually-hidden"> (opens in a new tab)</span>
-          </Button>
-          {/* The sighted note. The link already says it, so assistive tech skips this copy. */}
-          <span class="requested-fee__note caption" aria-hidden="true">Opens in a new tab.</span>
+      <div class="requested-next body">
+        {/* One line on purpose: a source line break before the <a> is collapsed to nothing, not a space. */}
+        <p>Questions about your request? Email the park office at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.</p>
+        <div class="requested-next__actions">
+          <Button variant="secondary" href="/">Back to the park</Button>
         </div>
-        <p>The site fee is $300 per hour with a two-hour minimum. It reserves your date and is non-refundable.</p>
-        <p>
-          Questions about your request or the fee? Email the park office at
-          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
-        </p>
       </div>
     </div>
   </section>

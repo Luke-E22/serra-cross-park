@@ -1,47 +1,55 @@
 /* Terms and conditions page. Every value reads a token from design-system/tokens.css.
-   One column of running text at the measure width, subsections headed in the display face,
-   short lists with a square ochre mark (square corners, no shadows, no motion). */
+   One column of running text at the measure width: the booking basics in a bordered list,
+   then the Conservancy's terms as numbered parts (h2, display face) and clauses (h3, heading-sm),
+   each clause a short paragraph. Square corners, hairline borders, no shadows, no motion. */
 
-/* The whole document sits at the measure so lines stay readable. */
-.terms { max-width: var(--measure); }
+/* The whole document sits at the measure so lines stay readable, a step below the heading
+   (SectionHeading sets no bottom margin; the FAQ and About pages space their first block the same way). */
+.terms { max-width: var(--measure); margin-top: var(--space-6); }
 
-/* A hairline rule above each subsection, the way the sign separates its bands. */
-.terms__section {
+.terms p { margin: 0 0 var(--space-4); }
+.terms > :last-child,
+.terms__part > :last-child,
+.terms__basics-block > :last-child { margin-bottom: 0; }
+
+/* Booking basics: the site's own facts, one per line, inside a hairline box. */
+.terms__basics {
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-none);
+}
+.terms__basics li {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.terms__basics li:first-child { border-top: 0; }
+
+/* The bridge line between the basics and the numbered parts. */
+.terms__note { color: var(--ink-muted); }
+
+/* Parts: a hairline rule above each, the way the sign separates its bands. */
+.terms__part {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+.terms__part-title { margin: 0 0 var(--space-5); color: var(--ink); }
+
+/* Clauses: the document's own number and title in the display face, then the text. */
+.terms__clause { margin: var(--space-6) 0 var(--space-3); color: var(--ink); }
+.terms__clause:first-of-type { margin-top: 0; }
+.terms__num { color: var(--accent-text); margin-right: var(--space-1); }
+
+/* The agreement line that closes the document. */
+.terms__agree {
   margin-top: var(--space-7);
   padding-top: var(--space-6);
   border-top: 1px solid var(--line);
 }
 
-.terms__title { margin: 0 0 var(--space-4); color: var(--ink); }
-
-.terms p { margin: 0 0 var(--space-4); }
-.terms > :last-child,
-.terms__section > :last-child { margin-bottom: 0; }
-
-/* Lists: square ochre mark, text aligned to the measure. */
-.terms__list {
-  margin: 0 0 var(--space-4);
-  padding: 0;
-  list-style: none;
-}
-.terms__list li {
-  position: relative;
-  padding-left: var(--space-5);
-  margin-bottom: var(--space-2);
-}
-.terms__list li:last-child { margin-bottom: 0; }
-.terms__list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.65em;
-  width: 7px;
-  height: 7px;
-  background: var(--accent);
-  border-radius: var(--radius-none);
-}
-
-/* The closing line and its button. */
+/* The closing line and its two buttons. */
 .terms-close { max-width: var(--measure); }
 .terms-close__text { margin: 0 0 var(--space-6); }
 .terms-close__actions {

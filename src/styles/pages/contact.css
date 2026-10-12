@@ -55,8 +55,6 @@
 }
 .contact-ways__link .sc-icon { flex: none; }
 
-/* Keeps a link and the period after it on one line, so the period never wraps alone. */
-.contact-ways__hold { white-space: nowrap; }
 
 /* ------------------------------------------------------------ the form */
 /* The regarding check sits right under the chips in the Field error style: danger, icon and words. */

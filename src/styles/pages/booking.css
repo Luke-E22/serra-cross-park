@@ -1,6 +1,8 @@
 /* Plan your event page. Every value reads a token from design-system/tokens.css.
    Square corners, borders not shadows, status never by color alone. Nothing here moves,
-   and site.css already stops every transition under reduced motion. */
+   and site.css already stops every transition under reduced motion.
+   Section order (2026-10-12): what to know, how booking works (navy), availability,
+   ask before you book, gallery, booking questions. */
 
 /* ------------------------------------------------------------ what to know before you book */
 /* The rules list after the fact grid: one measure wide, a square ochre mark on each line. */
@@ -39,12 +41,16 @@
   .booking-notices { grid-template-columns: 1fr; }
 }
 
-/* The line that points to the FAQ and the terms. Links take the global navy underline. */
+/* The line that points to the terms and the FAQ. Links take the global navy underline. */
 .booking-more {
   max-width: var(--measure);
   margin: var(--space-6) 0 0;
   color: var(--ink);
 }
+
+/* ------------------------------------------------------------ how booking works (the navy section) */
+/* The five steps alone, in the bundle's dark Steps style. The site fee is collected with the
+   reservation, so the section carries no payment button and needs no rules of its own. */
 
 /* ------------------------------------------------------------ availability */
 /* The static Netlify copy of the inquiry form is only there for build-time detection.
@@ -67,61 +73,11 @@
   .booking-noscript__actions .sc-btn { width: 100%; }
 }
 
-/* ------------------------------------------------------------ how booking works (the navy section) */
-/* The site-fee row under the five steps: the give button on the left, its line on the right,
-   a hairline above in the on-dark line color. One column under 720px. */
-.booking-fee {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--space-4) var(--space-7);
-  align-items: center;
-  margin-top: var(--space-8);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--line-on-dark);
-}
-.booking-fee__action {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-}
-/* .caption in bundle.css sets ink-muted, which fails on navy; the extra class wins the cascade. */
-.booking-fee__note.caption {
-  margin: 0;
-  color: var(--ink-on-dark-muted);
-}
-.booking-fee__text {
-  max-width: var(--measure);
-  margin: 0;
-  color: var(--ink-on-dark-muted);
-}
-@media (max-width: 720px) {
-  .booking-fee { grid-template-columns: 1fr; }
-  .booking-fee__action { align-items: stretch; }
-  .booking-fee__action .sc-btn { width: 100%; }
-}
-
-/* ------------------------------------------------------------ gallery */
-/* Six photos in nine cells on three columns: normal, tall, normal, tall, wide, normal.
-   On two columns the wide cell drops to one, so the eight cells fill four rows with no gap. */
-.booking-gallery__more {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: var(--space-6);
-}
-@media (max-width: 720px) {
-  .booking-gallery .sc-gallery__item--wide { grid-column: span 1; }
-  .booking-gallery__more .sc-btn { width: 100%; }
-}
-
-/* ------------------------------------------------------------ booking questions */
-.booking-faq__more { margin-top: var(--space-6); }
-
 /* ------------------------------------------------------------ ask before you book */
-/* The ContactForm island, preset to "Booking an event", near the end of the page. The form is the
-   bundle's .sc-form shell on surface-alt; it is capped at one form's width rather than the full
-   container, like the form column on /contact/. The .contact-form__* rules mirror contact.css,
-   which this page does not load. Keep the two in step. */
+/* The ContactForm island, preset to "Booking an event", right after the calendar. The form is the
+   bundle's .sc-form shell on surface-alt, so the section sits on the base surface; it is capped at
+   one form's width rather than the full container, like the form column on /contact/. The
+   .contact-form__* rules mirror contact.css, which this page does not load. Keep the two in step. */
 .booking-questions__form { max-width: 720px; }
 
 /* The regarding check sits right under the chips in the Field error style: danger, icon and words. */
@@ -143,3 +99,19 @@
   outline: none;
   box-shadow: none;
 }
+
+/* ------------------------------------------------------------ gallery */
+/* Six photos in nine cells on three columns: normal, tall, normal, tall, wide, normal.
+   On two columns the wide cell drops to one, so the eight cells fill four rows with no gap. */
+.booking-gallery__more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+@media (max-width: 720px) {
+  .booking-gallery .sc-gallery__item--wide { grid-column: span 1; }
+  .booking-gallery__more .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ booking questions */
+.booking-faq__more { margin-top: var(--space-6); }

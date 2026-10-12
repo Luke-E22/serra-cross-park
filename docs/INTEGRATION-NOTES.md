@@ -1,6 +1,6 @@
 # Integration notes
 
-Findings from live checks on 2026-10-09. These override the brief where they disagree. Keep this file current when Cal.com or Zeffy settings change.
+Findings from live checks on 2026-10-09. These override the brief where they disagree. Keep this file current when Cal.com or Zeffy settings change. Event rules (payment with the reservation, confirmation once paid, insurance, parking and the rest) come from docs/TERMS-SOURCE.md, the Conservancy's terms document of 2026-10-12.
 
 ## Cal.com
 
@@ -11,7 +11,7 @@ Findings from live checks on 2026-10-09. These override the brief where they dis
 | Slug | `reserve` | `BOOKING.calEventSlug` uses it |
 | Title | Private Event / Wedding | Shown inside the booker; confirm the wording |
 | Length | 180 minutes default, 2h to 5h offered, four fixed slots a day | Must become a two-hour minimum (default 120 minutes) with flexible start times in 30-minute steps; the site states no fixed blocks (CONTENT-TODO 11, 38, 39) |
-| Requires confirmation | off | Brief wants it on, with unconfirmed bookings still blocking the slot |
+| Requires confirmation | off | Must be on, with unconfirmed bookings still blocking the slot; the park office confirms once the payment is processed (terms document 1.1, CONTENT-TODO 43) |
 | Period type | UNLIMITED (no future limit) | Brief wants a future limit matching `horizonMonths` |
 | Success redirect | none | Should be `https://serracrosspark.com/booking/requested/` |
 
@@ -29,6 +29,8 @@ Response: `{ "status": "success", "data": { "2026-10-10": [{ "start": "2026-10-1
 **Booking page query parameters (checked in a real browser, 2026-10-09).** https://cal.com/serra-cross-park/reserve?month=2026-11&date=2026-11-14 opens on November 2026 with the 14th selected and its times listed (8:00 AM, 11:00 AM, 2:00 PM, 5:00 PM), so `month` and `date` are honored by the public page. The embed passes the same query through `calLink`, and it works there too (checked in a real browser on 2026-10-09 against the dev server: picking Saturday, October 24 in the availability calendar mounted the embed at `app.cal.com/serra-cross-park/reserve/embed?month=2026-10&date=2026-10-24&...`, and the booker opened on October 2026 with the 24th selected and 8:00am, 11:00am, 2:00pm and 5:00pm listed). The "Choose <date> in the calendar below" hint in `CalBooker.tsx` is therefore off (`SHOW_PICK_HINT = false`); turn it back on if a Cal.com update stops honoring `date`.
 
 **Durations.** The event page shows "$300.00 per hour with a minimum of two hours" and offers 2h, 3h, 4h and 5h, with 3h selected by default. The slots API without a `duration` parameter answers for the default (180 minutes), which is what the availability calendar counts. The default must become 2 hours to match the published two-hour minimum (CONTENT-TODO item 39); longer lengths can stay on offer. If the Conservancy wants the calendar to reflect another length, set `BOOKING.slotDuration` in minutes. The event description also says "You Must Agree to the Terms and Conditions at Checkout" and "All reservations must include time needed for vendor/client set up, event, and vendor/client break-down". The event has no terms checkbox question yet: the site asks for the agreement before the booker opens, and Cal.com should carry a required "I agree to the terms and conditions" checkbox question linking to https://serracrosspark.com/terms-and-conditions/ so the agreement is stored with each booking (CONTENT-TODO item 40).
+
+**Payment.** The terms document (1.1) says the full payment comes with the reservation form and the reservation is not confirmed until the payment has been received and processed, so the site has no separate pay step and mentions no hold on a date. These notes record no payment step on the `reserve` event as read on 2026-10-09. How the fee is collected with the reservation (a Cal.com payment app, or a Zeffy form) is CONTENT-TODO item 2; the confirmation setting that goes with it is item 43.
 
 ## Zeffy
 

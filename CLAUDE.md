@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Rules for every Claude Code session on this repo, condensed from BRIEF.md. The brief wins any argument this file does not settle. Where docs/INTEGRATION-NOTES.md records a live check that contradicts the brief (the Cal.com event slug, for one), the notes win.
+Rules for every Claude Code session on this repo, condensed from BRIEF.md. The brief wins any argument this file does not settle. Where docs/INTEGRATION-NOTES.md records a live check that contradicts the brief (the Cal.com event slug, for one), the notes win. Where docs/TERMS-SOURCE.md (the Conservancy's own terms document, supplied 2026-10-12) states an event rule, the document wins over the brief, the brand book and any older copy.
 
 ## 1. What this is
 
@@ -11,11 +11,12 @@ Three jobs, in this order: 1. Book weddings and events. 2. Tell the story of the
 
 In this order, before changing anything:
 
-1. `BRIEF.md`: the whole brief. Section 9 is the only source of facts.
-2. `CONTENT-TODO.md`: 41 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
-3. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
-4. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
-5. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.
+1. `BRIEF.md`: the whole brief. Section 9 is the source of facts, except event rules, which come from the next file.
+2. `docs/TERMS-SOURCE.md`: the Conservancy's Special Event Terms and Conditions, the source of every event rule (payment, refunds and rescheduling, insurance, time overruns, rentals, alcohol, confetti, public access, water, restrooms, lighting, trash, parking, prohibited activities, liability). The PDF is in `docs/source/` and published from `public/docs/serra-cross-park-terms-and-conditions.pdf`.
+3. `CONTENT-TODO.md`: 43 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
+4. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
+5. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
+6. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.
 
 `CONTENT-INVENTORY.md` is the old site, verbatim. Open it only when you need the old wording.
 
@@ -28,7 +29,7 @@ In this order, before changing anything:
 
 **Facts and content**
 - Every fact, link and setting comes from `src/config/site.ts`. Pages and the function import it. Never type a fact inline.
-- Facts come from `BRIEF.md` section 9 and nowhere else. Never invent one. Timeline dates stay exactly as written there.
+- Facts come from `BRIEF.md` section 9 and, for event rules, `docs/TERMS-SOURCE.md`, and nowhere else. The terms document wins where they disagree. Never invent a fact. Timeline dates stay exactly as written in the brief.
 - An unconfirmed fact gets neutral wording, a `[CONFIRM: ...]` marker in a code comment (never in visible text, alt, aria-label or title) and a numbered entry in `CONTENT-TODO.md`. `scripts/prelaunch-check.mjs` lists the markers.
 - FAQ text lives in `src/content/faq.ts`, the timeline in `src/content/timeline.ts`, photo alt text and captions in `src/content/photos.ts`.
 
@@ -41,12 +42,12 @@ In this order, before changing anything:
 - Names: Serra Cross Park (the place), Serra Cross Conservancy (the nonprofit), the Cross (capital C when it means this one), Father Junípero Serra with the accent, Mission San Buenaventura, the Channel Islands, the Thomas Fire.
 
 **Money words**
-- A gift or donation is tax-deductible. A site fee reserves a date, is non-refundable, and is never called a donation or tax-deductible.
+- A gift or donation is tax-deductible. A site fee is paid in full with the reservation, is non-refundable, and is never called a donation or tax-deductible. Nothing on the site mentions a hold on a date.
 - The nonprofit line, "Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID 20-8615264.", appears in the footer of every page and on every donation surface.
 
 **Buttons**
 - One `primary` per view, counted in page content outside the header. `give` is only for money. Donate is the only `give` in the header.
-- `give` buttons link to `/donate/`, or to `PAYMENTS.siteFeeUrl` ("Pay the site fee") or `PAYMENTS.donateUrl` (the Zeffy fallback). Nowhere else.
+- `give` buttons link to `/donate/` or to `PAYMENTS.donateUrl` (the Zeffy fallback). Nowhere else. The site fee is collected with the reservation, so no page carries a "Pay the site fee" button or link (owner's decision, 2026-10-12).
 
 **Layout, shape, motion**
 - Alternate `.sc-section` and `.sc-section--alt`. At most one `.sc-section--dark` (navy) per page above the footer.
@@ -78,6 +79,8 @@ In this order, before changing anything:
 - The terms gate on the booking page shows three rules in bold: the park is always open to the public; no power or restrooms are available; booked time must include setup and breakdown for you and your vendors.
 - The inquiry form (the fallback when Cal.com cannot load) asks for a start time from a list of hours, 8 AM to 6 PM (the last start that fits a two-hour minimum before 8 PM), labeled "Start time", with a note that bookings are at least two hours.
 - The booking page offers two ways in, side by side in the hero: "Book now" (primary, to `#availability`) and "Ask a question" (secondary, to `#questions`, a section near the end of the page with the `ContactForm` island, "Booking an event" preselected, posting to Netlify Forms). The FAQ "Booking questions" section stays.
+- The Conservancy's own Special Event Terms and Conditions (`docs/TERMS-SOURCE.md`; PDF in `docs/source/` and `public/docs/`) are the source of event rules and win over the brief and the brand book. The booking flow is: pick a date and time, agree to the terms, send your request, the site fee is collected with the reservation, and the park office emails the confirmation once the payment is processed. There is no hold and no "14 days" anywhere, and no separate "pay the site fee" step, button or link. Payments are non-refundable; one reschedule at no charge, subject to availability, by email to admin@serracrosspark.com. Insurance (a one-day $1 million liability policy, proof emailed seven days before) for any event with catered food, beverages or a reception, not receptions only. Overruns cost $300 per hour. Clients bring and remove their own chairs, tables, tents and decor. Alcohol only through a licensed provider, never self-served. No synthetic confetti or petals. The gates stay open to the public from dawn to dusk and cannot be locked; signs, security or a volunteer at the gate are allowed. No water, no restrooms (portable ones; Friday delivery and Monday pickup for weekend events), no lighting anywhere including the parking lot. Leave the park as found or a one-time trash fee may apply. Parking for 35 vehicles in designated areas inside the gates, at the owner's risk; the old entrance-street, fire-lane, valet and shuttle wording is gone. No smoking, fireworks, open flames, firearms or vehicles on the grass; illegal activity ends the event. The client carries liability and holds the park harmless.
+- The phone number that was on the Contact page and in the FAQ is no longer published anywhere (CONTENT-TODO item 20). Emergencies: 911. Everything else: `SITE.email`. `SITE.emergencyPhone` is gone from `src/config/site.ts`; do not add a phone number back without the owner.
 
 ## 4. How the site is built
 
@@ -108,7 +111,7 @@ grep -rn $'\xe2\x80\x94' src                      # em dashes: must print nothin
 grep -rnE $'\x21[[:space:]"\'<]|\x21$' src        # exclamation marks in prose: must print nothing
 ```
 
-- The prelaunch WARN lines (51 today: placeholder Zeffy URLs, demo fonts, `[CONFIRM` markers, missing people photos) are expected until launch. Any other build output is a bug.
+- The prelaunch WARN lines (38 on 2026-10-12: placeholder Zeffy URLs, demo fonts, `[CONFIRM` markers, missing people photos) are expected until launch. Any other build output is a bug.
 - After content or layout changes, run the per-page `dist/` script from `docs/BUILD-REPORT.md` section 3: one `h1`, the footer line, canonical, one dark section, one primary, no em dash, no exclamation mark, no `[CONFIRM`.
 - Open every changed page in a browser at 375 and 1440 (also 768 and 1280 for layout work). Use the production build for anything on `/booking/`: the Cal.com booker iframe is blank in `astro dev` and renders in `npm run preview` or on Netlify.
 - Tab through anything you touched. The focus ring must show; status must read without color.

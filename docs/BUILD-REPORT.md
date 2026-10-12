@@ -9,12 +9,12 @@ Final gate on the Serra Cross Park site, run 2026-10-09 on the full repo with No
 | Types and diagnostics | `npx astro check` | 39 files, 0 errors, 0 warnings, 0 hints |
 | Full type check (includes `netlify/**` and `scripts/**`, which astro check may not walk) | `npx tsc --noEmit -p tsconfig.json` | exit 0, no output |
 | Unit tests | `npx vitest run` | 4 files, 50 tests, all pass, 184 ms (2026-10-10, after the terms gate: 5 files, 56 tests, all pass) |
-| Production build | `npm run build` | 11 pages, complete. The only output besides Astro's progress lines is the prelaunch check's 52 `WARN` lines (section 2). No Vite, React or Astro warnings |
-| Prelaunch check | `node scripts/prelaunch-check.mjs` | 51 warnings, exit 0 (section 2; 52 before Luke Erickson's photo was added) |
-| Per-page checks on `dist/` | script in section 3 | 11 pages, 0 failures |
+| Production build | `npm run build` | 12 pages, complete (11 at the 2026-10-09 gate; `/website-proposal/` came later). The only output besides Astro's progress lines is the prelaunch check's `WARN` lines (section 2; 38 on 2026-10-12). No Vite, React or Astro warnings |
+| Prelaunch check | `node scripts/prelaunch-check.mjs` | 38 warnings, exit 0 on 2026-10-12 (section 2; 51 earlier that day, 52 at the 2026-10-09 gate before Luke Erickson's photo was added) |
+| Per-page checks on `dist/` | script in section 3 | 12 pages, 0 failures (re-run 2026-10-12) |
 | Availability function, fixture and live | section 6 | 200 in both modes, correct cache headers |
 
-`dist/` is 20 MB: 122 WebP renditions, 9 JPEG Open Graph crops (1200 x 630), 5 original JPEGs that no page references (section 10, finding 1), 2 CSS files, 11 JS chunks, 3 TTF fonts, `sitemap-index.xml`, `sitemap-0.xml` (9 URLs; `/booking/requested/` and `/404` are left out), `robots.txt`, `favicon.svg`.
+`dist/` is 20 MB: 122 WebP renditions, 9 JPEG Open Graph crops (1200 x 630), 5 original JPEGs that no page references (section 10, finding 1), 2 CSS files, 11 JS chunks, 3 TTF fonts, `sitemap-index.xml`, `sitemap-0.xml` (9 URLs; `/booking/requested/`, `/website-proposal/` and `/404` are left out), `robots.txt`, `favicon.svg`.
 
 ## 2. Prelaunch warnings, verbatim
 
@@ -25,13 +25,9 @@ WARN  Strong Glasgow demo font still in place: design-system/fonts/StrongGlasgow
 WARN  Strong Glasgow demo font still in place: design-system/fonts/StrongGlasgow-Light.ttf (personal use only). License the face from Herofonts and replace it.
 WARN  Strong Glasgow demo font still in place: design-system/fonts/StrongGlasgow-Regular.ttf (personal use only). License the face from Herofonts and replace it.
 WARN  src/components/PersonCard.astro:28  [CONFIRM: CONTENT-TODO item 8, photos for all eight people and any officer titles]
-WARN  src/content/faq.ts:6  [CONFIRM: receipt setup with the accountant]
-WARN  src/content/faq.ts:7  [CONFIRM: before naming any vendor or price]
-WARN  src/content/faq.ts:8  [CONFIRM: a number to publish]
-WARN  src/content/faq.ts:9  [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
-WARN  src/content/faq.ts:11  [CONFIRM: visitor hours]
-WARN  src/content/faq.ts:12  [CONFIRM: rule for ceremonies, picnics, memorials]
-WARN  src/content/faq.ts:13  [CONFIRM: whose phone and how to label it]
+WARN  src/content/faq.ts:11  [CONFIRM: receipt setup with the accountant]
+WARN  src/content/faq.ts:12  [CONFIRM: before naming any vendor or price]
+WARN  src/content/faq.ts:14  [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
 WARN  src/content/timeline.ts:8  [CONFIRM: buyer, price, closing date, Conservancy founding date]
 WARN  src/content/timeline.ts:9  [CONFIRM: what E.C.O. stands for, if it should be spelled out]
 WARN  src/content/timeline.ts:10  [CONFIRM: the park was named Grant Park in 1918]
@@ -40,29 +36,20 @@ WARN  src/pages/about.astro:12  [CONFIRM: item 8, photos for all eight people an
 WARN  src/pages/about.astro:13  [CONFIRM: item 22, who bought the Cross and when the Conservancy formed; the page says neither]
 WARN  src/pages/about.astro:14  [CONFIRM: item 25, funding wording: "all of our funding" is dropped, gifts are described on their own]
 WARN  src/pages/about.astro:15  [CONFIRM: item 29, whether the replanting is still active and whether a current project should be named]
-WARN  src/pages/booking/index.astro:22  [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
-WARN  src/pages/booking/index.astro:23  [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
-WARN  src/pages/booking/index.astro:24  [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 8 AM and 8 PM, as the page states]
-WARN  src/pages/booking/index.astro:25  [CONFIRM: item 41, no power on site since 2026-10-12 (the owner withdrew the two circuits at the Cross); the FAQ and terms pages must say the same as this page: 8 to 8 every day, no power, bring your own]
-WARN  src/pages/booking/index.astro:26  [CONFIRM: item 19, insurance is stated for receptions only]
-WARN  src/pages/booking/requested.astro:16  [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
+WARN  src/pages/booking/index.astro:27  [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
+WARN  src/pages/booking/index.astro:28  [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 8 AM and 8 PM, as the page states, and the booking flow must collect the site fee with each reservation, as the steps now say]
 WARN  src/pages/booking/requested.astro:17  [CONFIRM: item 5, whether these steps should name Amber Weir or keep "the park office"]
-WARN  src/pages/contact.astro:14  [CONFIRM: item 20, whose phone 805-258-3153 is and how to label it; it reads "for anything else at the park" until then]
-WARN  src/pages/contact.astro:15  [CONFIRM: item 30, that Brakey Road is still closed to vehicles, and whether to add a route from the north]
-WARN  src/pages/contact.astro:16  [CONFIRM: item 36, that the Facebook group is still the Conservancy's active page]
-WARN  src/pages/contact.astro:17  [CONFIRM: item 27, whether a second address should get the form notifications; that is set in the Netlify UI, not here]
+WARN  src/pages/contact.astro:16  [CONFIRM: item 30, that Brakey Road is still closed to vehicles, and whether to add a route from the north]
+WARN  src/pages/contact.astro:17  [CONFIRM: item 36, that the Facebook group is still the Conservancy's active page]
+WARN  src/pages/contact.astro:18  [CONFIRM: item 27, whether a second address should get the form notifications; that is set in the Netlify UI, not here]
 WARN  src/pages/donate.astro:14  [CONFIRM: item 1, PAYMENTS.donateUrl is still Startup Ventura's placeholder Zeffy form]
 WARN  src/pages/donate.astro:15  [CONFIRM: item 12, Tax ID 20-8615264 against the IRS determination letter]
 WARN  src/pages/donate.astro:16  [CONFIRM: item 29, whether replanting is still active and whether a current project should be named]
 WARN  src/pages/faq.astro:18  [CONFIRM: item 4, the insurance price, insurance vendor and portable restroom vendor before naming any]
-WARN  src/pages/faq.astro:19  [CONFIRM: item 7, a parking count to publish]
-WARN  src/pages/faq.astro:20  [CONFIRM: item 20, whose phone 805-258-3153 is and how to label it]
 WARN  src/pages/gallery.astro:16  [CONFIRM: item 33, permission and credits for the West Cooke rainbow photo and the "-SCP" wedding set]
 WARN  src/pages/history.astro:28  [CONFIRM: items 6 and 22, who bought the Cross after the 2003 vote and when; nothing is claimed]
 WARN  src/pages/history.astro:29  [CONFIRM: item 29, the replanting is still active; the giving band keeps the brief's wording]
-WARN  src/pages/terms-and-conditions.astro:15  [CONFIRM: item 5, whether the terms should name Amber Weir or keep "the park office"]
-WARN  src/pages/terms-and-conditions.astro:16  [CONFIRM: item 19, whether ceremony-only weddings, picnics and memorials also need an insurance policy]
-WARN  src/pages/terms-and-conditions.astro:17  [CONFIRM: item 37, whether the Conservancy has a fuller rental agreement to publish here]
+WARN  src/pages/terms-and-conditions.astro:20  [CONFIRM: item 5, whether the terms should name Amber Weir or keep the admin@ address alone]
 WARN  No photo for Barbara Asbell (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Jan Schmutte (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Dave Schmutte (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
@@ -71,14 +58,14 @@ WARN  No photo for Karen Greenough (PEOPLE in src/config/site.ts). The About pag
 WARN  No photo for Christy Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Amber Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 
-Prelaunch check: 51 warnings on 2026-10-12 (51 on 2026-10-10; 52 on 2026-10-09, before Luke Erickson's photo was added). On 2026-10-12 the hours became 8 AM to 8 PM and the weekend 7:30 PM end was dropped (CONTENT-TODO item 15, resolved), so the booking page's hours marker on line 24 now reads 8 AM to 8 PM, the item 15 marker on line 25 gave way to one for item 41 (no power on site), and the faq.ts markers moved down one line because its header gained a note for item 41. The count is unchanged; the list above is the output of `node scripts/prelaunch-check.mjs` on 2026-10-12.
+Prelaunch check: 38 warnings on 2026-10-12 (51 earlier that day; 52 on 2026-10-09, before Luke Erickson's photo was added). The drop is the [CONFIRM] markers removed on 2026-10-12, when the Conservancy's terms document (docs/TERMS-SOURCE.md) settled insurance scope, parking, public access and the terms themselves, the phone number came off the site, and the separate pay-the-site-fee step was dropped (CONTENT-TODO items 2, 7, 18, 19, 20, 37 and 41). The list above is the output of `node scripts/prelaunch-check.mjs` on 2026-10-12, after those changes.
 ```
 
 Every `[CONFIRM: ...]` marker is inside a code comment. None reaches the built HTML (section 3). The list shrinks as Luke closes items in `CONTENT-TODO.md`; the Zeffy, font and photo warnings close when the launch checklist items land.
 
 ## 3. Per-page checks on dist
 
-Run against every HTML file in `dist/` after a fresh `npm run build`. Checks: exactly one `<h1>`; the footer nonprofit line "Serra Cross Conservancy is a 501(c)(3) nonprofit." and "Tax ID 20-8615264"; a `<link rel="canonical">` on `https://serracrosspark.com/`; an absolute `og:image`; at most one `.sc-section--dark`; at most one `.sc-btn--primary` in page content; no em dash (U+2014) and no exclamation mark in visible text, `alt`, `aria-label`, `title`, `placeholder` or `value`; no `[CONFIRM` anywhere in the file. Result: 11 pages, 0 failures.
+Run against every HTML file in `dist/` after a fresh `npm run build`. Checks: exactly one `<h1>`; the footer nonprofit line "Serra Cross Conservancy is a 501(c)(3) nonprofit." and "Tax ID 20-8615264"; a `<link rel="canonical">` on `https://serracrosspark.com/`; an absolute `og:image`; at most one `.sc-section--dark`; at most one `.sc-btn--primary` in page content; no em dash (U+2014) and no exclamation mark in visible text, `alt`, `aria-label`, `title`, `placeholder` or `value`; no `[CONFIRM` anywhere in the file. Result: 12 pages, 0 failures (re-run 2026-10-12 after the terms document landed).
 
 Two calibrations the next person running these checks should know about:
 
@@ -89,7 +76,7 @@ Two calibrations the next person running these checks should know about:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `/` | 1 | base, alt, base, dark, alt | 1 | Plan your event (hero, `/booking/`) | cross-olive-panorama | NGO, TouristAttraction | PageHero |
 | `/about/` | 1 | base, alt, base, alt, base | 0 | none | bench-ocean | NGO, TouristAttraction | SiteHeaderIsland |
-| `/booking/` | 1 | base, alt, dark, base, alt, base | 1 | Book now (hero, `#availability`; "Ask a question" beside it is secondary, to `#questions`) | reception-umbrellas | NGO, TouristAttraction, EventVenue | PageHero, AvailabilityCalendar, ContactForm |
+| `/booking/` | 1 | base, dark, alt, base, alt, base (since 2026-10-12: rules, how booking works, calendar, question form, gallery, FAQ) | 1 | Book now (hero, `#availability`; "Ask a question" beside it is secondary, to `#questions`) | reception-umbrellas | NGO, TouristAttraction, EventVenue | PageHero, AvailabilityCalendar, ContactForm |
 | `/booking/requested/` | 1 | base, alt | 0 | none | reception-lawn | NGO, TouristAttraction | SiteHeaderIsland |
 | `/contact/` | 1 | base, alt | 0 | Send message (form submit) | cross-sunset | NGO, TouristAttraction | SiteHeaderIsland, ContactForm |
 | `/donate/` | 1 | base, alt, base | 0 | none | burned-shrubs-cross-islands-2017 (top crop) | NGO, TouristAttraction | SiteHeaderIsland, ZeffyEmbed |
@@ -97,9 +84,10 @@ Two calibrations the next person running these checks should know about:
 | `/gallery/` | 1 | base, alt | 0 | none | coastline-salvia | NGO, TouristAttraction | PageHero, GalleryLightbox x2 |
 | `/history/` | 1 | base, alt, base, dark | 1 | none | cross-sunset | NGO, TouristAttraction | PageHero |
 | `/terms-and-conditions/` | 1 | base, alt | 0 | none | stone-sphere-cross | NGO, TouristAttraction | SiteHeaderIsland |
+| `/website-proposal/` | 1 | base, alt, base, alt, base, alt, base, alt | 0 | one, to lukeerickson.com (`PROPOSAL.contactHref`) | cross-olive-panorama (layout default) | NGO, TouristAttraction | none (static header) |
 | `/404` | 1 | base | 0 | Plan your event (`/booking/`) | cross-olive-panorama (layout default) | NGO, TouristAttraction | SiteHeaderIsland |
 
-`give` buttons link only to `/donate/` (header, drawer and the navy bands on Home and History) or to `PAYMENTS.siteFeeUrl` (Pay the site fee on `/booking/` and `/booking/requested/`) or `PAYMENTS.donateUrl` (the Zeffy fallback on `/donate/`). No `give` button goes anywhere else. `/404` and `/booking/requested/` carry `<meta name="robots" content="noindex">`; the 404 page's canonical is `/`. The sitemap filter in `astro.config.mjs` keeps `/booking/requested/` out of `sitemap-0.xml`.
+`give` buttons link only to `/donate/` (header, drawer and the navy bands on Home and History) or to `PAYMENTS.donateUrl` (the Zeffy fallback on `/donate/`). No `give` button goes anywhere else. Since 2026-10-12 no page carries a "Pay the site fee" button or link: the fee is paid in full with the reservation (docs/TERMS-SOURCE.md, 1.1), and `PAYMENTS.siteFeeUrl` is referenced by no page (CONTENT-TODO item 2 decides which payment step collects it). `/404`, `/booking/requested/` and `/website-proposal/` carry `<meta name="robots" content="noindex">` (the proposal adds `nofollow`); the 404 page's canonical is `/`. The sitemap filter in `astro.config.mjs` keeps `/booking/requested/` and `/website-proposal/` out of `sitemap-0.xml`.
 
 The check script used for this gate is reproduced here so it can be re-run (save as `scripts/page-checks.mjs` or run from anywhere with the dist path as the argument):
 
@@ -137,7 +125,7 @@ console.log(`${files.length} pages, ${failures} failures`);
 
 ## 4. Pages built
 
-Eleven routes, all static, `trailingSlash: 'always'`, `build.format: 'directory'`. Titles are "<page> | Serra Cross Park" except Home, which is the full title.
+Twelve routes, all static (eleven at the 2026-10-09 gate; `/website-proposal/`, a private page for the board, came later), `trailingSlash: 'always'`, `build.format: 'directory'`. Titles are "<page> | Serra Cross Park" except Home, which is the full title.
 
 | Route | File | Title | Description |
 | --- | --- | --- | --- |
@@ -145,12 +133,13 @@ Eleven routes, all static, `trailingSlash: 'always'`, `build.format: 'directory'
 | `/about/` | `src/pages/about.astro` | About the Conservancy | Serra Cross Conservancy is the nonprofit that keeps the Cross where it stands, keeps the park open to everyone, and cares for the hill. Meet the board. |
 | `/history/` | `src/pages/history.astro` | History of the Serra Cross | The history of the Cross above Mission San Buenaventura, year by year: from Easter Sunday 1782 to the stone ramparts, the Thomas Fire and the replanting. |
 | `/booking/` | `src/pages/booking/index.astro` | Plan your event | Book a wedding or event at Serra Cross Park in Ventura: up to 300 seated guests, $300 per hour, with the ocean and the Channel Islands below. See open dates. |
-| `/booking/requested/` | `src/pages/booking/requested.astro` | Booking requested | We have your request for a date at Serra Cross Park. Here is what happens next, and how to pay the site fee. (noindex) |
+| `/booking/requested/` | `src/pages/booking/requested.astro` | Booking requested | We have your request for a date at Serra Cross Park. Here is what happens next. (noindex) |
 | `/gallery/` | `src/pages/gallery.astro` | Gallery | Photographs of Serra Cross Park: weddings and receptions at the Cross, the dry-stone ramparts, the salvia, and the Channel Islands from the hill above Ventura. |
 | `/faq/` | `src/pages/faq.astro` | Frequently asked questions | Plain answers about booking Serra Cross Park, planning the day, and visiting the Cross: rates, hours, guest counts, insurance, power, restrooms and parking. |
 | `/contact/` | `src/pages/contact.astro` | Contact and directions | Send a message to the park office, find the mailing address and the Facebook group, and get driving directions to Serra Cross Park from the 101. |
 | `/donate/` | `src/pages/donate.astro` | Donate to Serra Cross Conservancy | Give to Serra Cross Conservancy, the nonprofit that cares for Serra Cross Park. Gifts replant the hill after the Thomas Fire and pay for year-round upkeep. |
-| `/terms-and-conditions/` | `src/pages/terms-and-conditions.astro` | Terms and conditions | The rules for booking and using Serra Cross Park: reserving a date, the $300 per hour site fee, hours, the grounds, insurance and alcohol, and parking. |
+| `/terms-and-conditions/` | `src/pages/terms-and-conditions.astro` | Terms and conditions | The Conservancy's terms and conditions for every event at Serra Cross Park: reservation and payment, insurance, alcohol, public access, parking, prohibited activities and liability, with the PDF to download. (Since 2026-10-12 the page carries the Conservancy's own Special Event Terms and Conditions, clause by clause, from docs/TERMS-SOURCE.md, with the PDF at /docs/serra-cross-park-terms-and-conditions.pdf.) |
+| `/website-proposal/` | `src/pages/website-proposal.astro` | Website proposal | A proposal to the board of Serra Cross Conservancy for the new Serra Cross Park website. (noindex, nofollow; not in the sitemap; no link from the header or footer) |
 | `/404` | `src/pages/404.astro` | Page not found | That page is not here. Go to the home page, plan your event, or contact the park office. (noindex) |
 
 Shared pieces: `src/layouts/BaseLayout.astro` (head, canonical, Open Graph and Twitter card, Google Search Console tag carried over from the old site, font preload, site-wide JSON-LD, skip link, header on no-hero pages, `<main id="main" tabindex="-1">`, `SiteFooter` with the `credit` prop), `src/components/PageHero.tsx` (Hero carrying the overlay header), `src/components/PersonCard.astro` (About page cards), `src/content/photos.ts` (30 photos with alt, caption, orientation and uses), `src/content/faq.ts` (20 questions in three groups), `src/content/timeline.ts` (the History timeline), `src/config/site.ts` (every fact, link and setting), `src/lib/images.ts` (`picture()` for WebP srcsets with explicit dimensions, `ogImage()` for the 1200 x 630 JPEG cards). Page CSS lives in `src/styles/pages/*.css`, one file per page, imported at the top of each page's frontmatter.
@@ -170,7 +159,7 @@ Everything else on the site is static HTML rendered from `src/components/ds/` at
 | `PageHero` | `src/components/PageHero.tsx` | `/`, `/booking/`, `/gallery/`, `/history/` | `client:media="(max-width: 1100px)"` | The overlay header's menu toggle on the hero pages. The query matches `bundle.css`, which shows the toggle at `max-width: 1100px` |
 | `AvailabilityCalendar` | `src/components/booking/AvailabilityCalendar.tsx` | `/booking/` | `client:visible` | Fetches `GET /api/availability` (or `?fixture=1` when the page URL has it), draws the Sunday-first month grid (two months side by side from 1100px), roving tabindex with arrows, Home, End, PageUp and PageDown, a polite live region for month changes, a `role="status"` line for the chosen day. Picking an open or partly booked day opens the booking area: first the terms agreement (`TermsGate`, a checkbox whose label links to the terms; the agreement is kept for the visit in sessionStorage, added 2026-10-10), then, once the box is ticked, `CalBooker` (`React.lazy`) under the heading "Book <date>", which takes focus. On a fetch failure it shows the info Notice and the same gate, then `CalBooker` with no date, so booking never depends on the endpoint |
 | `CalBooker` (loaded by the calendar, not a page island) | `src/components/booking/CalBooker.tsx` | `/booking/` | lazy chunk | `@calcom/embed-react` with `getCalApi({ namespace: 'reserve' })`, `cal('ui', { theme: 'light', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme })` built from `src/lib/cal-theme.ts`, `calLink` `serra-cross-park/reserve?month=YYYY-MM&date=YYYY-MM-DD`, remounted by `key={date}`. On `linkFailed` or 12 s of silence it renders `InquiryFallback` |
-| `InquiryFallback` (inside CalBooker) | `src/components/booking/InquiryFallback.tsx` | `/booking/` | with CalBooker | A link to `https://cal.com/serra-cross-park/reserve`, a required terms checkbox (`TermsCheckbox`, the one the gate uses; an unticked send is stopped with a caution Notice and focus on the box) and the design system's `InquiryForm` with a "Start time" select (`start-time`, every hour from 8 AM to 6 PM, through the `timeField` prop added 2026-10-12) in place of the time-of-day chips, posted to the Netlify form `event-inquiry` with `terms=yes` (section 7) |
+| `InquiryFallback` (inside CalBooker) | `src/components/booking/InquiryFallback.tsx` | `/booking/` | with CalBooker | A link to `https://cal.com/serra-cross-park/reserve`, a required terms checkbox (`TermsCheckbox`, the one the gate uses; an unticked send is stopped with a caution Notice and focus on the box) and the design system's `InquiryForm` with a "Start time" select (`start-time`, every hour from 8 AM to 6 PM, through the `timeField` prop added 2026-10-12) in place of the time-of-day chips, posted to the Netlify form `event-inquiry` with `terms=yes` (section 7); its "Inquiry sent" text comes through the `sentText` prop added 2026-10-12 (the office replies by email about the date and the site fee; the reservation is confirmed once the payment is processed) |
 | `ContactForm` | `src/components/ContactForm.tsx` | `/contact/`, `/booking/` (`#questions`) | `client:visible` | The contact form: `Field`s, `ChoiceChips` for "regarding", honeypot, posts to Netlify Forms with `fetch('/')`, shows the "Thank you" state and moves focus to it, caution Notice on error. Before hydration the same form posts natively to `/contact/`. On the booking page (2026-10-12) it renders with "Booking an event" preselected, the title "Send your question" as an h3 and a secondary button, because the hero's "Book now" is that page's primary |
 | `ZeffyEmbed` | `src/components/ZeffyEmbed.tsx` | `/donate/` | `client:visible` | Renders Zeffy's `[data-zeffy-embed]` container (plus a `<noscript>` give button), loads `https://www.zeffy.com/embed/v2/zeffy-embed.js` once, watches for the injected iframe. If the script errors or no iframe appears in 8 s, swaps in the fallback: a `give` button to `PAYMENTS.donateUrl` in a new tab and a plain iframe of the embed URL. The script container and the plain iframe are never in the DOM together |
 | `GalleryLightbox` (two instances) | `src/components/GalleryLightbox.tsx` | `/gallery/` | `client:visible` | The unchanged `Gallery` followed by a native `<dialog>`. After hydration each photo becomes a button (`role="button"`, `tabIndex 0`, `aria-haspopup="dialog"`, "Open: <caption>") through the component's `imgProps` spread. Dialog shows the largest rendition and caption, Previous and Next (buttons and arrow keys), Close, Escape, body scroll lock, focus returned to the thumbnail |
@@ -235,7 +224,7 @@ All JSON-LD is `<script type="application/ld+json">` with `<` escaped. `src/layo
 - `NGO` `@id https://serracrosspark.com#org`: name Serra Cross Conservancy, url, email `admin@serracrosspark.com`, `taxID` 20-8615264, `nonprofitStatus` Nonprofit501c3, PostalAddress (PO Box 48, Ventura, CA 93002-0048, US), `sameAs` the Facebook group.
 - `TouristAttraction` `@id https://serracrosspark.com#park`: name Serra Cross Park, url, description, `geo` 34.2846018, -119.2962133, address Ventura CA US, `isAccessibleForFree` true, `publicAccess` true, `image` (that page's Open Graph image), `maintainer` the NGO by id.
 
-**`/booking/`** adds `EventVenue` `@id https://serracrosspark.com#venue`: url `/booking/`, description (up to 300 seated or 500 standing), image (the hero's OG crop), address, geo, `maximumAttendeeCapacity` 500, `publicAccess` true, `isAccessibleForFree` true, `amenityFeature` wheelchair access and disabled parking, `openingHoursSpecification` Monday to Sunday 09:00 to 20:00, `containedInPlace` the park by id, `maintainer` the NGO by id.
+**`/booking/`** adds `EventVenue` `@id https://serracrosspark.com#venue`: url `/booking/`, description (up to 300 seated or 500 standing), image (the hero's OG crop), address, geo, `maximumAttendeeCapacity` 500, `publicAccess` true, `isAccessibleForFree` true, `amenityFeature` wheelchair access and disabled parking, `openingHoursSpecification` Monday to Sunday 08:00 to 20:00 (09:00 until the hours changed on 2026-10-12), `containedInPlace` the park by id, `maintainer` the NGO by id.
 
 **`/faq/`** adds `FAQPage` `@id https://serracrosspark.com/faq/#faq`, name "Frequently asked questions about Serra Cross Park", `mainEntity` of 20 `Question` items with `acceptedAnswer` text, generated from `src/content/faq.ts` so the data always matches the visible answers.
 
@@ -316,7 +305,7 @@ Collected from the stage agents' unresolved items, deduplicated and grouped. Eve
 
 **Content and facts (Luke, not a browser)**
 
-- `CONTENT-TODO.md` items the pages write around: 2 (site-fee receipts versus "not a donation"), 4, 5, 7, 8, 11 and 38 (Cal.com slots versus published hours, confirmation on, future limit, success redirect to `/booking/requested/`), 12 (Tax ID against the IRS letter), 13 (existing bookings into Cal.com), 15, 18, 19, 20, 22, 24, 27, 29, 30, 33, 35, 36, 37, 39. The brief's "every donation surface" rule: the "Pay the site fee" surfaces on `/booking/` and `/booking/requested/` carry no 501(c)(3) line on purpose, because the fee is not a donation; flag if the rule was meant to include them.
+- `CONTENT-TODO.md` items the pages write around: 2 (how the site fee is receipted and which payment step collects it with the reservation), 4, 5, 8, 11 and 38 (Cal.com slots versus published hours, confirmation on, future limit, success redirect to `/booking/requested/`), 12 (Tax ID against the IRS letter), 13 (existing bookings into Cal.com), 22, 24, 27, 29, 30, 33, 35, 36, 39, 41, 43. Items 7, 15, 18, 19, 20 and 37 were resolved on 2026-10-12 by the Conservancy's terms document and the owner's decisions. Since that date no page carries a "Pay the site fee" surface: the fee is paid in full with the reservation (docs/TERMS-SOURCE.md, 1.1), so the 501(c)(3) line appears in the footer and on `/donate/` only, and the brief's "every donation surface" question no longer arises.
 
 
 ## 13. Lighthouse (mobile, production build, 2026-10-09)

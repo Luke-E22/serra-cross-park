@@ -19,6 +19,11 @@
  * setup and breakdown inside booked time. The form asks for a start hour in a select (the InquiryForm's
  * timeField prop, logged in DESIGN-SYSTEM-CHANGES.md): every hour from 8 AM to 6 PM, the last start that
  * fits two hours before the gates lock. The posted field is "start-time" with a 24-hour value like "14:00".
+ *
+ * Sent view: the site fee is paid in full with the reservation and the reservation is confirmed once the
+ * payment is processed (docs/TERMS-SOURCE.md, 1.1), so the confirmation text comes from here through the
+ * InquiryForm's sentText prop (logged in DESIGN-SYSTEM-CHANGES.md). The component's own sentence states
+ * the rule the brief had, which the terms document replaced.
  */
 import { useId, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -157,6 +162,7 @@ export default function InquiryFallback() {
       <InquiryForm
         onSubmit={handleSubmit}
         sent={send === 'sent'}
+        sentText="The park office will reply by email about your date and the site fee. Your reservation is confirmed once the payment is processed."
         dateHelp="Bookings are at least two hours, any start time between 8 AM and 8 PM."
         timeField={{
           name: 'start-time',

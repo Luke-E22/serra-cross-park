@@ -2,19 +2,24 @@
 import '../styles/pages/terms.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Button, SectionHeading } from '../components/ds';
-import { PAYMENTS, SITE } from '../config/site';
+import { SITE } from '../config/site';
 import { ogImage } from '../lib/images';
 
 import { PHOTOS } from '../content/photos';
 
-// Every rule below comes from BRIEF.md section 9. The old terms page (CONTENT-INVENTORY.md)
-// had no cancellation, weather, damage, decoration, sound or open-flame rules, so none are
-// stated here (CONTENT-TODO item 37). Nothing is invented.
-// Hours and power follow the owner's decisions of 2026-10-12: 8 AM to 8 PM every day, no weekend
-// 7:30 PM end (item 15 resolved), and no power on site (item 41).
-// [CONFIRM: item 5, whether the terms should name Amber Weir or keep "the park office"]
-// [CONFIRM: item 19, whether ceremony-only weddings, picnics and memorials also need an insurance policy]
-// [CONFIRM: item 37, whether the Conservancy has a fuller rental agreement to publish here]
+// The clauses below are the Conservancy's own "Special Event Terms and Conditions", from
+// docs/TERMS-SOURCE.md (the text of the PDF the owner supplied on 2026-10-12). The PDF itself is
+// published at /docs/serra-cross-park-terms-and-conditions.pdf and linked at the foot of the page.
+// The parts and clauses keep the document's order and numbering (it has no 3.5) so the page matches
+// the PDF. Only the surface was tidied into the brand voice: sentence case headings, shorter
+// sentences, "such as" for "e.g.", no serial commas, the double period in 2.6 fixed, "Thank you for
+// your cooperation" dropped. The legal substance is the document's.
+// The "Booking basics" block carries the site's own facts that the document does not state
+// (hours, any start time, two-hour minimum, $300 per hour, capacity, no power), per the owner's
+// decisions of 2026-10-10 and 2026-10-12 and BRIEF.md section 9.
+// [CONFIRM: item 5, whether the terms should name Amber Weir or keep the admin@ address alone]
+
+const PDF_PATH = '/docs/serra-cross-park-terms-and-conditions.pdf';
 
 // Card image: stone-sphere-cross is tagged og-image in photos.ts and is large enough for the
 // 1200x630 crop (stone-rampart-corner is only 760px wide).
@@ -24,7 +29,7 @@ const og = await ogImage(ogPhoto.image);
 
 <BaseLayout
   title="Terms and conditions"
-  description="The rules for booking and using Serra Cross Park: reserving a date, the $300 per hour site fee, hours, the grounds, insurance and alcohol, and parking."
+  description="The Conservancy's terms and conditions for every event at Serra Cross Park: reservation and payment, insurance, alcohol, public access, parking, prohibited activities and liability, with the PDF to download."
   path="/terms-and-conditions/"
   ogImage={og}
   ogImageAlt={ogPhoto.alt}
@@ -34,96 +39,200 @@ const og = await ogImage(ogPhoto.image);
       <SectionHeading
         as="h1"
         title="Terms and conditions"
-        intro="These are the rules for booking and using the park. Read them before you reserve a date."
+        intro="These are the Conservancy's terms for every event at the park. Reserving a date means agreeing to them."
       />
 
       <div class="terms body">
-        <p>
-          We welcome events of every kind, from family picnics and school field trips to weddings and
-          memorials. Here is what to know before you hold yours at the Cross.
-        </p>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-reserving">Reserving a date</h2>
-          <ul class="terms__list" role="list">
-            <li>Pick a date on the booking page, agree to these terms, then choose your time and send your request. The park office reviews it.</li>
-            <li>Once we confirm the date with you, we hold it for 14 days while the site fee arrives.</li>
-            <li>When the site fee arrives, we send your confirmation letter. Your date is reserved.</li>
-          </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-fee">The site fee</h2>
-          <ul class="terms__list" role="list">
-            <li>The site fee is $300 per hour, with a two-hour minimum.</li>
-            <li>Booked time includes setup and breakdown for you and your vendors.</li>
-            <li>The site fee reserves your date. It is non-refundable.</li>
-            <li>The site fee is not a donation and is not tax-deductible.</li>
-            <li>
-              Pay it online through our <a href={PAYMENTS.siteFeeUrl}>site-fee payment page</a>.
-            </li>
-          </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-hours">Hours</h2>
-          <ul class="terms__list" role="list">
-            <li>Events run 8 AM to 8 PM, daily, year-round, starting at any time you choose.</li>
-            <li>The minimum booking is two hours. Booked time includes setup and breakdown.</li>
-            <li>Everyone and everything is off the property by 8 PM, when the gates lock.</li>
-          </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-grounds">The grounds</h2>
-          <ul class="terms__list" role="list">
+        <section class="terms__basics-block" aria-labelledby="terms-basics">
+          <h2 class="terms__part-title heading" id="terms-basics">Booking basics</h2>
+          <ul class="terms__basics" role="list">
+            <li>Events run 8 AM to 8 PM, every day of the year.</li>
+            <li>Start at any time you choose.</li>
+            <li>The minimum booking is two hours.</li>
+            <li>The site fee is $300 per hour. Setup and breakdown sit inside booked time.</li>
+            <li>The site fee reserves your date. It is not a donation and is not tax-deductible.</li>
             <li>The grounds hold up to 300 seated or 500 standing.</li>
-            <li>The grounds stay open to the public during every event.</li>
-            <li>There are no restrooms or water on site. Rent portable restrooms and bring your own water.</li>
-            <li>There is no power on site. Bring your own power for sound and lighting.</li>
-            <li>The park is not lit. Evening events bring their own lighting.</li>
-            <li>There are no changing rooms.</li>
-            <li>Seating is not provided. Rent chairs and tables from a rental company.</li>
-            <li>There are trash cans on site, but all event trash leaves with you.</li>
+            <li>There is no power on site.</li>
           </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-insurance">Insurance and alcohol</h2>
-          <ul class="terms__list" role="list">
-            <li>Receptions need a $1 million one-day special event policy.</li>
-            <li>Alcohol is allowed with event insurance and a licensed caterer.</li>
-            <li>No self-service alcohol.</li>
-          </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-parking">Parking</h2>
-          <ul class="terms__list" role="list">
-            <li>Park along one side of the entrance street and keep the fire lane open.</li>
-            <li>For more than 100 guests, we suggest a valet service.</li>
-            <li>Shuttles are yours to arrange.</li>
-          </ul>
-        </section>
-
-        <section class="terms__section">
-          <h2 class="terms__title heading-sm" id="terms-questions">Changes and questions</h2>
-          <p>
-            Need to change something about your booking, or have a question about these terms? Email the park
-            office at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          <p class="terms__note">
+            The terms below keep the order and clause numbers of the PDF, so the two match.
           </p>
         </section>
+
+        <section class="terms__part" aria-labelledby="terms-1">
+          <h2 class="terms__part-title heading" id="terms-1">1. General terms of use</h2>
+
+          <h3 class="terms__clause heading-sm" id="terms-1-1"><span class="terms__num">1.1</span> Reservation and payment</h3>
+          <p>
+            To reserve Serra Cross Park for a special event, clients must submit a completed reservation form
+            along with the full payment for the reservation. Your reservation is not confirmed until payment
+            has been received and processed.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-1-2"><span class="terms__num">1.2</span> Non-refundable payment</h3>
+          <p>
+            All payments are non-refundable. Clients may reschedule the event date once, subject to
+            availability and the payment of any applicable fees. Any cancellation of the event forfeits the
+            payment.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-1-3"><span class="terms__num">1.3</span> Rescheduling</h3>
+          <p>
+            Clients may reschedule the event once at no charge, subject to availability. A request to
+            reschedule the date and time of your event must be sent by email to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+          </p>
+        </section>
+
+        <section class="terms__part" aria-labelledby="terms-2">
+          <h2 class="terms__part-title heading" id="terms-2">2. Client responsibilities</h2>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-1"><span class="terms__num">2.1</span> Event setup and cleanup</h3>
+          <p>
+            The client is responsible for the setup and breakdown of all event items, including tables,
+            chairs, decor and other rentals. The client is also responsible for cleaning up after the event
+            and removing all items, including trash, decor and equipment, by the end of the reservation
+            period.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-2"><span class="terms__num">2.2</span> Insurance requirement</h3>
+          <p>
+            For events involving catered food, beverages or a reception, the client must provide proof of a
+            one-day, $1 million liability insurance policy covering the event. Proof of insurance must be sent
+            to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> at least seven days before the event.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-3"><span class="terms__num">2.3</span> Time management</h3>
+          <p>
+            The client must keep to the time allotted for the event, including setup, the event itself and
+            cleanup. Any overrun of the reserved time incurs an additional charge of $300 per hour.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-4"><span class="terms__num">2.4</span> Rental equipment and decor</h3>
+          <p>
+            The client is responsible for providing their own rentals, such as chairs, tables and tents, and
+            their own decor. All rental equipment must be removed at the end of the event. The client agrees
+            to hold Serra Cross Park harmless for any damage to or loss of those items.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-5"><span class="terms__num">2.5</span> Alcohol service</h3>
+          <p>
+            No self-served alcohol is allowed. Alcohol must be served by a licensed provider, such as a
+            bartender or caterer. The client is responsible for making sure that all applicable alcohol laws
+            and regulations are followed, including age restrictions.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-2-6"><span class="terms__num">2.6</span> No synthetic confetti or petals</h3>
+          <p>
+            Synthetic confetti or petals are strictly prohibited. Clients may use biodegradable or natural
+            confetti or petals. Failure to comply with this policy will result in additional cleanup fees.
+          </p>
+        </section>
+
+        <section class="terms__part" aria-labelledby="terms-3">
+          <h2 class="terms__part-title heading" id="terms-3">3. Property conditions</h2>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-1"><span class="terms__num">3.1</span> Public access</h3>
+          <p>
+            The park gates remain open to the public from dawn to dusk. For safety, the gates to Serra Cross
+            Park may not be locked from dawn to dusk. The client acknowledges that other people may be in the
+            park during the reserved event time. The client may put up signs, hire security, station a
+            volunteer at the gate and notify the public that an event is taking place.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-2"><span class="terms__num">3.2</span> Water source</h3>
+          <p>
+            There is no water source on the property. Clients must make their own arrangements for water as
+            needed for the event.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-3"><span class="terms__num">3.3</span> Restroom facilities</h3>
+          <p>
+            Serra Cross Park does not provide restroom facilities. Clients must arrange for portable
+            restrooms if their event needs them. If your event is on a weekend, restrooms can be delivered
+            Friday and picked up Monday.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-4"><span class="terms__num">3.4</span> Lighting</h3>
+          <p>
+            There is no lighting on the property, including in the parking lot. Clients are responsible for
+            providing their own lighting if their event extends into the evening.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-6"><span class="terms__num">3.6</span> Trash and waste</h3>
+          <p>
+            The client is responsible for disposing of all trash and waste generated during the event. The
+            client must leave the park in the same condition it was found. Failure to remove trash may result
+            in a one-time trash removal fee.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-3-7"><span class="terms__num">3.7</span> Parking</h3>
+          <p>
+            Parking is available for 35 vehicles in designated areas inside the park gates. The venue is not
+            responsible for any loss, theft or damage to vehicles or personal items while on the premises.
+          </p>
+        </section>
+
+        <section class="terms__part" aria-labelledby="terms-4">
+          <h2 class="terms__part-title heading" id="terms-4">4. Prohibited activities</h2>
+
+          <h3 class="terms__clause heading-sm" id="terms-4-1"><span class="terms__num">4.1</span> Illegal activities</h3>
+          <p>
+            Any illegal activity, including drug use, underage drinking or other unlawful behavior, is
+            strictly prohibited and will result in the immediate termination of the event.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-4-2"><span class="terms__num">4.2</span> Firearms and weapons</h3>
+          <p>
+            The possession or use of firearms, explosives or other dangerous weapons is strictly prohibited
+            in the park, unless authorized by law.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-4-3"><span class="terms__num">4.3</span> Smoking, fireworks or open flames</h3>
+          <p>
+            Smoking, fireworks, open flames or any form of fire are strictly prohibited on the property.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-4-4"><span class="terms__num">4.4</span> Vehicles on the lawn</h3>
+          <p>
+            To preserve the lawn and the surrounding areas, no vehicles are allowed on the grass. Please use
+            the designated parking and loading areas.
+          </p>
+        </section>
+
+        <section class="terms__part" aria-labelledby="terms-5">
+          <h2 class="terms__part-title heading" id="terms-5">5. Liability and indemnity</h2>
+
+          <h3 class="terms__clause heading-sm" id="terms-5-1"><span class="terms__num">5.1</span> Client liability</h3>
+          <p>
+            The client assumes full responsibility for any accidents, injuries or damages that occur during
+            the event. The client agrees to indemnify and hold harmless Serra Cross Park, its employees,
+            volunteers and affiliates from any claims arising from the event.
+          </p>
+
+          <h3 class="terms__clause heading-sm" id="terms-5-2"><span class="terms__num">5.2</span> Park liability</h3>
+          <p>
+            Serra Cross Park is not responsible for any personal injury, damage, theft or loss of personal
+            property that occurs during the event. The client assumes all risks associated with holding an
+            event on park property.
+          </p>
+        </section>
+
+        <p class="terms__agree">
+          By making a reservation and holding an event at Serra Cross Park, you agree to these terms and
+          conditions.
+        </p>
       </div>
     </div>
   </section>
 
-  <section class="sc-section sc-section--alt" aria-label="Plan your event">
+  <section class="sc-section sc-section--alt" aria-label="Download the terms or plan your event">
     <div class="sc-container">
       <div class="terms-close">
         <p class="terms-close__text lede">
-          Ready to pick a date? The booking page has the calendar, the rates and the steps.
+          Keep a copy of the terms, or go on to the booking page for the calendar and the steps.
         </p>
         <div class="terms-close__actions">
+          <Button variant="secondary" href={PDF_PATH} icon="arrow-up-right">Download the terms (PDF)</Button>
           <Button variant="secondary" href="/booking/" icon="arrow-right">Plan your event</Button>
         </div>
       </div>

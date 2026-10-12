@@ -1,13 +1,15 @@
 # Launch checklist
 
-Everything that has to happen before serracrosspark.com switches from WordPress to this site, and the first things to do after. The items from BRIEF.md section 16 come first in each group, then the items the build surfaced. `npm run prelaunch` (also run by `npm run build`) tracks the code-side items; on 2026-10-10 it printed 51 warnings, and the goal is zero apart from any you accept on purpose. Facts about Cal.com and Zeffy as they stood on 2026-10-09 are in docs/INTEGRATION-NOTES.md; the full gate is in docs/BUILD-REPORT.md.
+Everything that has to happen before serracrosspark.com switches from WordPress to this site, and the first things to do after. The items from BRIEF.md section 16 come first in each group, then the items the build surfaced. `npm run prelaunch` (also run by `npm run build`) tracks the code-side items; on 2026-10-12 it printed 38 warnings, and the goal is zero apart from any you accept on purpose. Facts about Cal.com and Zeffy as they stood on 2026-10-09 are in docs/INTEGRATION-NOTES.md; the event rules are the Conservancy's terms document, docs/TERMS-SOURCE.md; the full gate is in docs/BUILD-REPORT.md.
 
 ## Content and facts
 
 - [ ] Every item in `CONTENT-TODO.md` answered.
-  41 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
+  43 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
 - [ ] Power confirmed as not available (item 41).
   On 2026-10-12 Luke said there is no power on site, and the FAQ, the terms, the booking notices and the terms gate say so. The brief and the brand book had described a little power at the base of the Cross for a small sound system. Confirm whether that power exists and is simply not offered to renters, in case the FAQ should say so.
+- [ ] Terms PDF and terms page in step with the Conservancy's document.
+  The Special Event Terms and Conditions (supplied 2026-10-12) are the source of event rules. The text is in `docs/TERMS-SOURCE.md`, the original PDF in `docs/source/`, and the published copy in `public/docs/serra-cross-park-terms-and-conditions.pdf`, linked from the terms page. When the Conservancy revises the document, replace both PDFs, update `TERMS-SOURCE.md`, the terms page and the FAQ, and fix the clause numbering (item 42: there is no 3.5).
 - [ ] Tax ID checked against the IRS determination letter (item 12).
   The old Donate page printed 20-861526, eight digits. The site uses 20-8615264 from `SITE.ein` in `src/config/site.ts`, which feeds the footer of every page, the Donate page and the NGO `taxID` in the JSON-LD.
 - [ ] Board and staff photos in place, or the initials placeholders signed off.
@@ -23,14 +25,14 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 ## Cal.com
 
-- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time; availability is 8 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
+- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time, and the park office confirms each reservation once its payment is processed; availability is 8 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
   The items below break this one into the settings read from the live event on 2026-10-09 (CONTENT-TODO items 11, 38, 39 and 40, docs/INTEGRATION-NOTES.md).
 - [ ] Requires confirmation turned on, with unconfirmed bookings blocking the slot.
-  Off today. The booking steps on `/booking/` and `/booking/requested/` promise that the park office reviews each request and holds the date, so a booking must not confirm itself. Cal.com dashboard, event `reserve`, Advanced.
+  Off today. The booking steps on `/booking/` and `/booking/requested/` promise that the park office confirms the reservation by email once the payment is processed, so a booking must not confirm itself; the slot stays blocked while unconfirmed. The terms document (1.1) says the full payment comes with the reservation form and nothing is confirmed before it is processed (item 43). Cal.com dashboard, event `reserve`, Advanced.
 - [ ] Future booking limit set to a rolling 12 months, or `horizonMonths` changed to match.
   Unlimited today. `BOOKING.horizonMonths` is 12 in `src/config/site.ts`; the availability calendar stops there and shows later dates as Not available online, so the two should agree.
 - [ ] Success redirect set to `https://serracrosspark.com/booking/requested/`.
-  None today. That page explains the hold, carries the Pay the site fee button and is noindex (`src/pages/booking/requested.astro`); without the redirect visitors stay on Cal.com's own success screen.
+  None today. That page says what happens next (the park office emails the confirmation once the payment is processed) and is noindex (`src/pages/booking/requested.astro`); without the redirect visitors stay on Cal.com's own success screen.
 - [ ] Event title and description rewritten in the brand voice.
   Today the title is "Private Event / Wedding" and the description has an asterisk, title case and an all-caps warning. Both show inside the booker because `hideEventTypeDetails` is false (`src/components/booking/CalBooker.tsx`). Items 38 and 39.
 - [ ] Durations set to a two-hour minimum: default length 2 hours (120 minutes), longer lengths still offered.
@@ -51,9 +53,9 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 ## Payments
 
 - [ ] Serra Cross Conservancy's own Zeffy donation and site-fee forms in `PAYMENTS`. No `startup-ventura` anywhere.
-  `PAYMENTS.donateUrl` and `PAYMENTS.siteFeeUrl` in `src/config/site.ts` (item 1). Paste each form's public URL (`https://www.zeffy.com/en-US/donation-form/<slug>` or the equivalent); `src/components/ZeffyEmbed.tsx` works out the embed path. The prelaunch check warns until both change.
+  `PAYMENTS.donateUrl` and `PAYMENTS.siteFeeUrl` in `src/config/site.ts` (item 1). Paste each form's public URL (`https://www.zeffy.com/en-US/donation-form/<slug>` or the equivalent); `src/components/ZeffyEmbed.tsx` works out the embed path. The prelaunch check warns until both change. The site fee is collected with the reservation (the terms document, 1.1), so no page shows a "Pay the site fee" button; `siteFeeUrl` is the form the payment step uses if that step runs through Zeffy (item 2).
 - [ ] Site-fee receipt setup confirmed with the Conservancy's accountant.
-  Item 2. A Zeffy donation form issues a donation receipt, but the site says the fee is non-refundable and not tax-deductible on `/booking/`, `/booking/requested/`, the FAQ and the terms. The fee may need a Zeffy payment or ticketing form rather than a donation form.
+  Item 2. The fee is a payment made in full with the reservation, non-refundable and never a donation (the terms document, 1.1 and 1.2), and the site says so on `/booking/`, `/booking/requested/`, the FAQ and the terms. A Zeffy donation form issues a donation receipt, so the fee may need a Zeffy payment or ticketing form, or another payment step, rather than a donation form; settle the receipt wording and the collection step with the accountant.
 - [ ] Zeffy form text in the brand voice, set in the Zeffy dashboard.
   Short sentences, sentence case, gifts are tax-deductible, the site fee is not. The site cannot change text inside the iframe.
 - [ ] Donate page checked on the deploy preview with the real form.
@@ -134,7 +136,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Structured data validated on the live site.
   Google's Rich Results Test on `/faq/` (FAQPage) and `/booking/` (EventVenue), and the Schema Markup Validator on the home page (NGO and TouristAttraction).
 - [ ] First real booking request followed end to end.
-  The Cal.com notification arrives, the slot stays held while unconfirmed, the visitor lands on `/booking/requested/`, and the site fee arrives through Zeffy with the agreed receipt wording.
+  The Cal.com notification arrives, the slot stays blocked while unconfirmed, the visitor lands on `/booking/requested/`, the site fee is collected with the reservation and receipted with the agreed wording, and the office's confirmation email goes out once the payment is processed.
 - [ ] Form submissions watched for spam in the first weeks.
   The honeypot is the only filter. If spam gets through, turn on Netlify's extra spam filtering for the form.
 - [ ] WordPress decommissioned.

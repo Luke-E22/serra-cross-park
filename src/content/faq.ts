@@ -1,17 +1,24 @@
 // Questions couples and visitors ask, grouped the way the FAQ page shows them.
-// Facts come from BRIEF.md section 9. Answers are plain strings so the same text can feed
-// FAQList and the FAQPage structured data. Every answer starts with the answer.
+// Event rules come from docs/TERMS-SOURCE.md, the Conservancy's own Special Event Terms and
+// Conditions (supplied by the owner on 2026-10-12); it wins where BRIEF.md section 9 disagrees.
+// The owner's decisions stand where the document is silent: hours 8 AM to 8 PM every day, any
+// start time, a two-hour minimum at $300 per hour with setup and breakdown inside booked time,
+// no power on site, up to 300 seated or 500 standing. Answers are plain strings so the same text
+// can feed FAQList and the FAQPage structured data. Every answer starts with the answer.
 //
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
-//   2. Site fee receipts: the fee is stated as non-refundable and not tax-deductible, per the brief. [CONFIRM: receipt setup with the accountant]
+//   2. The site fee is a payment made with the reservation, non-refundable and never a donation (the terms
+//      document, 1.1 and 1.2). How Zeffy receipts it is still open. [CONFIRM: receipt setup with the accountant]
 //   4. Insurance price, insurance vendor and the portable restroom vendor are left out on purpose. [CONFIRM: before naming any vendor or price]
-//   7. Parking: no car count is published. [CONFIRM: a number to publish]
+//   7. Resolved 2026-10-12 by the terms document (3.7): 35 vehicles in designated areas inside the gates.
 //  11, 38, 39. Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5 (read 2026-10-09); the FAQ states the owner's rule of 2026-10-12: any start time between 8 AM and 8 PM, two-hour minimum. [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
 //  15. Resolved 2026-10-12: the weekend 7:30 PM end is dropped. Events end by 8 PM every day, when the gates lock.
-//  18. Public access: the brief's wording (open during every event) is used; the old FAQ said daylight hours. [CONFIRM: visitor hours]
-//  19. Insurance scope: the reception rule only; nothing is said about other event types. [CONFIRM: rule for ceremonies, picnics, memorials]
-//  20. 805-258-3153 is labeled only as the number for non-emergencies. [CONFIRM: whose phone and how to label it]
+//  18. Resolved 2026-10-12 by the terms document (3.1): the gates stay open to the public from dawn to dusk and cannot be locked.
+//  19. Resolved 2026-10-12 by the terms document (2.2): insurance for any event with catered food, beverages or a reception.
+//  20. Resolved 2026-10-12: the phone number is no longer published. 911 for emergencies, the office email for everything else.
 //  41. Power: the owner said on 2026-10-12 that there is no power on site, so the FAQ says so. CONTENT-TODO item 41 asks whether that is final.
+//  43. The brief described a hold on the date while the fee arrived; the terms document confirms a reservation only once the
+//      full payment is processed, so no answer here mentions a hold.
 
 export interface FAQEntry {
   /** The question, in the visitor's words. */
@@ -36,13 +43,21 @@ const booking: FAQEntry[] = [
     a: '$300 per hour, with a two-hour minimum. Booked time includes setup and breakdown for you and your vendors, so count both when you choose your hours.',
   },
   {
-    q: 'Is the site fee refundable?',
-    a: 'No. The site fee reserves your date once the park office confirms it. It is non-refundable and not tax-deductible.',
+    q: 'How do I book?',
+    a: 'Pick a date and time on the Plan your event page, agree to the terms and conditions, and send your request. The site fee is collected with your reservation. Once the payment is processed, the park office emails your confirmation.',
+    more: { label: 'Plan your event', href: '/booking/' },
   },
   {
-    q: 'How do I book, and how long will you hold my date?',
-    a: 'Pick a date on the Plan your event page, agree to the terms and conditions, then choose your time and send your request. The park office confirms your date and holds it for 14 days while the site fee arrives, then sends your confirmation letter.',
-    more: { label: 'Plan your event', href: '/booking/' },
+    q: 'When do we pay the site fee?',
+    a: 'With your reservation. The full site fee comes with the reservation form, and your date is not confirmed until the payment has been received and processed. The park office then emails your confirmation.',
+  },
+  {
+    q: 'Is the site fee refundable?',
+    a: 'No. All payments are non-refundable, and cancelling the event forfeits the fee. The site fee is a payment for your date, not a gift, so it is not tax-deductible.',
+  },
+  {
+    q: 'Can we change our date?',
+    a: 'Yes, once, at no charge and subject to availability. Email admin@serracrosspark.com with the new date and time you have in mind.',
   },
   {
     q: 'What hours can we book?',
@@ -50,53 +65,69 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'How many guests can the park hold?',
-    a: 'Up to 300 seated or 500 standing. If you expect more than 100 guests, we suggest a valet service for parking.',
+    a: 'Up to 300 seated or 500 standing. Parking inside the gates holds 35 vehicles, so plan how your guests will arrive if you expect more cars than that.',
   },
   {
     q: 'Will we have the park to ourselves?',
-    a: 'No. The grounds stay open to the public during every event. Visitors may walk through while your event is on.',
+    a: 'No. The park stays open to the public from dawn to dusk and the gates cannot be locked, so other people may be in the park during your event. You may put up signs, hire security, station a volunteer at the gate and let visitors know an event is on.',
   },
   {
     q: 'Do we need event insurance?',
-    a: 'Yes, for receptions. We ask for a $1 million one-day special event policy. Your insurance agent can arrange one.',
+    a: 'Yes, if your event has catered food, beverages or a reception. We ask for a one-day $1 million liability policy covering the event, with proof emailed to admin@serracrosspark.com at least seven days before. Your insurance agent can arrange one.',
   },
   {
     q: 'Can we serve alcohol?',
-    a: 'Yes, with event insurance and a licensed caterer. The caterer serves every drink. No self-service alcohol.',
+    a: 'Yes, through a licensed provider. A licensed bartender or caterer serves every drink; there is no self-service alcohol. All alcohol laws apply, including age limits, and serving drinks means your event needs the insurance described above.',
   },
 ];
 
 const onTheDay: FAQEntry[] = [
   {
     q: 'Is there power or lighting?',
-    a: 'No. There is no power on site and the park is not lit, so bring your own power and lighting for sound and evening events. Tell your DJ or band so they plan for it, and remember the gates lock at 8 PM.',
+    a: 'No. There is no power on site and no lighting anywhere in the park, including the parking lot. Bring your own power for sound, and your own lighting if your event runs into the evening. Tell your DJ or band so they plan for it, and remember the gates lock at 8 PM.',
   },
   {
-    q: 'Do you provide tables and chairs?',
-    a: 'No. Rent seating and tables from a rental company, and plan delivery and pickup inside your booked time.',
+    q: 'Do you provide tables, chairs or tents?',
+    a: 'No. You bring your own chairs, tables, tents and decor, or rent them, and you remove them by the end of your booked time. The park is not responsible for damage to or loss of your rentals.',
   },
   {
     q: 'Are there restrooms or water?',
-    a: 'No, neither. Rent portable restrooms and bring water for your guests and vendors.',
+    a: 'No, neither. Rent portable restrooms and bring water for your guests and vendors. For a weekend event, portable restrooms can be delivered on Friday and collected on Monday.',
+  },
+  {
+    q: 'Can we throw confetti or petals?',
+    a: 'Only biodegradable or natural ones. Synthetic confetti and petals are not allowed, and leaving them behind brings a cleanup fee.',
   },
   {
     q: 'What do we do with trash?',
-    a: 'Take it with you. There are trash cans on site, but all event trash leaves with you when the event ends.',
+    a: 'Take it with you. Leave the park as you found it: all event trash, decor and equipment leave with you by the end of your booked time. If trash is left behind, a one-time removal fee may apply.',
   },
   {
     q: 'Is there somewhere to change?',
     a: 'No. There are no changing rooms at the park, so arrive dressed and ready.',
   },
   {
+    q: 'What is not allowed?',
+    a: 'Smoking, fireworks, open flames or fire of any kind; firearms or other weapons unless the law allows them; and vehicles on the grass, so keep to the designated parking and loading areas. Any illegal activity, including drug use and underage drinking, ends the event at once.',
+  },
+  {
+    q: 'What happens if we run past our booked time?',
+    a: 'You pay $300 for each extra hour. Your booked time covers setup, the event and cleanup, so book enough hours to be packed up and off the hill by the end of it.',
+  },
+  {
     q: 'When do we have to be off the hill?',
     a: 'By 8 PM. Guests and equipment are off the property by 8 PM, when the gates lock.',
+  },
+  {
+    q: 'Who is responsible if something goes wrong?',
+    a: 'You are, as the person booking. You take responsibility for accidents, injuries and damage during your event and hold the park, its volunteers and affiliates harmless. The park is not responsible for injury, damage, theft or loss of personal property, so plan your insurance and any security with that in mind.',
   },
 ];
 
 const visiting: FAQEntry[] = [
   {
     q: 'Can anyone visit the park?',
-    a: 'Yes. Serra Cross Park is an open park for everyone, and the grounds stay open to the public during events. The gates lock at 8 PM.',
+    a: 'Yes. Serra Cross Park is open to everyone from dawn to dusk, and it stays open to the public during events. The gates lock at 8 PM.',
   },
   {
     q: 'How do we get to the Cross?',
@@ -105,7 +136,7 @@ const visiting: FAQEntry[] = [
   },
   {
     q: 'Where do we park?',
-    a: 'Along one side of the street into the park. Keep the fire lane open. For more than 100 guests we suggest a valet service, and any shuttle is yours to arrange.',
+    a: 'Inside the park gates, in the designated areas, which hold 35 vehicles. Stay off the grass. The park is not responsible for vehicles or anything left in them.',
   },
   {
     q: 'Is the park wheelchair accessible?',
@@ -113,7 +144,7 @@ const visiting: FAQEntry[] = [
   },
   {
     q: 'Who do we call in an emergency?',
-    a: '911. For anything else about the park, call 805-258-3153.',
+    a: 'Call 911. For anything else about the park, email admin@serracrosspark.com.',
   },
 ];
 

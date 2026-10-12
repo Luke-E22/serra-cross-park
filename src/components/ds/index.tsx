@@ -438,7 +438,7 @@ export function ChoiceChips({ label, name, options, value, defaultValue, onChang
 }
 
 /* ----------------------------------------------------------- InquiryForm */
-export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean; blockLabel?: string; blockOptions?: Choice[]; timeField?: { name: string; label: string; options: FieldOption[]; help?: string }; dateHelp?: string }
+export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean; blockLabel?: string; blockOptions?: Choice[]; timeField?: { name: string; label: string; options: FieldOption[]; help?: string }; dateHelp?: string; sentText?: ReactNode }
 const EVENT_TYPES: Choice[] = [
   { value: 'wedding', label: 'Wedding' },
   { value: 'vows', label: 'Vow renewal' },
@@ -452,7 +452,7 @@ const TIME_BLOCKS: Choice[] = [
   { value: 'evening', label: 'Evening', note: '5 to 8' },
 ];
 /** The event inquiry: who, what, when, how many. The park office follows up to confirm. */
-export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp, blockLabel = 'Time of day', blockOptions = TIME_BLOCKS, timeField, dateHelp = 'Weekend events end by 7:30 PM.' }: InquiryFormProps) {
+export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp, blockLabel = 'Time of day', blockOptions = TIME_BLOCKS, timeField, dateHelp = 'Weekend events end by 7:30 PM.', sentText = 'The park office will contact you to confirm your date. Once it is confirmed, we hold it for up to 14 days while the site fee arrives.' }: InquiryFormProps) {
   const [sent, setSent] = React.useState(!!sentProp);
   const submit = (e: any) => {
     e.preventDefault();
@@ -466,7 +466,7 @@ export function InquiryForm({ title = 'Tell us about your day', defaultEventType
       <div className="sc-form sc-form--sent" role="status">
         <p className="sc-form__done label"><Icon name="check" size={22} />Inquiry sent</p>
         <h3 className="heading">Thank you</h3>
-        <p className="body">The park office will contact you to confirm your date. Once it is confirmed, we hold it for up to 14 days while the site fee arrives.</p>
+        <p className="body">{sentText}</p>
       </div>
     );
   return (

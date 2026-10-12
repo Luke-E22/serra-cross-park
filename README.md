@@ -74,7 +74,7 @@ Run the prelaunch check on its own:
 npm run prelaunch
 ```
 
-Each `WARN` line is something to settle before launch. The check looks for five things: a `PAYMENTS` URL in `src/config/site.ts` that still contains `startup-ventura` (the placeholder Zeffy form), the Strong Glasgow demo font files still in `design-system/fonts/`, `BOOKING.calEventSlug` still set to `30min` (that Cal.com event does not exist), any `[CONFIRM: ...]` marker left in a file under `src/` (printed with file and line), and anyone in `PEOPLE` with no photo. On 2026-10-10 it prints 51 warnings. They go away as the launch checklist is worked through.
+Each `WARN` line is something to settle before launch. The check looks for five things: a `PAYMENTS` URL in `src/config/site.ts` that still contains `startup-ventura` (the placeholder Zeffy form), the Strong Glasgow demo font files still in `design-system/fonts/`, `BOOKING.calEventSlug` still set to `30min` (that Cal.com event does not exist), any `[CONFIRM: ...]` marker left in a file under `src/` (printed with file and line), and anyone in `PEOPLE` with no photo. On 2026-10-12 it prints 38 warnings. They go away as the launch checklist is worked through.
 
 Two things to know about dev mode:
 
@@ -119,13 +119,15 @@ scripts/
   prelaunch-check.mjs           the warnings described above.
   dev-availability-plugin.mjs   serves /api/availability in npm run dev.
   strip-google-fonts-plugin.mjs removes bundle.css's Google Fonts @import at build time.
-public/                         favicon.svg, robots.txt, self-hosted EB Garamond (fonts/eb-garamond).
-docs/                           BUILD-REPORT.md and INTEGRATION-NOTES.md.
+public/                         favicon.svg, robots.txt, self-hosted EB Garamond (fonts/eb-garamond),
+                                and docs/serra-cross-park-terms-and-conditions.pdf, the published terms PDF.
+docs/                           BUILD-REPORT.md, INTEGRATION-NOTES.md and TERMS-SOURCE.md (the text of the
+                                Conservancy's terms document); docs/source/ holds the original PDF.
 ```
 
 ## 4. Edit content and facts
 
-**Facts.** `src/config/site.ts` holds every fact, link and setting: the address, email, Tax ID, map coordinates, Facebook and Instagram links, the emergency number, the booking settings, the payment links, the board and staff, the header links and the footer columns. Change a value there once and it lands on every page and in the availability function.
+**Facts.** `src/config/site.ts` holds every fact, link and setting: the address, email, Tax ID, map coordinates, Facebook and Instagram links, the booking settings, the payment links, the board and staff, the header links and the footer columns. Change a value there once and it lands on every page and in the availability function. Event rules (payment, refunds, insurance, parking, what is not allowed) come from the Conservancy's own terms document, `docs/TERMS-SOURCE.md`, which wins over the brief where they disagree; no phone number is published on the site (emergencies go to 911, everything else to the office email).
 
 **FAQ.** `src/content/faq.ts`. Three groups: booking, on the day, visiting. Each entry has a question, a plain-text answer that starts with the answer, and an optional link. The same text feeds the FAQ page and its `FAQPage` structured data, so keep answers free of markup.
 
@@ -133,9 +135,9 @@ docs/                           BUILD-REPORT.md and INTEGRATION-NOTES.md.
 
 **Page copy.** Each page is one file in `src/pages/`. Copy sits in the markup; facts are imported from `site.ts`. The comment at the top of each page says which brief sections and open questions shaped it.
 
-**Voice.** The brand book (`design-system/README.md`) wins every argument. Write headings, labels and buttons in sentence case; the display styles set the capitals. Short sentences, one idea each. No em dashes: use a period, a comma or a colon. No exclamation marks. "We" is the Conservancy, "you" is the visitor. Spell out one to ten in prose; use figures for prices, times, dates and guest counts. Money words: a gift or donation is tax-deductible; a site fee reserves a date, is non-refundable, and is never called a donation or tax-deductible. Keep the facts identical everywhere: $300 per hour with a two-hour minimum, 8 AM to 8 PM daily at any start time (no fixed blocks), everyone off the hill by 8 PM when the gates lock, no power or restrooms on site, up to 300 seated or 500 standing, a confirmed date held for 14 days, Tax ID 20-8615264.
+**Voice.** The brand book (`design-system/README.md`) wins every argument. Write headings, labels and buttons in sentence case; the display styles set the capitals. Short sentences, one idea each. No em dashes: use a period, a comma or a colon. No exclamation marks. "We" is the Conservancy, "you" is the visitor. Spell out one to ten in prose; use figures for prices, times, dates and guest counts. Money words: a gift or donation is tax-deductible; a site fee is paid in full with the reservation, is non-refundable, and is never called a donation or tax-deductible. Keep the facts identical everywhere: $300 per hour with a two-hour minimum, 8 AM to 8 PM daily at any start time (no fixed blocks), everyone off the hill by 8 PM when the gates lock, no power or restrooms on site, up to 300 seated or 500 standing, the site fee paid in full with the reservation and the reservation confirmed by email once the payment is processed (no hold), one free reschedule by email, insurance for any event with catered food, beverages or a reception, parking for 35 vehicles inside the gates, Tax ID 20-8615264.
 
-**Open questions.** `CONTENT-TODO.md` lists 41 things to confirm, each with where it came from. Where a question shaped the wording, the code carries a `[CONFIRM: item N, ...]` marker in a comment (never in visible text). The prelaunch check prints every marker with its file and line, so the list shrinks as you answer the items and delete the markers.
+**Open questions.** `CONTENT-TODO.md` lists 43 things to confirm, each with where it came from. Where a question shaped the wording, the code carries a `[CONFIRM: item N, ...]` marker in a comment (never in visible text). The prelaunch check prints every marker with its file and line, so the list shrinks as you answer the items and delete the markers.
 
 ## 5. Swap or add photos
 
@@ -181,11 +183,11 @@ Rules from the brand book: real park photos only, no stock. Never crop through t
 
 **`CAL_API_KEY`.** Not needed today. Only if Cal.com starts refusing anonymous slot requests with 401 or 403: create an API key in Cal.com, add `CAL_API_KEY` as an environment variable in the Netlify UI (Site configuration, Environment variables), and redeploy. The function then sends it as a bearer token. Never put it in the repo; `.env.example` shows the variable with an empty value.
 
-**Dashboard settings still to change.** Turn "Requires confirmation" on so the park office approves each request while the slot stays held. Set a future limit that matches `horizonMonths`. Set the success redirect to https://serracrosspark.com/booking/requested/. Add booking questions (event type, guest count, a required "I agree to the terms and conditions" checkbox linking to https://serracrosspark.com/terms-and-conditions/, so the agreement is stored with each booking). Make the availability match the published rule: 8 AM to 8 PM every day, any start time (30-minute steps, or 60-minute steps if Luke wants hourly starts), a two-hour minimum with 2 hours as the default length; the four fixed 180-minute slots at 8, 11, 2 and 5 go, and no weekend exception is needed since the 7:30 PM end was dropped on 2026-10-12. Enter or block the 24 approved bookings from the old WordPress calendar (through April 2028), or the new calendar shows those dates as open. Confirm the event title and description wording inside the booker. The full list is in `LAUNCH-CHECKLIST.md`; the settings as read on 2026-10-09 are in `docs/INTEGRATION-NOTES.md`.
+**Dashboard settings still to change.** Turn "Requires confirmation" on so a booking never confirms itself: the slot stays blocked while unconfirmed, and the park office confirms the reservation by email once its payment is processed (the terms document, clause 1.1; CONTENT-TODO item 43). Set a future limit that matches `horizonMonths`. Set the success redirect to https://serracrosspark.com/booking/requested/. Add booking questions (event type, guest count, a required "I agree to the terms and conditions" checkbox linking to https://serracrosspark.com/terms-and-conditions/, so the agreement is stored with each booking). Make the availability match the published rule: 8 AM to 8 PM every day, any start time (30-minute steps, or 60-minute steps if Luke wants hourly starts), a two-hour minimum with 2 hours as the default length; the four fixed 180-minute slots at 8, 11, 2 and 5 go, and no weekend exception is needed since the 7:30 PM end was dropped on 2026-10-12. Enter or block the 24 approved bookings from the old WordPress calendar (through April 2028), or the new calendar shows those dates as open. Confirm the event title and description wording inside the booker. The full list is in `LAUNCH-CHECKLIST.md`; the settings as read on 2026-10-09 are in `docs/INTEGRATION-NOTES.md`.
 
 ## 7. Zeffy
 
-**`PAYMENTS` in `src/config/site.ts`.** `donateUrl` is the form embedded on `/donate/`. `siteFeeUrl` is behind the "Pay the site fee" buttons on `/booking/` and `/booking/requested/`, which open it in a new tab. Paste the public form URL in each (`https://www.zeffy.com/en-US/donation-form/<slug>`); the embed path is derived from it.
+**`PAYMENTS` in `src/config/site.ts`.** `donateUrl` is the form embedded on `/donate/`. `siteFeeUrl` is the site-fee payment form. Since 2026-10-12 the fee is collected with the reservation (the Conservancy's terms document, clause 1.1), so no page shows a "Pay the site fee" button; which form or payment step collects the fee with the reservation is CONTENT-TODO item 2. Paste the public form URL in each (`https://www.zeffy.com/en-US/donation-form/<slug>`); the embed path is derived from it.
 
 **The embed.** `src/components/ZeffyEmbed.tsx` renders Zeffy's `[data-zeffy-embed]` container with `data-form-url` set to the embed path (`/en-US/embed/donation-form/<slug>`, a path and not a full URL, or the form 404s inside the iframe), loads `https://www.zeffy.com/embed/v2/zeffy-embed.js`, and lets the script inject and size its iframe. Zeffy's form handles the amounts, so the design system's `GivingForm` is not used.
 
@@ -246,9 +248,10 @@ It serves on http://localhost:8888. Verified on 2026-10-09: `/api/availability` 
 
 ## 10. Documents
 
-- `BRIEF.md`: the build brief. Pages, configuration, the booking design, facts, quality bar, repo and launch rules.
+- `BRIEF.md`: the build brief. Pages, configuration, the booking design, facts, quality bar, repo and launch rules. For event rules, the terms document below wins.
+- `docs/TERMS-SOURCE.md`: the text of the Conservancy's Special Event Terms and Conditions (supplied 2026-10-12), the source of every event rule on the site. The PDF itself is in `docs/source/` and published from `public/docs/serra-cross-park-terms-and-conditions.pdf`.
 - `CONTENT-INVENTORY.md`: the old WordPress site, page by page, verbatim, with every image.
-- `CONTENT-TODO.md`: 41 open questions for Luke, each with where it came from.
+- `CONTENT-TODO.md`: 43 open questions for Luke, each with where it came from.
 - `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, and how to re-apply each one when the snapshot is refreshed.
 - `LAUNCH-CHECKLIST.md`: what has to happen before DNS switches.
 - `CLAUDE.md`: the rules future coding sessions must follow in this repo.
