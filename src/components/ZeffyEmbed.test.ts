@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { toZeffyEmbedPath, toZeffyEmbedUrl } from './ZeffyEmbed';
 
-const SLUG = 'donate-to-startup-ventura';
+const SLUG = 'donate-to-serra-cross-park';
 
 describe('toZeffyEmbedUrl', () => {
   it('inserts /embed after the language segment', () => {

@@ -34,7 +34,7 @@ Response: `{ "status": "success", "data": { "2026-10-10": [{ "start": "2026-10-1
 
 ## Zeffy
 
-**Placeholder form.** `https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura` is Startup Ventura's form (amounts $500, $1,000, $2,500, $5,000, one-time or yearly). The embed URL `https://www.zeffy.com/en-US/embed/donation-form/donate-to-startup-ventura` loads in a browser; curl gets a Cloudflare 403, so server-side checks are not possible.
+**The form.** Since 2026-10-12 `PAYMENTS.donateUrl` is the Conservancy's own form, `https://www.zeffy.com/en-US/donation-form/donate-to-serra-cross-park`. Before that the placeholder `donate-to-startup-ventura` was Startup Ventura's form (amounts $500, $1,000, $2,500, $5,000, one-time or yearly). The embed URL `https://www.zeffy.com/en-US/embed/donation-form/donate-to-startup-ventura` loads in a browser; curl gets a Cloudflare 403, so server-side checks are not possible.
 
 **Embed script v2** (`https://www.zeffy.com/embed/v2/zeffy-embed.js`, version 2.0.0, read on 2026-10-09). The script:
 

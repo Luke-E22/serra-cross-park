@@ -52,8 +52,8 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 ## Payments
 
-- [ ] Serra Cross Conservancy's own Zeffy donation and site-fee forms in `PAYMENTS`. No `startup-ventura` anywhere.
-  `PAYMENTS.donateUrl` and `PAYMENTS.siteFeeUrl` in `src/config/site.ts` (item 1). Paste each form's public URL (`https://www.zeffy.com/en-US/donation-form/<slug>` or the equivalent); `src/components/ZeffyEmbed.tsx` works out the embed path. The prelaunch check warns until both change. The site fee is collected with the reservation (the terms document, 1.1), so no page shows a "Pay the site fee" button; `siteFeeUrl` is the form the payment step uses if that step runs through Zeffy (item 2).
+- [x] Serra Cross Conservancy's own Zeffy donation form in `PAYMENTS.donateUrl` (donate-to-serra-cross-park, set 2026-10-12). No `startup-ventura` anywhere.
+  `siteFeeUrl` points at the same form but no page links it; the site fee is collected with the reservation (item 43 covers the Cal.com payment step).
 - [ ] Site-fee receipt setup confirmed with the Conservancy's accountant.
   Item 2. The fee is a payment made in full with the reservation, non-refundable and never a donation (the terms document, 1.1 and 1.2), and the site says so on `/booking/`, `/booking/requested/`, the FAQ and the terms. A Zeffy donation form issues a donation receipt, so the fee may need a Zeffy payment or ticketing form, or another payment step, rather than a donation form; settle the receipt wording and the collection step with the accountant.
 - [ ] Zeffy form text in the brand voice, set in the Zeffy dashboard.

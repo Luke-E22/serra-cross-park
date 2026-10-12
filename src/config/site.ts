@@ -29,14 +29,13 @@ export const BOOKING = {
 /** The public Cal.com booking page. The fallback link when the embed cannot load. */
 export const CAL_BOOKING_PAGE_URL = `https://cal.com/${BOOKING.calUsername}/${BOOKING.calEventSlug}`;
 
-// PLACEHOLDER: these are Startup Ventura's Zeffy form.
-// Replace both with Serra Cross Conservancy's own forms before launch.
+// donateUrl: Serra Cross Conservancy's own Zeffy donation form (from Luke, 2026-10-12), embedded on /donate/.
 // siteFeeUrl: no page links it since 2026-10-12. The site fee is paid in full with the reservation
 // (docs/TERMS-SOURCE.md, 1.1), so there is no "Pay the site fee" button anywhere; the field waits on
 // CONTENT-TODO item 2, which decides whether a Zeffy form or a Cal.com payment step collects the fee.
 export const PAYMENTS = {
-  donateUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura',
-  siteFeeUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-startup-ventura',
+  donateUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-serra-cross-park',
+  siteFeeUrl: 'https://www.zeffy.com/en-US/donation-form/donate-to-serra-cross-park',
 };
 
 export type Person = { name: string; title?: string; photo?: string; links?: { label: string; href: string }[] };

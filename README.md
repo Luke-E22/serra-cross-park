@@ -193,7 +193,7 @@ Rules from the brand book: real park photos only, no stock. Never crop through t
 
 **The fallback.** If the script fails to load, or no iframe appears within 8 seconds, the container is replaced by a `give` button ("Give on Zeffy", new tab) and a plain iframe of the embed URL. Without JavaScript, the give button shows alone.
 
-**The placeholder warning.** Both URLs still point at Startup Ventura's form, `donate-to-startup-ventura`. The prelaunch check warns while any `PAYMENTS` URL contains `startup-ventura`. Replace both with Serra Cross Conservancy's own donation form and site-fee form before launch, and confirm the site-fee receipt setup with the Conservancy's accountant (a Zeffy donation form issues a donation receipt; the site fee is not a donation). Details in `docs/INTEGRATION-NOTES.md`.
+**The placeholder warning.** `PAYMENTS` now holds the Conservancy's own form, `donate-to-serra-cross-park` (set 2026-10-12), so this warning no longer fires. It returns if a URL containing `startup-ventura` is ever pasted back in. The prelaunch check warns while any `PAYMENTS` URL contains `startup-ventura`. Replace both with Serra Cross Conservancy's own donation form and site-fee form before launch, and confirm the site-fee receipt setup with the Conservancy's accountant (a Zeffy donation form issues a donation receipt; the site fee is not a donation). Details in `docs/INTEGRATION-NOTES.md`.
 
 ## 8. Deploy
 
