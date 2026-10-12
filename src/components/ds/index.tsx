@@ -438,7 +438,7 @@ export function ChoiceChips({ label, name, options, value, defaultValue, onChang
 }
 
 /* ----------------------------------------------------------- InquiryForm */
-export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean; blockLabel?: string; blockOptions?: Choice[] }
+export interface InquiryFormProps { title?: string; defaultEventType?: string; onSubmit?: (data: Record<string, string>) => void; sent?: boolean; blockLabel?: string; blockOptions?: Choice[]; timeField?: { name: string; label: string; options: FieldOption[]; help?: string }; dateHelp?: string }
 const EVENT_TYPES: Choice[] = [
   { value: 'wedding', label: 'Wedding' },
   { value: 'vows', label: 'Vow renewal' },
@@ -452,7 +452,7 @@ const TIME_BLOCKS: Choice[] = [
   { value: 'evening', label: 'Evening', note: '5 to 8' },
 ];
 /** The event inquiry: who, what, when, how many. The park office follows up to confirm. */
-export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp, blockLabel = 'Time of day', blockOptions = TIME_BLOCKS }: InquiryFormProps) {
+export function InquiryForm({ title = 'Tell us about your day', defaultEventType = 'wedding', onSubmit, sent: sentProp, blockLabel = 'Time of day', blockOptions = TIME_BLOCKS, timeField, dateHelp = 'Weekend events end by 7:30 PM.' }: InquiryFormProps) {
   const [sent, setSent] = React.useState(!!sentProp);
   const submit = (e: any) => {
     e.preventDefault();
@@ -480,10 +480,14 @@ export function InquiryForm({ title = 'Tell us about your day', defaultEventType
       </div>
       <ChoiceChips label="Type of event" name="eventType" options={EVENT_TYPES} defaultValue={defaultEventType} />
       <div className="sc-form__grid">
-        <Field label="Preferred date" name="date" type="date" help="Weekend events end by 7:30 PM." />
+        <Field label="Preferred date" name="date" type="date" help={dateHelp} />
         <Field label="Guests" name="guests" type="number" min={1} max={500} inputMode="numeric" help="Up to 300 seated or 500 standing." />
       </div>
-      <ChoiceChips label={blockLabel} name="block" options={blockOptions} defaultValue="afternoon" columns={3} />
+      {timeField ? (
+        <Field label={timeField.label} name={timeField.name} type="select" options={timeField.options} help={timeField.help} />
+      ) : (
+        <ChoiceChips label={blockLabel} name="block" options={blockOptions} defaultValue="afternoon" columns={3} />
+      )}
       <Field label="Anything else" name="message" type="textarea" rows={4} optional placeholder="Ceremony only, or ceremony and reception? Caterer, rentals, questions." />
       <div className="sc-form__footer">
         <Button type="submit" variant="primary" size="lg" icon="arrow-right">Send inquiry</Button>

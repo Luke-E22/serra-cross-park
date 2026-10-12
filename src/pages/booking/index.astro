@@ -3,8 +3,8 @@ import '../../styles/pages/booking.css';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero';
 import AvailabilityCalendar from '../../components/booking/AvailabilityCalendar';
-import { Button, FactGrid, FAQList, Gallery, Notice, SectionHeading, Steps } from '../../components/ds';
-import type { GalleryImage } from '../../components/ds';
+import ContactForm, { REGARDING_BOOKING } from '../../components/ContactForm';
+import { Button, FactGrid, FAQList, Gallery, Notice, SectionHeading, Steps, type GalleryImage } from '../../components/ds';
 import { BOOKING, CAL_BOOKING_PAGE_URL, PAYMENTS, SITE } from '../../config/site';
 import { FAQ } from '../../content/faq';
 import { PHOTOS } from '../../content/photos';
@@ -16,13 +16,13 @@ import { ogImage, picture } from '../../lib/images';
 // the month grid and the Cal.com booker; the hidden Netlify form under it is the static copy of
 // the island's fallback inquiry form, so Netlify detects it at build time (sections 7d and 12).
 // The site fee is not a donation, so the 501(c)(3) line stays in the footer rather than beside
-// the fee button, the same as /booking/requested/.
+// the fee button, the same as /booking/requested/. Two ways in from the hero: "Book now" to the calendar, "Ask a question" to the ContactForm island near the end (preset to "Booking an event").
 //
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
 // [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
 // [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
-// [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 9 AM and 8 PM, as the page states]
-// [CONFIRM: item 15, whether weekend events still end by 7:30 PM]
+// [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 8 AM and 8 PM, as the page states]
+// [CONFIRM: item 41, no power on site since 2026-10-12 (the owner withdrew the two circuits at the Cross); the FAQ and terms pages must say the same as this page: 8 to 8 every day, no power, bring your own]
 // [CONFIRM: item 19, insurance is stated for receptions only]
 
 // Rendered widths of each slot, for the sizes attribute (same slots as src/pages/index.astro).
@@ -68,7 +68,7 @@ const gallery = await Promise.all([
 
 const facts = [
   { icon: 'users', label: 'Guests', value: '300', note: 'seated, up to 500 standing' },
-  { icon: 'sunset', label: 'Hours', value: '9 to 8', note: 'daily, year-round' },
+  { icon: 'sunset', label: 'Hours', value: '8 to 8', note: 'daily, year-round' },
   { icon: 'landmark', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
   { icon: 'clock', label: 'Minimum', value: '2 hours', note: 'any start time, setup and breakdown included' },
 ] as const;
@@ -113,7 +113,7 @@ const venue = {
   openingHoursSpecification: {
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-    opens: '09:00',
+    opens: '08:00',
     closes: '20:00',
   },
   containedInPlace: { '@id': `${SITE.url}#park` },
@@ -145,7 +145,7 @@ const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
     title="Married on the hill"
     lede="Ceremonies and receptions for up to 300 seated guests, with the ocean and the Channel Islands below. The rate is $300 per hour, with a two-hour minimum."
     caption={heroPhoto.caption}
-    actions={{ primary: { label: 'See availability', href: '#availability' } }}
+    actions={{ primary: { label: 'Book now', href: '#availability' }, secondary: { label: 'Ask a question', href: '#questions' } }}
   />
 
   <section class="sc-section">
@@ -161,15 +161,14 @@ const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
       </div>
       <FactGrid columns={4} items={[...facts]} />
       <ul class="booking-rules body" role="list">
-        <li>Weekend events end by 7:30 PM.</li>
         <li>Guests and equipment are off the hill by 8 PM, when the gates lock.</li>
         <li>Booked time includes setup and breakdown for you and your vendors.</li>
         <li>The grounds stay open to the public during your event.</li>
         <li>The site fee reserves your date and is non-refundable.</li>
       </ul>
       <div class="booking-notices">
-        <Notice tone="caution" icon="droplet" title="No restrooms or water on site">
-          Rent portable restrooms and bring water for guests and vendors.
+        <Notice tone="caution" icon="plug-zap" title="No power, restrooms or water on site">
+          Bring your own power for sound and lighting, rent portable restrooms, and bring water for guests and vendors.
         </Notice>
         <Notice tone="caution" icon="shield-check" title="Receptions need event insurance">
           A $1 million one-day special event policy. Alcohol needs insurance and a licensed caterer.
@@ -231,7 +230,7 @@ const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
         <input type="text" name="eventType" />
         <input type="date" name="date" />
         <input type="number" name="guests" />
-        <input type="text" name="block" />
+        <input type="text" name="start-time" />
         <textarea name="message"></textarea>
         <input type="checkbox" name="terms" value="yes" />
         <input type="text" name="bot-field" />
@@ -280,6 +279,25 @@ const venueJson = JSON.stringify(venue).replace(/</g, '\\u003c');
       <FAQList items={faqItems} defaultOpen={0} />
       <div class="booking-faq__more">
         <Button variant="link" href="/faq/" icon="arrow-right">See all questions</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section" id="questions">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          eyebrow="Questions"
+          title="Ask before you book"
+          intro="Not sure about a date, the rules or what the hill can hold? Send your question and the park office will reply by email."
+        />
+      </div>
+      {/* The contact page's island with "Booking an event" preset. It posts form-name=contact to "/",
+          which Netlify accepts from any page; the hidden static copy that registers the form lives on
+          /contact/. The hero's "Book now" is this page's one primary, so the button is secondary. */}
+      <div class="booking-questions__form">
+        <ContactForm client:visible defaultRegarding={REGARDING_BOOKING} heading="Send your question" headingAs="h3" buttonVariant="secondary" />
       </div>
     </div>
   </section>

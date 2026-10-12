@@ -19,24 +19,55 @@ export const REGARDING_OPTIONS: Choice[] = [
   { value: 'Something else', label: 'Something else' },
 ];
 
+/** The "regarding" value the booking page preselects. Exported so the page never types the label. */
+export const REGARDING_BOOKING = REGARDING_OPTIONS[0].value;
+
 type Status = 'idle' | 'sending' | 'sent' | 'error';
+
+export interface ContactFormProps {
+  /**
+   * The "regarding" chip checked when the form first renders, by value (one of REGARDING_OPTIONS).
+   * The booking page passes REGARDING_BOOKING; the contact page leaves every chip clear.
+   */
+  defaultRegarding?: string;
+  /** The form's own title. "Send a message" on the contact page. */
+  heading?: string;
+  /**
+   * The heading element for the title and the confirmation. h2 under the contact page's h1;
+   * h3 on the booking page, where the section heading is already the h2.
+   */
+  headingAs?: 'h2' | 'h3';
+  /**
+   * The submit button. One primary per page: the contact page has no other, so primary; the
+   * booking page's primary is the hero's "Book now", so it passes secondary.
+   */
+  buttonVariant?: 'primary' | 'secondary';
+}
 
 /**
  * The contact form, a Netlify form named "contact". Hydrated with client:visible from
- * src/pages/contact.astro. Netlify registers the form from the hidden static copy on that
- * page (this form carries no data-netlify attribute, so Netlify's build step leaves its
- * markup alone and hydration matches). The submit posts the fields to "/" as
- * application/x-www-form-urlencoded with form-name included, which is how Netlify Forms
- * accept a JavaScript submission. Before hydration the form still posts natively to /contact/.
+ * src/pages/contact.astro and, with "Booking an event" preselected, from src/pages/booking/index.astro.
+ * Netlify registers the form from the hidden static copy on the contact page (this form carries no
+ * data-netlify attribute, so Netlify's build step leaves its markup alone and hydration matches).
+ * The submit posts the fields to "/" as application/x-www-form-urlencoded with form-name=contact
+ * included, which is how Netlify Forms accept a JavaScript submission, so the island works from
+ * any page of the site. Before hydration the form still posts natively to /contact/.
  */
-export default function ContactForm() {
+export default function ContactForm({
+  defaultRegarding = '',
+  heading = 'Send a message',
+  headingAs = 'h2',
+  buttonVariant = 'primary',
+}: ContactFormProps) {
   const [status, setStatus] = React.useState<Status>('idle');
-  // Controlled, starting empty, so no chip is checked until the visitor picks one.
-  const [regarding, setRegarding] = React.useState('');
+  // Controlled. Empty by default, so no chip is checked until the visitor picks one; the booking
+  // page starts it on "Booking an event".
+  const [regarding, setRegarding] = React.useState(defaultRegarding);
   const [regardingMissing, setRegardingMissing] = React.useState(false);
   const sentRef = React.useRef<HTMLDivElement>(null);
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const honeypotId = `contact-bot-${uid}`;
+  const Heading = headingAs;
 
   // The confirmation replaces the form, so focus moves to it and the status is read out.
   React.useEffect(() => {
@@ -83,7 +114,7 @@ export default function ContactForm() {
           <Icon name="check" size={22} />
           Message sent
         </p>
-        <h2 className="heading">Thank you</h2>
+        <Heading className="heading">Thank you</Heading>
         <p className="body">
           We read every message and will reply from <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
         </p>
@@ -103,7 +134,7 @@ export default function ContactForm() {
       aria-busy={sending || undefined}
     >
       <div>
-        <h2 className="sc-form__title heading">Send a message</h2>
+        <Heading className="sc-form__title heading">{heading}</Heading>
         {/* Every field is required, so the form says so once instead of marking each one. */}
         <p className="contact-form__required body-sm">All fields are required.</p>
       </div>
@@ -150,7 +181,7 @@ export default function ContactForm() {
       )}
 
       <div className="sc-form__footer">
-        <Button type="submit" variant="primary" size="lg" icon="arrow-right" disabled={sending}>
+        <Button type="submit" variant={buttonVariant} size="lg" icon="arrow-right" disabled={sending}>
           {sending ? 'Sending' : 'Send message'}
         </Button>
         <p className="body-sm sc-form__note">We read every message and reply by email.</p>

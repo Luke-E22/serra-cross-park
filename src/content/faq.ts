@@ -6,10 +6,12 @@
 //   2. Site fee receipts: the fee is stated as non-refundable and not tax-deductible, per the brief. [CONFIRM: receipt setup with the accountant]
 //   4. Insurance price, insurance vendor and the portable restroom vendor are left out on purpose. [CONFIRM: before naming any vendor or price]
 //   7. Parking: no car count is published. [CONFIRM: a number to publish]
-//  11, 38, 39. Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5 (read 2026-10-09); the FAQ states the owner's rule of 2026-10-10: any start time between 9 AM and 8 PM, two-hour minimum. [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
+//  11, 38, 39. Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5 (read 2026-10-09); the FAQ states the owner's rule of 2026-10-12: any start time between 8 AM and 8 PM, two-hour minimum. [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
+//  15. Resolved 2026-10-12: the weekend 7:30 PM end is dropped. Events end by 8 PM every day, when the gates lock.
 //  18. Public access: the brief's wording (open during every event) is used; the old FAQ said daylight hours. [CONFIRM: visitor hours]
 //  19. Insurance scope: the reception rule only; nothing is said about other event types. [CONFIRM: rule for ceremonies, picnics, memorials]
 //  20. 805-258-3153 is labeled only as the number for non-emergencies. [CONFIRM: whose phone and how to label it]
+//  41. Power: the owner said on 2026-10-12 that there is no power on site, so the FAQ says so. CONTENT-TODO item 41 asks whether that is final.
 
 export interface FAQEntry {
   /** The question, in the visitor's words. */
@@ -44,7 +46,7 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'What hours can we book?',
-    a: '9 AM to 8 PM, every day of the year. Start at any time that suits you, with a two-hour minimum. Weekend events end by 7:30 PM, and everyone is off the hill by 8 PM, when the gates lock.',
+    a: '8 AM to 8 PM, every day of the year. Start at any time that suits you, with a two-hour minimum. Everyone is off the hill by 8 PM, when the gates lock.',
   },
   {
     q: 'How many guests can the park hold?',
@@ -66,12 +68,8 @@ const booking: FAQEntry[] = [
 
 const onTheDay: FAQEntry[] = [
   {
-    q: 'Is there power for music or a microphone?',
-    a: 'Yes, a little. Two 20-amp circuits at the base of the Cross run a small sound system. Tell your DJ or band so they plan for it.',
-  },
-  {
-    q: 'Is the park lit at night?',
-    a: 'No. The park is not lit, so evening events bring their own lighting. Remember the gates lock at 8 PM.',
+    q: 'Is there power or lighting?',
+    a: 'No. There is no power on site and the park is not lit, so bring your own power and lighting for sound and evening events. Tell your DJ or band so they plan for it, and remember the gates lock at 8 PM.',
   },
   {
     q: 'Do you provide tables and chairs?',
@@ -91,7 +89,7 @@ const onTheDay: FAQEntry[] = [
   },
   {
     q: 'When do we have to be off the hill?',
-    a: 'By 8 PM. Guests and equipment are off the property by 8 PM, when the gates lock. Weekend events end by 7:30 PM.',
+    a: 'By 8 PM. Guests and equipment are off the property by 8 PM, when the gates lock.',
   },
 ];
 

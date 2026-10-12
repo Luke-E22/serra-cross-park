@@ -29,9 +29,9 @@ WARN  src/content/faq.ts:6  [CONFIRM: receipt setup with the accountant]
 WARN  src/content/faq.ts:7  [CONFIRM: before naming any vendor or price]
 WARN  src/content/faq.ts:8  [CONFIRM: a number to publish]
 WARN  src/content/faq.ts:9  [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
-WARN  src/content/faq.ts:10  [CONFIRM: visitor hours]
-WARN  src/content/faq.ts:11  [CONFIRM: rule for ceremonies, picnics, memorials]
-WARN  src/content/faq.ts:12  [CONFIRM: whose phone and how to label it]
+WARN  src/content/faq.ts:11  [CONFIRM: visitor hours]
+WARN  src/content/faq.ts:12  [CONFIRM: rule for ceremonies, picnics, memorials]
+WARN  src/content/faq.ts:13  [CONFIRM: whose phone and how to label it]
 WARN  src/content/timeline.ts:8  [CONFIRM: buyer, price, closing date, Conservancy founding date]
 WARN  src/content/timeline.ts:9  [CONFIRM: what E.C.O. stands for, if it should be spelled out]
 WARN  src/content/timeline.ts:10  [CONFIRM: the park was named Grant Park in 1918]
@@ -42,8 +42,8 @@ WARN  src/pages/about.astro:14  [CONFIRM: item 25, funding wording: "all of our 
 WARN  src/pages/about.astro:15  [CONFIRM: item 29, whether the replanting is still active and whether a current project should be named]
 WARN  src/pages/booking/index.astro:22  [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
 WARN  src/pages/booking/index.astro:23  [CONFIRM: item 5, whether the steps should name Amber Weir or keep "the park office"]
-WARN  src/pages/booking/index.astro:24  [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 9 AM and 8 PM, as the page states]
-WARN  src/pages/booking/index.astro:25  [CONFIRM: item 15, whether weekend events still end by 7:30 PM]
+WARN  src/pages/booking/index.astro:24  [CONFIRM: items 11, 38 and 39, Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5; it must be set to a two-hour minimum with flexible start times between 8 AM and 8 PM, as the page states]
+WARN  src/pages/booking/index.astro:25  [CONFIRM: item 41, no power on site since 2026-10-12 (the owner withdrew the two circuits at the Cross); the FAQ and terms pages must say the same as this page: 8 to 8 every day, no power, bring your own]
 WARN  src/pages/booking/index.astro:26  [CONFIRM: item 19, insurance is stated for receptions only]
 WARN  src/pages/booking/requested.astro:16  [CONFIRM: item 2, Zeffy issues a donation receipt for the site fee; confirm with the accountant]
 WARN  src/pages/booking/requested.astro:17  [CONFIRM: item 5, whether these steps should name Amber Weir or keep "the park office"]
@@ -60,19 +60,18 @@ WARN  src/pages/faq.astro:20  [CONFIRM: item 20, whose phone 805-258-3153 is and
 WARN  src/pages/gallery.astro:16  [CONFIRM: item 33, permission and credits for the West Cooke rainbow photo and the "-SCP" wedding set]
 WARN  src/pages/history.astro:28  [CONFIRM: items 6 and 22, who bought the Cross after the 2003 vote and when; nothing is claimed]
 WARN  src/pages/history.astro:29  [CONFIRM: item 29, the replanting is still active; the giving band keeps the brief's wording]
-WARN  src/pages/terms-and-conditions.astro:13  [CONFIRM: item 5, whether the terms should name Amber Weir or keep "the park office"]
-WARN  src/pages/terms-and-conditions.astro:14  [CONFIRM: item 19, whether ceremony-only weddings, picnics and memorials also need an insurance policy]
-WARN  src/pages/terms-and-conditions.astro:15  [CONFIRM: item 37, whether the Conservancy has a fuller rental agreement to publish here]
+WARN  src/pages/terms-and-conditions.astro:15  [CONFIRM: item 5, whether the terms should name Amber Weir or keep "the park office"]
+WARN  src/pages/terms-and-conditions.astro:16  [CONFIRM: item 19, whether ceremony-only weddings, picnics and memorials also need an insurance policy]
+WARN  src/pages/terms-and-conditions.astro:17  [CONFIRM: item 37, whether the Conservancy has a fuller rental agreement to publish here]
 WARN  No photo for Barbara Asbell (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Jan Schmutte (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Dave Schmutte (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Angie Hecht (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Karen Greenough (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
-WARN  No photo for Luke Erickson (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Christy Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 WARN  No photo for Amber Weir (PEOPLE in src/config/site.ts). The About page shows initials until one is added.
 
-Prelaunch check: 51 warnings on 2026-10-10 (52 on 2026-10-09, before Luke Erickson's photo was added).
+Prelaunch check: 51 warnings on 2026-10-12 (51 on 2026-10-10; 52 on 2026-10-09, before Luke Erickson's photo was added). On 2026-10-12 the hours became 8 AM to 8 PM and the weekend 7:30 PM end was dropped (CONTENT-TODO item 15, resolved), so the booking page's hours marker on line 24 now reads 8 AM to 8 PM, the item 15 marker on line 25 gave way to one for item 41 (no power on site), and the faq.ts markers moved down one line because its header gained a note for item 41. The count is unchanged; the list above is the output of `node scripts/prelaunch-check.mjs` on 2026-10-12.
 ```
 
 Every `[CONFIRM: ...]` marker is inside a code comment. None reaches the built HTML (section 3). The list shrinks as Luke closes items in `CONTENT-TODO.md`; the Zeffy, font and photo warnings close when the launch checklist items land.
@@ -90,7 +89,7 @@ Two calibrations the next person running these checks should know about:
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `/` | 1 | base, alt, base, dark, alt | 1 | Plan your event (hero, `/booking/`) | cross-olive-panorama | NGO, TouristAttraction | PageHero |
 | `/about/` | 1 | base, alt, base, alt, base | 0 | none | bench-ocean | NGO, TouristAttraction | SiteHeaderIsland |
-| `/booking/` | 1 | base, alt, dark, base, alt | 1 | See availability (hero, `#availability`) | reception-umbrellas | NGO, TouristAttraction, EventVenue | PageHero, AvailabilityCalendar |
+| `/booking/` | 1 | base, alt, dark, base, alt, base | 1 | Book now (hero, `#availability`; "Ask a question" beside it is secondary, to `#questions`) | reception-umbrellas | NGO, TouristAttraction, EventVenue | PageHero, AvailabilityCalendar, ContactForm |
 | `/booking/requested/` | 1 | base, alt | 0 | none | reception-lawn | NGO, TouristAttraction | SiteHeaderIsland |
 | `/contact/` | 1 | base, alt | 0 | Send message (form submit) | cross-sunset | NGO, TouristAttraction | SiteHeaderIsland, ContactForm |
 | `/donate/` | 1 | base, alt, base | 0 | none | burned-shrubs-cross-islands-2017 (top crop) | NGO, TouristAttraction | SiteHeaderIsland, ZeffyEmbed |
@@ -171,8 +170,8 @@ Everything else on the site is static HTML rendered from `src/components/ds/` at
 | `PageHero` | `src/components/PageHero.tsx` | `/`, `/booking/`, `/gallery/`, `/history/` | `client:media="(max-width: 1100px)"` | The overlay header's menu toggle on the hero pages. The query matches `bundle.css`, which shows the toggle at `max-width: 1100px` |
 | `AvailabilityCalendar` | `src/components/booking/AvailabilityCalendar.tsx` | `/booking/` | `client:visible` | Fetches `GET /api/availability` (or `?fixture=1` when the page URL has it), draws the Sunday-first month grid (two months side by side from 1100px), roving tabindex with arrows, Home, End, PageUp and PageDown, a polite live region for month changes, a `role="status"` line for the chosen day. Picking an open or partly booked day opens the booking area: first the terms agreement (`TermsGate`, a checkbox whose label links to the terms; the agreement is kept for the visit in sessionStorage, added 2026-10-10), then, once the box is ticked, `CalBooker` (`React.lazy`) under the heading "Book <date>", which takes focus. On a fetch failure it shows the info Notice and the same gate, then `CalBooker` with no date, so booking never depends on the endpoint |
 | `CalBooker` (loaded by the calendar, not a page island) | `src/components/booking/CalBooker.tsx` | `/booking/` | lazy chunk | `@calcom/embed-react` with `getCalApi({ namespace: 'reserve' })`, `cal('ui', { theme: 'light', layout: 'month_view', hideEventTypeDetails: false, cssVarsPerTheme })` built from `src/lib/cal-theme.ts`, `calLink` `serra-cross-park/reserve?month=YYYY-MM&date=YYYY-MM-DD`, remounted by `key={date}`. On `linkFailed` or 12 s of silence it renders `InquiryFallback` |
-| `InquiryFallback` (inside CalBooker) | `src/components/booking/InquiryFallback.tsx` | `/booking/` | with CalBooker | A link to `https://cal.com/serra-cross-park/reserve`, a required terms checkbox (`TermsCheckbox`, the one the gate uses; an unticked send is stopped with a caution Notice and focus on the box) and the design system's `InquiryForm` with Morning, Afternoon and Evening chips, posted to the Netlify form `event-inquiry` with `terms=yes` (section 7) |
-| `ContactForm` | `src/components/ContactForm.tsx` | `/contact/` | `client:visible` | The contact form: `Field`s, `ChoiceChips` for "regarding", honeypot, posts to Netlify Forms with `fetch('/')`, shows the "Thank you" state and moves focus to it, caution Notice on error. Before hydration the same form posts natively to `/contact/` |
+| `InquiryFallback` (inside CalBooker) | `src/components/booking/InquiryFallback.tsx` | `/booking/` | with CalBooker | A link to `https://cal.com/serra-cross-park/reserve`, a required terms checkbox (`TermsCheckbox`, the one the gate uses; an unticked send is stopped with a caution Notice and focus on the box) and the design system's `InquiryForm` with a "Start time" select (`start-time`, every hour from 8 AM to 6 PM, through the `timeField` prop added 2026-10-12) in place of the time-of-day chips, posted to the Netlify form `event-inquiry` with `terms=yes` (section 7) |
+| `ContactForm` | `src/components/ContactForm.tsx` | `/contact/`, `/booking/` (`#questions`) | `client:visible` | The contact form: `Field`s, `ChoiceChips` for "regarding", honeypot, posts to Netlify Forms with `fetch('/')`, shows the "Thank you" state and moves focus to it, caution Notice on error. Before hydration the same form posts natively to `/contact/`. On the booking page (2026-10-12) it renders with "Booking an event" preselected, the title "Send your question" as an h3 and a secondary button, because the hero's "Book now" is that page's primary |
 | `ZeffyEmbed` | `src/components/ZeffyEmbed.tsx` | `/donate/` | `client:visible` | Renders Zeffy's `[data-zeffy-embed]` container (plus a `<noscript>` give button), loads `https://www.zeffy.com/embed/v2/zeffy-embed.js` once, watches for the injected iframe. If the script errors or no iframe appears in 8 s, swaps in the fallback: a `give` button to `PAYMENTS.donateUrl` in a new tab and a plain iframe of the embed URL. The script container and the plain iframe are never in the DOM together |
 | `GalleryLightbox` (two instances) | `src/components/GalleryLightbox.tsx` | `/gallery/` | `client:visible` | The unchanged `Gallery` followed by a native `<dialog>`. After hydration each photo becomes a button (`role="button"`, `tabIndex 0`, `aria-haspopup="dialog"`, "Open: <caption>") through the component's `imgProps` spread. Dialog shows the largest rendition and caption, Previous and Next (buttons and arrow keys), Close, Escape, body scroll lock, focus returned to the thumbnail |
 
@@ -193,13 +192,13 @@ How to test it:
 3. **On a deploy preview.** `curl -i https://<preview>.netlify.app/api/availability` and check the status, both cache headers and the JSON shape; `?fixture=1` should also answer on a preview and must return 404-free live data only on production.
 4. **With the Netlify CLI,** if installed: `netlify dev` serves the function at the same path.
 
-Observed in this gate (direct call, method 2): fixture mode answered 200, `no-store`, 366 days from 2026-10-09 to 2027-10-09 with 254 open, 44 partial, 38 booked and 30 notyet. The live call answered 200 in 856 ms with both cache headers, 366 days, today `booked 0/4` (its slots have passed) and every other day `open 4/4`. That matches `docs/INTEGRATION-NOTES.md`: Cal.com offered four fixed 180-minute slots a day, every day (that must change to the published rule, a two-hour minimum at any start time from 9 AM to 8 PM; CONTENT-TODO items 11, 38 and 39), and none of the old site's 24 existing bookings are in it yet (item 13). Until they are, the calendar will show those dates as open.
+Observed in this gate (direct call, method 2): fixture mode answered 200, `no-store`, 366 days from 2026-10-09 to 2027-10-09 with 254 open, 44 partial, 38 booked and 30 notyet. The live call answered 200 in 856 ms with both cache headers, 366 days, today `booked 0/4` (its slots have passed) and every other day `open 4/4`. That matches `docs/INTEGRATION-NOTES.md`: Cal.com offered four fixed 180-minute slots a day, every day (that must change to the published rule, a two-hour minimum at any start time from 8 AM to 8 PM; CONTENT-TODO items 11, 38 and 39), and none of the old site's 24 existing bookings are in it yet (item 13). Until they are, the calendar will show those dates as open.
 
 ## 7. Forms and field names
 
 Both forms are Netlify Forms. Netlify registers a form from the built HTML, so each one has a hidden static copy with `data-netlify="true"` and `netlify-honeypot="bot-field"`; the islands post the same field names to `/` as `application/x-www-form-urlencoded` with `form-name` included. Forms do not run in local dev; test on a deploy preview with form detection turned on.
 
-**`contact`** (`/contact/`). Visible form: `src/components/ContactForm.tsx`, rendered as `<form name="contact" method="POST" action="/contact/">` with no `data-netlify` attribute (so Netlify's build step leaves the island's markup alone and hydration matches). Hidden twin in `src/pages/contact.astro`: `<form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>`. Fields:
+**`contact`** (`/contact/`, and since 2026-10-12 the `#questions` section of `/booking/`). Visible form: `src/components/ContactForm.tsx`, rendered as `<form name="contact" method="POST" action="/contact/">` with no `data-netlify` attribute (so Netlify's build step leaves the island's markup alone and hydration matches). Hidden twin in `src/pages/contact.astro`: `<form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>`. The booking page has no twin of its own: Netlify accepts the island's `form-name=contact` post from any page once the form is registered. Fields:
 
 | Name | Type | Notes |
 | --- | --- | --- |
@@ -208,12 +207,12 @@ Both forms are Netlify Forms. Netlify registers a form from the built HTML, so e
 | `first-name` | text, required | `autocomplete="given-name"` |
 | `last-name` | text, required | `autocomplete="family-name"` |
 | `email` | email, required | `autocomplete="email"` |
-| `regarding` | radio | `Booking an event`, `Giving`, `Volunteering`, `History`, `Something else` (the values are the labels, so the notification reads "regarding: Booking an event"). The island requires a choice before sending; the native no-JavaScript post does not |
+| `regarding` | radio | `Booking an event`, `Giving`, `Volunteering`, `History`, `Something else` (the values are the labels, so the notification reads "regarding: Booking an event"). The island requires a choice before sending; the native no-JavaScript post does not. The booking page preselects `Booking an event` |
 | `message` | textarea, required | rows 6 |
 
 Success: the form is replaced by a "Thank you" panel that takes focus. Failure: a caution Notice with the email address. Before hydration the form posts natively to `/contact/` with the same names, which Netlify accepts because the hidden twin registered the form.
 
-**`event-inquiry`** (`/booking/`, only in the Cal.com failure path). Posted by `src/components/booking/InquiryFallback.tsx` from the design system's `InquiryForm`. Hidden twin in `src/pages/booking/index.astro`: `<form name="event-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>`. Fields: `form-name` (`event-inquiry`), `bot-field`, `name`, `partner`, `email`, `phone`, `eventType`, `date` (date), `guests` (number), `block`, `message`, `terms` (checkbox, `yes`). All but `terms` are exactly the names the design system's `InquiryForm` posts (it serializes its own `FormData` and hands the pairs to `onSubmit`), checked against the ported component in this gate; `terms` is added by the island from its required checkbox (2026-10-10), so the twin and the island match.
+**`event-inquiry`** (`/booking/`, only in the Cal.com failure path). Posted by `src/components/booking/InquiryFallback.tsx` from the design system's `InquiryForm`. Hidden twin in `src/pages/booking/index.astro`: `<form name="event-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>`. Fields: `form-name` (`event-inquiry`), `bot-field`, `name`, `partner`, `email`, `phone`, `eventType`, `date` (date), `guests` (number), `start-time` (a select of hours, `08:00` to `18:00`, labelled 8 AM to 6 PM), `message`, `terms` (checkbox, `yes`). All but `terms` are exactly the names the ported `InquiryForm` posts (it serializes its own `FormData` and hands the pairs to `onSubmit`); `start-time` comes from the `timeField` prop added 2026-10-12 (DESIGN-SYSTEM-CHANGES.md) and replaced the design system's `block` chips, so Netlify re-registers the form with the new field on the next deploy (older submissions keep their `block` value in the Netlify UI); `terms` is added by the island from its required checkbox (2026-10-10), so the twin and the island match.
 
 Netlify setup Luke does in the UI (BRIEF.md section 14): turn on form detection, send notifications for both forms to `admin@serracrosspark.com` (CONTENT-TODO item 27 asks whether a second address should receive them), and send one test submission of each.
 

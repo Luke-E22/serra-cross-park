@@ -12,7 +12,7 @@ Three jobs, in this order: 1. Book weddings and events. 2. Tell the story of the
 In this order, before changing anything:
 
 1. `BRIEF.md`: the whole brief. Section 9 is the only source of facts.
-2. `CONTENT-TODO.md`: 40 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
+2. `CONTENT-TODO.md`: 41 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
 3. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
 4. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
 5. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.
@@ -37,7 +37,7 @@ In this order, before changing anything:
 - Sentence case for headings, labels and buttons; the display styles set the capitals.
 - No em dashes (use a period, comma or colon). No exclamation marks. Nothing from the "Not" column of the brand book's table.
 - "We" is the Conservancy. "You" is the couple, the family or the visitor.
-- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 9 AM, 7:30 PM, March 31, 1782, 300 guests). A time range reads "9 to 8".
+- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 8 AM, 8 PM, March 31, 1782, 300 guests). A time range reads "8 to 8".
 - Names: Serra Cross Park (the place), Serra Cross Conservancy (the nonprofit), the Cross (capital C when it means this one), Father Junípero Serra with the accent, Mission San Buenaventura, the Channel Islands, the Thomas Fire.
 
 **Money words**
@@ -68,19 +68,27 @@ In this order, before changing anything:
 - `FactGrid` sets the words "to" and "or" inside a value in the serif (logged).
 - The Home page has no fact grid under the hero. The booking page keeps its fact grid.
 - Luke Erickson has a photo on his About card. The park Instagram (`SITE.instagram`) shows in the footer and on the Contact page.
-- There are no fixed weekend slots. Events run 9 AM to 8 PM every day, at any start time, with a two-hour minimum at $300 per hour; setup and breakdown sit inside booked time. Weekend events still end by 7:30 PM and everyone is off the hill by 8 PM, when the gates lock. Never reintroduce the old fixed weekend times or any "blocks" wording, on the site or in the documents.
+- There are no fixed weekend slots. Events run at any start time, with a two-hour minimum at $300 per hour; setup and breakdown sit inside booked time. Everyone is off the hill by 8 PM, when the gates lock. Never reintroduce the old fixed weekend times or any "blocks" wording, on the site or in the documents.
 - The booking flow asks people to agree to the terms and conditions before the Cal.com booker opens, and the fallback inquiry form has a required `terms` checkbox (the hidden Netlify twin in `src/pages/booking/index.astro` carries it too).
+
+**Owner decisions already applied (2026-10-12). Do not undo them.**
+- Hours are 8 AM to 8 PM every day (9 AM to 8 PM before this date). The booking tile reads "8 to 8". Any start time, two-hour minimum, setup and breakdown inside booked time.
+- The rule "weekend events end by 7:30 PM" is dropped everywhere (CONTENT-TODO item 15, resolved). Guests and equipment are off the hill by 8 PM, when the gates lock.
+- There is no power on site. The brief said there was a little power at the base of the Cross for a small sound system; the owner withdrew that (CONTENT-TODO item 41). Wording: no power or restrooms on site; bring your own power for sound and lighting, rent portable restrooms, bring water.
+- The terms gate on the booking page shows three rules in bold: the park is always open to the public; no power or restrooms are available; booked time must include setup and breakdown for you and your vendors.
+- The inquiry form (the fallback when Cal.com cannot load) asks for a start time from a list of hours, 8 AM to 6 PM (the last start that fits a two-hour minimum before 8 PM), labeled "Start time", with a note that bookings are at least two hours.
+- The booking page offers two ways in, side by side in the hero: "Book now" (primary, to `#availability`) and "Ask a question" (secondary, to `#questions`, a section near the end of the page with the `ContactForm` island, "Booking an event" preselected, posting to Netlify Forms). The FAQ "Booking questions" section stays.
 
 ## 4. How the site is built
 
 - Astro 7.3, `output: 'static'`, `build.format: 'directory'`, TypeScript. One page per file in `src/pages/`; each imports its own CSS from `src/styles/pages/` at the top of its frontmatter.
-- React 18.3 islands only where something is interactive: `AvailabilityCalendar` (`client:visible`, `/booking/`), `ContactForm` (`client:visible`, `/contact/`), `ZeffyEmbed` (`client:visible`, `/donate/`), `GalleryLightbox` twice (`client:idle`, `/gallery/`). `CalBooker` and `InquiryFallback` load lazily inside the calendar. Everything else is static HTML.
+- React 18.3 islands only where something is interactive: `AvailabilityCalendar` (`client:visible`, `/booking/`), `ContactForm` (`client:visible`, `/contact/` and, with "Booking an event" preselected, the `#questions` section of `/booking/`), `ZeffyEmbed` (`client:visible`, `/donate/`), `GalleryLightbox` twice (`client:idle`, `/gallery/`). `CalBooker` and `InquiryFallback` load lazily inside the calendar. Everything else is static HTML.
 - The header: `SiteHeader` (through `SiteHeaderIsland.tsx` and `PageHero.tsx`) renders statically. `src/scripts/header-menu.ts`, loaded from `BaseLayout.astro`, drives the menu toggle, so no React ships for it.
 - `src/layouts/BaseLayout.astro` props: `title`, `description`, `path`, `ogImage`, `ogImageAlt`, `active`, `hero`, `titleSuffix`. It renders the head, canonical, Open Graph, the Search Console tag, site-wide JSON-LD (NGO and TouristAttraction), the skip link, the header on no-hero pages, `<main id="main">` and `SiteFooter`. Pages add their own JSON-LD or meta through `<Fragment slot="head">`.
 - Images: `picture()` and `ogImage()` in `src/lib/images.ts`. Photos are registered in `src/content/photos.ts` (file, alt, caption, orientation, archival, uses). To add one: drop the file in `src/assets/photos/`, import it there, add an entry.
 - Content: `src/content/faq.ts` (also feeds the FAQPage JSON-LD), `src/content/timeline.ts`, and `src/config/site.ts` (SITE, BOOKING, PAYMENTS, PEOPLE, CREDIT, NAV, FOOTER_COLUMNS).
 - Availability: `netlify/functions/availability.mts` fetches Cal.com's public slots API (no key; `CAL_API_KEY` only if Cal.com ever refuses) and answers at `/api/availability` with CDN caching. All status logic is pure in `src/lib/availability.ts` and tested. `?fixture=1` returns a fixture outside production.
-- Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist). As read on 2026-10-09: a 180-minute default with 2h to 5h offered and four fixed slots a day at 8, 11, 2 and 5 Pacific. That must change to match the published rule: a two-hour minimum (default 120 minutes), flexible start times in 30-minute steps, 9 AM to 8 PM (CONTENT-TODO items 11, 38 and 39). `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked, 0 of 4". Booking rules live in Cal.com, never in code.
+- Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist). As read on 2026-10-09: a 180-minute default with 2h to 5h offered and four fixed slots a day at 8, 11, 2 and 5 Pacific. That must change to match the published rule: a two-hour minimum (default 120 minutes), flexible start times (30-minute steps, or 60-minute steps if the owner wants hourly starts), 8 AM to 8 PM every day (CONTENT-TODO items 11, 38 and 39). `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked, 0 of 4". Booking rules live in Cal.com, never in code.
 - Dev bridge: `scripts/dev-availability-plugin.mjs` serves `/api/availability` in `astro dev`. `npm run preview` does not serve it, so the booking page in preview takes the fallback path (Notice, the terms agreement, then the booker). `npx netlify-cli serve --offline` (port 8888) runs the real function on the built site.
 - Vite cache: `astro.config.mjs` sets `vite.cacheDir` per npm script (`node_modules/.vite-dev`, `.vite-build`). If an island crashes with "_jsxDEV is not a function": `rm -rf node_modules/.vite*` and restart dev.
 - Fonts: EB Garamond is self-hosted from `public/fonts/eb-garamond/` through `src/styles/fonts.css`; `scripts/strip-google-fonts-plugin.mjs` removes the Google Fonts import from `bundle.css` at build time. Strong Glasgow in `design-system/fonts/` is the personal-use demo; the three digit-only `@font-face` rules at the top of `bundle.css` go when the licensed files arrive.

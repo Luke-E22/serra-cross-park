@@ -5,7 +5,9 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 ## Content and facts
 
 - [ ] Every item in `CONTENT-TODO.md` answered.
-  40 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
+  41 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
+- [ ] Power confirmed as not available (item 41).
+  On 2026-10-12 Luke said there is no power on site, and the FAQ, the terms, the booking notices and the terms gate say so. The brief and the brand book had described a little power at the base of the Cross for a small sound system. Confirm whether that power exists and is simply not offered to renters, in case the FAQ should say so.
 - [ ] Tax ID checked against the IRS determination letter (item 12).
   The old Donate page printed 20-861526, eight digits. The site uses 20-8615264 from `SITE.ein` in `src/config/site.ts`, which feeds the footer of every page, the Donate page and the NGO `taxID` in the JSON-LD.
 - [ ] Board and staff photos in place, or the initials placeholders signed off.
@@ -21,7 +23,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 ## Cal.com
 
-- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time; availability is 9 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
+- [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time; availability is 8 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
   The items below break this one into the settings read from the live event on 2026-10-09 (CONTENT-TODO items 11, 38, 39 and 40, docs/INTEGRATION-NOTES.md).
 - [ ] Requires confirmation turned on, with unconfirmed bookings blocking the slot.
   Off today. The booking steps on `/booking/` and `/booking/requested/` promise that the park office reviews each request and holds the date, so a booking must not confirm itself. Cal.com dashboard, event `reserve`, Advanced.
@@ -34,7 +36,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Durations set to a two-hour minimum: default length 2 hours (120 minutes), longer lengths still offered.
   Today the event offers 2, 3, 4 and 5 hours with 3 hours as the default (read 2026-10-09). The site says $300 per hour with a two-hour minimum and no fixed length, so the default must be 2 hours. The availability calendar counts slots for the default length; to count another length set `BOOKING.slotDuration` in minutes. Items 16 and 39.
 - [ ] Start times made flexible and the schedule matched to the published hours.
-  Today Cal.com offers four fixed 180-minute slots at 8 AM, 11 AM, 2 PM and 5 PM Pacific every day. The site says events run 9 AM to 8 PM every day at any start time, with a two-hour minimum, and weekend events end by 7:30 PM (booking page, FAQ, terms and the EventVenue hours in the JSON-LD). In Cal.com: set the event's time-slot interval to 30 minutes, set the availability schedule to 9 AM to 8 PM every day, and end Saturday and Sunday at 7:30 PM if that rule stays (item 15). Items 11, 15 and 38.
+  As read on 2026-10-09, Cal.com offers four fixed 180-minute slots at 8 AM, 11 AM, 2 PM and 5 PM Pacific every day. The site says events run 8 AM to 8 PM every day at any start time, with a two-hour minimum, and everyone is off the hill by 8 PM, when the gates lock (booking page, FAQ, terms and the EventVenue hours in the JSON-LD). In Cal.com: set the event's time-slot interval to 30 minutes (or 60 minutes if Luke wants hourly starts, as the fallback inquiry form offers) and set the availability schedule to 8 AM to 8 PM every day, Saturday and Sunday included. The weekend 7:30 PM end was dropped on 2026-10-12 (item 15), so no weekend exception is needed. Items 11 and 38.
 - [ ] Minimum notice set in Cal.com and mirrored in `BOOKING.minNoticeDays`.
   It is 0 in `src/config/site.ts`, so today reads "Booked, 0 of 4" once its last start time has passed. Setting Cal.com to one day or more and `minNoticeDays` to the same number shows those days as Not available online instead.
 - [ ] Booking questions set: event type, guest count, and a required "I agree to the terms and conditions" checkbox linking to `https://serracrosspark.com/terms-and-conditions/`.

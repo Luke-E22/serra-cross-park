@@ -40,7 +40,7 @@ import {
   ymd,
 } from './calendar-grid';
 import { readAgreement, sessionStore, writeAgreement } from './terms-agreement';
-import { TermsCheckbox, TermsLink } from './TermsCheckbox';
+import { TermsCheckbox, TermsLink, TermsRules } from './TermsCheckbox';
 import './availability-calendar.css';
 
 export { monthGrid } from './calendar-grid';
@@ -188,7 +188,8 @@ interface TermsGateProps {
 
 /**
  * The agreement before the booker. Until the visitor ticks the box the booker does not mount. Once
- * agreed in an earlier view (sessionStorage, see terms-agreement.ts) the panel is one line.
+ * agreed in an earlier view (sessionStorage, see terms-agreement.ts) the panel is one line. The
+ * panel names the three rules in bold (TermsRules) above the box, so no one books without seeing them.
  */
 function TermsGate({ agreed, fresh, onChange, panelRef, titleRef }: TermsGateProps) {
   if (agreed && !fresh) {
@@ -208,8 +209,9 @@ function TermsGate({ agreed, fresh, onChange, panelRef, titleRef }: TermsGatePro
       </h3>
       <p className="avail__terms-text body-sm">
         Reserving a date means agreeing to the park's terms and conditions. They cover the site fee, hours, insurance and
-        what to bring.
+        what to bring. Three rules shape every event:
       </p>
+      <TermsRules className="avail__terms-rules" />
       <TermsCheckbox checked={agreed} onChange={onChange} />
     </div>
   );

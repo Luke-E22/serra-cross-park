@@ -5,34 +5,46 @@
  *
  * Netlify Forms only sees forms in the built HTML, so the booking page renders a hidden static twin:
  *   <form name="event-inquiry" data-netlify="true" netlify-honeypot="bot-field" hidden>
- * with inputs named form-name, bot-field, name, partner, email, phone, eventType, date, guests, block,
+ * with inputs named form-name, bot-field, name, partner, email, phone, eventType, date, guests, start-time,
  * message and terms. This island posts the same field names to "/" as application/x-www-form-urlencoded.
  *
  * The visitor agrees to the terms before sending: a required checkbox above the form (TermsCheckbox.tsx),
- * with the same words and link as the gate ahead of the booker. The ported InquiryForm owns its form
- * element and its submit button, and shows its confirmation as soon as its own submit handler runs, so
- * the check happens ahead of that handler: onSubmitCapture on the wrapper stops an unticked send, shows
- * a caution notice and puts focus on the box. A ticked send posts terms=yes with the rest of the fields.
+ * with the same words, the same three rules and the same link as the gate ahead of the booker. The ported
+ * InquiryForm owns its form element and its submit button, and shows its confirmation as soon as its own
+ * submit handler runs, so the check happens ahead of that handler: onSubmitCapture on the wrapper stops an
+ * unticked send, shows a caution notice and puts focus on the box. A ticked send posts terms=yes with the
+ * rest of the fields.
  *
- * Time of day: since 2026-10-10 events start at any time from 9 AM to 8 PM with a two-hour minimum, so
- * the "block" chips carry no hours. The field name and its three values are unchanged.
+ * Start time: since 2026-10-12 events run 8 AM to 8 PM every day, any start time, two-hour minimum, with
+ * setup and breakdown inside booked time. The form asks for a start hour in a select (the InquiryForm's
+ * timeField prop, logged in DESIGN-SYSTEM-CHANGES.md): every hour from 8 AM to 6 PM, the last start that
+ * fits two hours before the gates lock. The posted field is "start-time" with a 24-hour value like "14:00".
  */
 import { useId, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { Button, InquiryForm, Notice } from '../ds';
-import type { Choice } from '../ds';
+import type { FieldOption } from '../ds';
 import { CAL_BOOKING_PAGE_URL, SITE } from '../../config/site';
-import { TermsCheckbox } from './TermsCheckbox';
+import { TermsCheckbox, TermsRules } from './TermsCheckbox';
 
 /** The Netlify form name. The hidden static form on the booking page must use the same one. */
 export const INQUIRY_FORM_NAME = 'event-inquiry';
 
-/** Roughly when in the day. The park office settles the hours with the couple. */
-const TIMES_OF_DAY: Choice[] = [
-  { value: 'morning', label: 'Morning' },
-  { value: 'afternoon', label: 'Afternoon' },
-  { value: 'evening', label: 'Evening' },
-];
+/** The hill opens at 8 AM and the gates lock at 8 PM; the last start that fits a two-hour minimum is 6 PM. */
+const FIRST_START_HOUR = 8;
+const LAST_START_HOUR = 18;
+
+/** "8 AM", "12 PM", "6 PM": figures for times, as the brand voice asks. */
+function hourLabel(hour: number): string {
+  const twelve = hour % 12 === 0 ? 12 : hour % 12;
+  return `${twelve} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+/** Every start hour on offer, 8 AM through 6 PM, as { value: '08:00', label: '8 AM' }. */
+export const START_TIMES: FieldOption[] = Array.from({ length: LAST_START_HOUR - FIRST_START_HOUR + 1 }, (_, i) => {
+  const hour = FIRST_START_HOUR + i;
+  return { value: `${String(hour).padStart(2, '0')}:00`, label: hourLabel(hour) };
+});
 
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -123,6 +135,7 @@ export default function InquiryFallback() {
       {/* The agreement sits above the form because the form element and its button are the component's. */}
       {send === 'idle' && (
         <div className="inquiry-fallback__terms" style={{ display: 'grid', gap: 'var(--space-4)' }}>
+          <TermsRules />
           <TermsCheckbox
             checked={agreed}
             onChange={agree}
@@ -144,8 +157,13 @@ export default function InquiryFallback() {
       <InquiryForm
         onSubmit={handleSubmit}
         sent={send === 'sent'}
-        blockLabel="Preferred time of day"
-        blockOptions={TIMES_OF_DAY}
+        dateHelp="Bookings are at least two hours, any start time between 8 AM and 8 PM."
+        timeField={{
+          name: 'start-time',
+          label: 'Start time',
+          options: START_TIMES,
+          help: 'Bookings are at least two hours. The hill closes at 8 PM.',
+        }}
       />
     </div>
   );

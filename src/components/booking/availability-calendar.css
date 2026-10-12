@@ -286,6 +286,37 @@
   margin: 0 0 var(--space-4);
   color: var(--ink);
 }
+/* The three rules in bold (TermsRules in TermsCheckbox.tsx), shown in the gate and above the fallback
+   inquiry form: body-sm, a square ochre mark on each line like the page's rules list, space-2 between
+   lines and space-4 before the checkbox. EB Garamond ships 400 to 600, so bold is 600, not the
+   browser's 700, which would be synthesized. */
+.terms-rules {
+  display: grid;
+  gap: var(--space-2);
+  max-width: var(--measure);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+}
+.terms-rules__item {
+  position: relative;
+  padding-left: var(--space-5);
+}
+.terms-rules__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: var(--radius-none);
+}
+.terms-rules__text { font-weight: 600; }
+/* Above the fallback form the wrapper's grid gap already separates the list from the box. */
+.inquiry-fallback__terms .terms-rules { margin-bottom: 0; }
+
 /* The line left once the visitor has agreed: a check mark and the words. */
 .avail__terms-done {
   display: flex;

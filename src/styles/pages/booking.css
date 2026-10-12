@@ -116,3 +116,30 @@
 
 /* ------------------------------------------------------------ booking questions */
 .booking-faq__more { margin-top: var(--space-6); }
+
+/* ------------------------------------------------------------ ask before you book */
+/* The ContactForm island, preset to "Booking an event", near the end of the page. The form is the
+   bundle's .sc-form shell on surface-alt; it is capped at one form's width rather than the full
+   container, like the form column on /contact/. The .contact-form__* rules mirror contact.css,
+   which this page does not load. Keep the two in step. */
+.booking-questions__form { max-width: 720px; }
+
+/* The regarding check sits right under the chips in the Field error style: danger, icon and words. */
+.booking-questions__form .contact-form__regarding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.booking-questions__form .contact-form__error { margin: 0; }
+
+/* "All fields are required." under the form title: ink-muted on the form's surface-alt, 5.8:1. */
+.booking-questions__form .contact-form__required {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-muted);
+}
+
+/* The confirmation takes focus when it replaces the form. It is a target, not a control, so no ring. */
+.booking-questions__form .contact-form__sent:focus {
+  outline: none;
+  box-shadow: none;
+}
