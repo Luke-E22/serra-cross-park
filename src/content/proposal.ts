@@ -16,7 +16,7 @@
 // (section 13, production build, 2026-10-09), 43 open questions, 24 existing bookings.
 
 /** The one-time fee, in dollars. */
-export const FEE = 5000;
+export const FEE = 3000;
 
 /**
  * When the fee is due. One payment of FEE, due when the site goes live. Luke's own term, not a
@@ -25,7 +25,7 @@ export const FEE = 5000;
  */
 export const PAYMENT = { amount: FEE, dueLabel: 'Due when the site goes live' };
 
-/** "$5,000" from 5000. Figures for money, with a comma every three digits. */
+/** "$3,000" from 3000. Figures for money, with a comma every three digits. */
 export function usd(amount: number): string {
   return '$' + amount.toLocaleString('en-US');
 }
