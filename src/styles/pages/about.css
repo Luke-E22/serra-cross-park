@@ -35,17 +35,20 @@
 }
 
 /* ------------------------------------------------------------ people */
-/* The board: four across, two across under 720px. The staff row uses the same grid so its one
+/* The board: all seven on one line from 1100px with Luke in the middle (the owner's call), four across on tablets, two across under 720px. The staff row uses the same grid so its one
    card is the same width as a board card. */
 .about-people {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-4);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .about-people > li { min-width: 0; }
+@media (max-width: 1099px) {
+  .about-people { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-5); }
+}
 @media (max-width: 720px) {
   .about-people { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

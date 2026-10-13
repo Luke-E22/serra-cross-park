@@ -47,8 +47,6 @@ export const PEOPLE: { board: Person[]; staff: Person[] } = {
     { name: 'Barbara Asbell' },
     { name: 'Jan Schmutte' },
     { name: 'Dave Schmutte' },
-    { name: 'Angie Hecht' },
-    { name: 'Karen Greenough' },
     {
       name: 'Luke Erickson',
       photo: 'luke-erickson.webp',
@@ -57,6 +55,8 @@ export const PEOPLE: { board: Person[]; staff: Person[] } = {
         { label: 'Instagram', href: 'https://www.instagram.com/luke_erickson' },
       ],
     },
+    { name: 'Angie Hecht' },
+    { name: 'Karen Greenough' },
     { name: 'Christy Weir' },
   ],
   staff: [{ name: 'Amber Weir', title: 'Reservation Specialist' }],

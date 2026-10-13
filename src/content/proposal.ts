@@ -16,7 +16,7 @@
 // (section 13, production build, 2026-10-09), 43 open questions, 24 existing bookings.
 
 /** The one-time fee, in dollars. */
-export const FEE = 3000;
+export const FEE = 3500;
 
 /**
  * When the fee is due. One payment of FEE, due when the site goes live. Luke's own term, not a
@@ -25,7 +25,7 @@ export const FEE = 3000;
  */
 export const PAYMENT = { amount: FEE, dueLabel: 'Due when the site goes live' };
 
-/** "$3,000" from 3000. Figures for money, with a comma every three digits. */
+/** "$3,500" from 3500. Figures for money, with a comma every three digits. */
 export function usd(amount: number): string {
   return '$' + amount.toLocaleString('en-US');
 }
@@ -84,11 +84,11 @@ const INCLUDED: ProposalIncluded[] = [
   },
   {
     title: 'Calendar reservations, fully automated',
-    text: "Cal.com set up end to end, so requests, payments, confirmations and the confirmation page run without the office retyping anything. Every booking already on the calendar, 24 as of this proposal, is entered as part of the setup. The calendar runs on Cal.com's free plan; an upgrade for extra features, if the Conservancy ever wants one, is billed separately.",
+    text: "Not set up yet. I will set up Cal.com end to end, so requests, payments, confirmations and the confirmation page run without the office retyping anything. Every booking already on the calendar, 24 as of this proposal, is entered as part of the setup. The calendar runs on Cal.com's free plan; an upgrade for extra features, if the Conservancy ever wants one, is billed separately.",
   },
   {
     title: 'Online payments through Zeffy, Stripe or both',
-    text: "Full setup of online payments for donations and for the site fee, which is collected with each reservation, placed on the site and working, with the receipt wording settled with the Conservancy's accountant.",
+    text: "Not set up yet. I will set up online payments for donations and for the site fee, which is collected with each reservation, placed on the site and working, with the receipt wording settled with the Conservancy's accountant.",
   },
   {
     title: 'Website hosting for all time',
@@ -107,7 +107,7 @@ export const PROPOSAL: Proposal = {
   included: INCLUDED,
   contactHref: 'https://lukeerickson.com',
 
-  lede: `I have built the new serracrosspark.com so the park can take bookings, receive gifts and tell its story with less work for the office and no monthly bills. I am asking the board to approve a one-time fee of ${usd(FEE)}, due when the site goes live. It covers the site, full automation of calendar reservations, full setup of online payments, hosting for all time, and every update the Conservancy needs from here on.`,
+  lede: `I have built the new serracrosspark.com so the park can take bookings, receive gifts and tell its story with less work for the office and no monthly bills. I am asking the board to approve a one-time fee of ${usd(FEE)}, due when the site goes live. The site itself is built. Two parts are not set up yet, the calendar automation and online payments, and the fee covers finishing both, along with hosting for all time and every update the Conservancy needs from here on.`,
 
   facts: [
     {
@@ -127,8 +127,8 @@ export const PROPOSAL: Proposal = {
     },
     {
       label: 'Bookings and payments',
-      value: 'Automated',
-      note: 'Cal.com reservations run end to end with nothing retyped. Online payments fully set up through Zeffy, Stripe or both.',
+      value: 'Included',
+      note: 'Not set up yet. Finishing the Cal.com automation and online payments through Zeffy, Stripe or both is part of the fee.',
     },
   ],
 
@@ -138,19 +138,19 @@ export const PROPOSAL: Proposal = {
       heading: 'Summary and the ask',
       paragraphs: [
         'The park has three jobs online: book weddings and events, tell the story of the Cross, and raise money to care for the hill. The new site is built around those three jobs, in that order.',
-        "Here is what changes for the Conservancy. Couples see which dates are open before they ask. Requests, payments and confirmations run on their own. Gifts arrive without a platform fee. The site looks like the park's own sign, not a template. And there is no hosting bill, no plugin bill and no retainer.",
-        `The ask is one fee of ${usd(FEE)}, paid once, when the site goes live. Four things come with it and stay included for as long as the Conservancy wants the site: unlimited updates, automated calendar reservations, online payments fully set up, and hosting at no charge. The rest of this page says what was built, what it costs to run, what the fee does not cover, and how I propose to be paid.`,
+        "Here is what changes for the Conservancy. Couples see which dates are open before they ask. Once the setup is finished, requests, payments and confirmations run on their own. Gifts arrive without a platform fee. The site looks like the park's own sign, not a template. And there is no hosting bill, no plugin bill and no retainer.",
+        `The ask is one fee of ${usd(FEE)}, paid once, when the site goes live. Four things come with it and stay included for as long as the Conservancy wants the site: unlimited updates, automated calendar reservations and online payments (neither is set up yet; the fee covers finishing them), and hosting at no charge. The rest of this page says what was built, what it costs to run, what the fee does not cover, and how I propose to be paid.`,
       ],
     },
     {
       id: 'built',
       heading: 'What was built',
-      paragraphs: ['Everything on this list is built and checked.'],
+      paragraphs: ['Everything on this list is built and checked. Two things are not finished: the automated reservation flow in Cal.com and online payment collection. Both are covered by the fee and described under What stays included.'],
       bullets: [
         "A design system drawn from the park's own interpretive sign: its colors, the Strong Glasgow and EB Garamond typefaces, 20 components, the logos, and a library of 30 curated park photographs, each with a caption and alt text for screen readers.",
         'Ten pages plus a page for addresses that no longer exist: Home, About with a card for each board and staff member, History with a 14-event timeline, Plan your event, Gallery with a lightbox, FAQ, Contact with directions, Donate, Terms, and a booking confirmation page.',
-        "An availability calendar that reads the park's Cal.com schedule live and marks each day open, partly booked or booked, in words and a mark, never color alone. Choosing a day opens the Cal.com booker on that date.",
-        'Donations through Zeffy, which charges the nonprofit nothing.',
+        "An availability calendar that reads the park's Cal.com schedule live and marks each day open, partly booked or booked, in words and a mark, never color alone. Choosing a day opens the Cal.com booker on that date. The automated reservation flow behind it (approvals, hourly start times, payment at booking) is not set up yet.",
+        "Donations through Zeffy, which charges the nonprofit nothing. The Conservancy's own form is live on the Donate page. Collecting the site fee at booking is not set up yet.",
         'A contact form that reaches the park office, and a booking inquiry form that appears if Cal.com is ever unreachable, so a request is never lost.',
         'Every address from the old site kept or redirected, so search rankings carry over, and structured data that tells search engines about the nonprofit, the park, the venue and the FAQ.',
         'The 501(c)(3) line and the Tax ID on every page.',
