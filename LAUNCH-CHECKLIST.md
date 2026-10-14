@@ -6,8 +6,8 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 - [ ] Every item in `CONTENT-TODO.md` answered.
   43 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
-- [ ] Power confirmed as not available (item 41).
-  On 2026-10-12 Luke said there is no power on site, and the FAQ, the terms, the booking notices and the terms gate say so. The brief and the brand book had described a little power at the base of the Cross for a small sound system. Confirm whether that power exists and is simply not offered to renters, in case the FAQ should say so.
+- [x] Power confirmed (item 41).
+  On 2026-10-14 the board's copy notes said there are two 20-amp circuits at the park, with no water, restrooms or lighting, and that bringing any of those is the client's choice. The FAQ, the Terms basics and the booking notice say so. (On 2026-10-12 Luke had said there was no power; the board's note supersedes that.)
 - [ ] Terms PDF and terms page in step with the Conservancy's document.
   The Special Event Terms and Conditions (supplied 2026-10-12) are the source of event rules. The text is in `docs/TERMS-SOURCE.md`, the original PDF in `docs/source/`, and the published copy in `public/docs/serra-cross-park-terms-and-conditions.pdf`, linked from the terms page. When the Conservancy revises the document, replace both PDFs, update `TERMS-SOURCE.md`, the terms page and the FAQ, and fix the clause numbering (item 42: there is no 3.5).
 - [ ] Tax ID checked against the IRS determination letter (item 12).
@@ -21,7 +21,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Facebook group confirmed as the Conservancy's active page (item 36).
   `SITE.facebook` in `src/config/site.ts` goes in the footer, on the Contact page and in the NGO `sameAs`. The Instagram account (`SITE.instagram`) is already confirmed and sits beside it.
 - [ ] Last read of every page on the deploy preview for voice.
-  No em dashes, no exclamation marks, sentence case, gifts are tax-deductible and the site fee never is. The per-page check in docs/BUILD-REPORT.md section 3 covers the built HTML; this is the human read.
+  No em dashes, no exclamation marks, sentence case, gifts are tax-deductible. The booking page carries the board's sentence calling reservation payments tax-deductible donations, pending the accountant (item 2); the Terms page and the FAQ make no claim either way, and nothing says "not a donation" or "not tax-deductible". The per-page check in docs/BUILD-REPORT.md section 3 covers the built HTML; this is the human read.
 
 ## Cal.com
 
@@ -54,10 +54,10 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 - [x] Serra Cross Conservancy's own Zeffy donation form in `PAYMENTS.donateUrl` (donate-to-serra-cross-park, set 2026-10-12). No `startup-ventura` anywhere.
   `siteFeeUrl` points at the same form but no page links it; the site fee is collected with the reservation (item 43 covers the Cal.com payment step).
-- [ ] Site-fee receipt setup confirmed with the Conservancy's accountant.
-  Item 2. The fee is a payment made in full with the reservation, non-refundable and never a donation (the terms document, 1.1 and 1.2), and the site says so on `/booking/`, `/booking/requested/`, the FAQ and the terms. A Zeffy donation form issues a donation receipt, so the fee may need a Zeffy payment or ticketing form, or another payment step, rather than a donation form; settle the receipt wording and the collection step with the accountant.
+- [ ] Reservation payment receipt treatment confirmed with the Conservancy's accountant.
+  Item 2. The booking page (`/booking/`) carries the board's sentence of 2026-10-14: "All reservation payments are tax-deductible donations that directly support the beautification, care and preservation of this historical venue." The terms document (1.1, 1.2) and the brand book call the fee a non-refundable payment, so the Terms page and the FAQ make no claim either way. Before launch the accountant confirms whether reservation payments can be receipted as donations; if not, that sentence comes off the booking page. Settle at the same time which form or payment step collects the fee with the reservation (a Zeffy donation form issues a donation receipt; a payment or ticketing form does not).
 - [ ] Zeffy form text in the brand voice, set in the Zeffy dashboard.
-  Short sentences, sentence case, gifts are tax-deductible, the site fee is not. The site cannot change text inside the iframe.
+  Short sentences, sentence case, gifts are tax-deductible; say nothing about the tax treatment of the site fee until the accountant confirms it (item 2). The site cannot change text inside the iframe.
 - [ ] Donate page checked on the deploy preview with the real form.
   The embed should resize itself (Zeffy posts `zeffy-embed:resized`) with no white space left in the card. Block `www.zeffy.com` once and confirm the fallback appears: the give button in a new tab plus the plain iframe, never both the script container and the iframe (docs/BUILD-REPORT.md section 12).
 - [ ] PayPal decided (item 26).

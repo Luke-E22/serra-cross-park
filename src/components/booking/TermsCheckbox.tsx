@@ -5,10 +5,11 @@
  * the whole row is the target; the link opens the terms in a new tab and says so to assistive tech;
  * the box is a native checkbox at 24px with a navy accent and the design system's focus ring.
  *
- * TermsRules is the short list both places show above the box: the three rules the owner asked to
- * stand out in bold (2026-10-12), each in <strong>. The words come from BRIEF.md section 9 as amended
- * by the owner's decisions of 2026-10-12: the park stays public, there is no power or restroom on
- * site, and booked time includes setup and breakdown.
+ * TermsRules is the short list both places show above the box: the four rules the board reviewer
+ * asked to stand out in bold (notes of 2026-10-14, applied at the owner's request), each in <strong>.
+ * They replace the owner's three rules of 2026-10-12: the park entrance stays open, there are no
+ * restrooms or lighting on site (there is power, two 20-amp circuits, so the old "no power" rule is
+ * gone), all trash and decor leave with the event, and booked time includes setup and breakdown.
  * Styles live under "terms agreement" in availability-calendar.css.
  */
 import * as React from 'react';
@@ -17,10 +18,11 @@ import './availability-calendar.css';
 /** The terms page: an internal route, with the trailing slash every internal link carries. */
 export const TERMS_PATH = '/terms-and-conditions/';
 
-/** The three rules every booking agrees to, in the order the owner gave them. */
+/** The four rules every booking agrees to, in the order the reviewer gave them. */
 export const TERMS_RULES: readonly string[] = [
-  'The park is always open to the public.',
-  'No power or restrooms are available.',
+  'The park entrance always remains open.',
+  'No restrooms or lighting on site.',
+  'All trash and decor must be removed after your event.',
   'Booked time must include setup and breakdown for you and your vendors.',
 ];
 
@@ -33,7 +35,7 @@ export function TermsLink() {
   );
 }
 
-/** The three rules in bold, one to a line, with the page's square ochre marks. */
+/** The four rules in bold, one to a line, with the page's square ochre marks. */
 export function TermsRules({ className }: { className?: string }) {
   return (
     <ul className={['terms-rules', 'body-sm', className].filter(Boolean).join(' ')} role="list">

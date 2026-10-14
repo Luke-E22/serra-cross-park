@@ -286,7 +286,7 @@
   margin: 0 0 var(--space-4);
   color: var(--ink);
 }
-/* The three rules in bold (TermsRules in TermsCheckbox.tsx), shown in the gate and above the fallback
+/* The four rules in bold (TermsRules in TermsCheckbox.tsx), shown in the gate and above the fallback
    inquiry form: body-sm, a square ochre mark on each line like the page's rules list, space-2 between
    lines and space-4 before the checkbox. EB Garamond ships 400 to 600, so bold is 600, not the
    browser's 700, which would be synthesized. */

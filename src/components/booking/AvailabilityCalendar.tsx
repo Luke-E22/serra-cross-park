@@ -189,7 +189,8 @@ interface TermsGateProps {
 /**
  * The agreement before the booker. Until the visitor ticks the box the booker does not mount. Once
  * agreed in an earlier view (sessionStorage, see terms-agreement.ts) the panel is one line. The
- * panel names the three rules in bold (TermsRules) above the box, so no one books without seeing them.
+ * panel names the four rules in bold (TermsRules) above the box, so no one books without seeing them.
+ * The words are the board reviewer's (notes of 2026-10-14), tidied into the brand voice.
  */
 function TermsGate({ agreed, fresh, onChange, panelRef, titleRef }: TermsGateProps) {
   if (agreed && !fresh) {
@@ -208,8 +209,8 @@ function TermsGate({ agreed, fresh, onChange, panelRef, titleRef }: TermsGatePro
         Before you book
       </h3>
       <p className="avail__terms-text body-sm">
-        Reserving a date means agreeing to the park's terms and conditions. They cover the site fee, hours, insurance and
-        what to bring. Three rules shape every event:
+        Reserving a date means agreeing to Serra Cross Park's terms and conditions, which set out every rule. Please read
+        them. Check the box to agree and continue with your reservation. Important highlights:
       </p>
       <TermsRules className="avail__terms-rules" />
       <TermsCheckbox checked={agreed} onChange={onChange} />

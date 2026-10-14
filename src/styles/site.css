@@ -163,7 +163,7 @@ body { font-size: 20px; line-height: 32px; }
   .sc-tl__text { font-size: 19px; line-height: 30px; }
 }
 
-/* "to" and "or" inside a FactGrid value sit in the serif, lowercase, so "8 to 8" reads as words. */
+/* "to" and "or" inside a FactGrid value sit in the serif, lowercase, so "8 AM to 8 PM" and "Up to 250" read as words. */
 .sc-fact__word {
   font-family: var(--font-serif);
   font-size: 0.55em;

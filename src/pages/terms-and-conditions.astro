@@ -15,8 +15,10 @@ import { PHOTOS } from '../content/photos';
 // sentences, "such as" for "e.g.", no serial commas, the double period in 2.6 fixed, "Thank you for
 // your cooperation" dropped. The legal substance is the document's.
 // The "Booking basics" block carries the site's own facts that the document does not state
-// (hours, any start time, two-hour minimum, $300 per hour, capacity, no power), per the owner's
-// decisions of 2026-10-10 and 2026-10-12 and BRIEF.md section 9.
+// (hours, any start time, two-hour minimum, $300 per hour, capacity, power), per the owner's
+// decisions of 2026-10-10 and 2026-10-12, the board's copy notes of 2026-10-14 (capacity up to 250
+// people; two 20-amp circuits) and BRIEF.md section 9. The site fee line makes no claim either way
+// about donations or tax until the accountant confirms the receipt treatment (CONTENT-TODO item 2).
 // [CONFIRM: item 5, whether the terms should name Amber Weir or keep the admin@ address alone]
 
 const PDF_PATH = '/docs/serra-cross-park-terms-and-conditions.pdf';
@@ -50,9 +52,9 @@ const og = await ogImage(ogPhoto.image);
             <li>Start at any time you choose.</li>
             <li>The minimum booking is two hours.</li>
             <li>The site fee is $300 per hour. Setup and breakdown sit inside booked time.</li>
-            <li>The site fee reserves your date. It is not a donation and is not tax-deductible.</li>
-            <li>The grounds hold up to 300 seated or 500 standing.</li>
-            <li>There is no power on site.</li>
+            <li>The site fee reserves your date and is non-refundable.</li>
+            <li>Up to 250 people.</li>
+            <li>Two 20-amp circuits. No water, restrooms or lighting.</li>
           </ul>
           <p class="terms__note">
             The terms below keep the order and clause numbers of the PDF, so the two match.

@@ -38,11 +38,12 @@ In this order, before changing anything:
 - Sentence case for headings, labels and buttons; the display styles set the capitals.
 - No em dashes (use a period, comma or colon). No exclamation marks. Nothing from the "Not" column of the brand book's table.
 - "We" is the Conservancy. "You" is the couple, the family or the visitor.
-- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 8 AM, 8 PM, March 31, 1782, 300 guests). A time range reads "8 to 8".
+- Numbers: spell out one to ten in prose ("a two-hour minimum"); figures for prices, times, dates and guest counts ($300, 8 AM, 8 PM, March 31, 1782, 250 people). A time range reads "8 AM to 8 PM" (the booking tile included, since the board's note of 2026-10-14).
 - Names: Serra Cross Park (the place), Serra Cross Conservancy (the nonprofit), the Cross (capital C when it means this one), Father Junípero Serra with the accent, Mission San Buenaventura, the Channel Islands, the Thomas Fire.
 
 **Money words**
-- A gift or donation is tax-deductible. A site fee is paid in full with the reservation, is non-refundable, and is never called a donation or tax-deductible. Nothing on the site mentions a hold on a date.
+- A gift or donation is tax-deductible. A site fee is due in full when the booking is submitted and is non-refundable; one change of date or times is free, subject to availability. Nothing on the site mentions a hold on a date.
+- The booking page carries the board's sentence of 2026-10-14, as written: "All reservation payments are tax-deductible donations that directly support the beautification, care and preservation of this historical venue." That claim is pending the accountant (CONTENT-TODO item 2): do not repeat it anywhere else, and do not contradict it either. The Terms page, the FAQ and every other surface say only that the fee reserves the date and is non-refundable. Never add "not a donation" or "not tax-deductible" back.
 - The nonprofit line, "Serra Cross Conservancy is a 501(c)(3) nonprofit. Tax ID 20-8615264.", appears in the footer of every page and on every donation surface.
 
 **Buttons**
@@ -73,14 +74,22 @@ In this order, before changing anything:
 - The booking flow asks people to agree to the terms and conditions before the Cal.com booker opens, and the fallback inquiry form has a required `terms` checkbox (the hidden Netlify twin in `src/pages/booking/index.astro` carries it too).
 
 **Owner decisions already applied (2026-10-12). Do not undo them.**
-- Hours are 8 AM to 8 PM every day (9 AM to 8 PM before this date). The booking tile reads "8 to 8". Any start time, two-hour minimum, setup and breakdown inside booked time.
+- Hours are 8 AM to 8 PM every day (9 AM to 8 PM before this date). The booking tile read "8 to 8" until 2026-10-14; it now reads "8 AM to 8 PM" (board's note: add AM and PM). Any start time, two-hour minimum, setup and breakdown inside booked time.
 - The rule "weekend events end by 7:30 PM" is dropped everywhere (CONTENT-TODO item 15, resolved). Guests and equipment are off the hill by 8 PM, when the gates lock.
-- There is no power on site. The brief said there was a little power at the base of the Cross for a small sound system; the owner withdrew that (CONTENT-TODO item 41). Wording: no power or restrooms on site; bring your own power for sound and lighting, rent portable restrooms, bring water.
-- The terms gate on the booking page shows three rules in bold: the park is always open to the public; no power or restrooms are available; booked time must include setup and breakdown for you and your vendors.
+- Power: on this date the owner said there was none, and the site said so. Superseded on 2026-10-14 by the board's copy notes (see below): there are two 20-amp circuits.
+- The terms gate on the booking page shows the agreement's highlights in bold. Since 2026-10-14 they follow the board's copy notes: the park entrance always remains open; no restrooms or lighting on site; all trash and decor must be removed after the event; booked time must include setup and breakdown for you and your vendors. It never says "no power".
 - The inquiry form (the fallback when Cal.com cannot load) asks for a start time from a list of hours, 8 AM to 6 PM (the last start that fits a two-hour minimum before 8 PM), labeled "Start time", with a note that bookings are at least two hours.
 - The booking page offers two ways in, side by side in the hero: "Book now" (primary, to `#availability`) and "Ask a question" (secondary, to `#questions`, a section near the end of the page with the `ContactForm` island, "Booking an event" preselected, posting to Netlify Forms). The FAQ "Booking questions" section stays.
 - The Conservancy's own Special Event Terms and Conditions (`docs/TERMS-SOURCE.md`; PDF in `docs/source/` and `public/docs/`) are the source of event rules and win over the brief and the brand book. The booking flow is: pick a date and time, agree to the terms, send your request, the site fee is collected with the reservation, and the park office emails the confirmation once the payment is processed. There is no hold and no "14 days" anywhere, and no separate "pay the site fee" step, button or link. Payments are non-refundable; one reschedule at no charge, subject to availability, by email to admin@serracrosspark.com. Insurance (a one-day $1 million liability policy, proof emailed seven days before) for any event with catered food, beverages or a reception, not receptions only. Overruns cost $300 per hour. Clients bring and remove their own chairs, tables, tents and decor. Alcohol only through a licensed provider, never self-served. No synthetic confetti or petals. The gates stay open to the public from dawn to dusk and cannot be locked; signs, security or a volunteer at the gate are allowed. No water, no restrooms (portable ones; Friday delivery and Monday pickup for weekend events), no lighting anywhere including the parking lot. Leave the park as found or a one-time trash fee may apply. Parking for 35 vehicles in designated areas inside the gates, at the owner's risk; the old entrance-street, fire-lane, valet and shuttle wording is gone. No smoking, fireworks, open flames, firearms or vehicles on the grass; illegal activity ends the event. The client carries liability and holds the park harmless.
 - The phone number that was on the Contact page and in the FAQ is no longer published anywhere (CONTENT-TODO item 20). Emergencies: 911. Everything else: `SITE.email`. `SITE.emergencyPhone` is gone from `src/config/site.ts`; do not add a phone number back without the owner.
+
+**Board copy notes applied (2026-10-14). Do not undo them.**
+- A board reviewer's copy notes for the Plan your event page are the content of that page; only the surface was tidied into the brand voice (sentence case, "or" for "and/or"). Where they state a fact, they win over the brief, the terms basics and the owner notes above.
+- The page's surface, as the board set it: hero title "Events with a view" (eyebrow "Weddings and events"); the rules section eyebrow "Rates and requirements" with the board's two-sentence intro; three tiles (Guests "Up to 250" people, Hours "8 AM to 8 PM", Rate $300 per hour with a two-hour minimum; no Minimum tile); the board's four rules in the board's order, with "or" for "and/or" and "vacate" kept; the power notice; steps 2 and 3 in the board's words; the calendar section titled "Booking calendar". The terms gate and the fallback form say "Check the box", matching step 2's "checking the box". The fallback inquiry form's Guests field reads "Up to 250 people." with a maximum of 250 (InquiryForm `guestsHelp` and `guestsMax`, logged).
+- Capacity is "Up to 250 people" everywhere (FAQ, Terms basics, booking page, Home card). Never "seated", "standing", 300 or 500: the board has not fact-checked those figures (CONTENT-TODO item 3, resolved).
+- There is power at the park: two 20-amp circuits, enough for a small sound system. There is no water, no restrooms and no lighting, and bringing any of those is the client's choice, never a requirement (CONTENT-TODO item 41, resolved). Wording: "Two 20-amp circuits. No water, restrooms or lighting."
+- Hours stay 8 AM to 8 PM at any start time, two-hour minimum at $300 per hour, the fee due when the booking is submitted, non-refundable, one change of date or times at no charge subject to availability.
+- The booking page's "tax-deductible donations" sentence is the board's and stays as written until the accountant rules (CONTENT-TODO item 2). See Money words above for what every other page may say.
 
 ## 4. How the site is built
 
@@ -111,7 +120,7 @@ grep -rn $'\xe2\x80\x94' src                      # em dashes: must print nothin
 grep -rnE $'\x21[[:space:]"\'<]|\x21$' src        # exclamation marks in prose: must print nothing
 ```
 
-- The prelaunch WARN lines (38 on 2026-10-12: placeholder Zeffy URLs, demo fonts, `[CONFIRM` markers, missing people photos) are expected until launch. Any other build output is a bug.
+- The prelaunch WARN lines (36 on 2026-10-14: placeholder Zeffy URLs, demo fonts, `[CONFIRM` markers, missing people photos) are expected until launch. Any other build output is a bug.
 - After content or layout changes, run the per-page `dist/` script from `docs/BUILD-REPORT.md` section 3: one `h1`, the footer line, canonical, one dark section, one primary, no em dash, no exclamation mark, no `[CONFIRM`.
 - Open every changed page in a browser at 375 and 1440 (also 768 and 1280 for layout work). Use the production build for anything on `/booking/`: the Cal.com booker iframe is blank in `astro dev` and renders in `npm run preview` or on Netlify.
 - Tab through anything you touched. The focus ring must show; status must read without color.

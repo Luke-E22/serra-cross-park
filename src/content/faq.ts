@@ -2,13 +2,17 @@
 // Event rules come from docs/TERMS-SOURCE.md, the Conservancy's own Special Event Terms and
 // Conditions (supplied by the owner on 2026-10-12); it wins where BRIEF.md section 9 disagrees.
 // The owner's decisions stand where the document is silent: hours 8 AM to 8 PM every day, any
-// start time, a two-hour minimum at $300 per hour with setup and breakdown inside booked time,
-// no power on site, up to 300 seated or 500 standing. Answers are plain strings so the same text
-// can feed FAQList and the FAQPage structured data. Every answer starts with the answer.
+// start time, a two-hour minimum at $300 per hour with setup and breakdown inside booked time.
+// The board's copy notes of 2026-10-14 settled capacity (up to 250 people, no seated or standing
+// figure) and power (two 20-amp circuits; no water, restrooms or lighting, and bringing any of
+// those is the client's choice). Answers are plain strings so the same text can feed FAQList and
+// the FAQPage structured data. Every answer starts with the answer.
 //
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
-//   2. The site fee is a payment made with the reservation, non-refundable and never a donation (the terms
-//      document, 1.1 and 1.2). How Zeffy receipts it is still open. [CONFIRM: receipt setup with the accountant]
+//   2. The site fee is due when the booking is submitted and is non-refundable, with one free change of
+//      date or times (the terms document, 1.1 and 1.2). The board's copy for the booking page calls reservation
+//      payments tax-deductible donations; the accountant has not confirmed that, so the FAQ says nothing
+//      about donations or tax either way. [CONFIRM: receipt treatment with the accountant]
 //   4. Insurance price, insurance vendor and the portable restroom vendor are left out on purpose. [CONFIRM: before naming any vendor or price]
 //   7. Resolved 2026-10-12 by the terms document (3.7): 35 vehicles in designated areas inside the gates.
 //  11, 38, 39. Cal.com still offers four fixed 180-minute slots at 8, 11, 2 and 5 (read 2026-10-09); the FAQ states the owner's rule of 2026-10-12: any start time between 8 AM and 8 PM, two-hour minimum. [CONFIRM: Cal.com reset to a two-hour minimum with flexible start times]
@@ -16,7 +20,7 @@
 //  18. Resolved 2026-10-12 by the terms document (3.1): the gates stay open to the public from dawn to dusk and cannot be locked.
 //  19. Resolved 2026-10-12 by the terms document (2.2): insurance for any event with catered food, beverages or a reception.
 //  20. Resolved 2026-10-12: the phone number is no longer published. 911 for emergencies, the office email for everything else.
-//  41. Power: the owner said on 2026-10-12 that there is no power on site, so the FAQ says so. CONTENT-TODO item 41 asks whether that is final.
+//  41. Resolved 2026-10-14 by the board's copy notes: there are two 20-amp circuits at the park, so the FAQ says so again.
 //  43. The brief described a hold on the date while the fee arrived; the terms document confirms a reservation only once the
 //      full payment is processed, so no answer here mentions a hold.
 
@@ -49,15 +53,15 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'When do we pay the site fee?',
-    a: 'With your reservation. The full site fee comes with the reservation form, and your date is not confirmed until the payment has been received and processed. The park office then emails your confirmation.',
+    a: 'When you submit your booking. The full site fee is due at the time of submission, and your date is not confirmed until the payment has been received and processed. The park office then emails your confirmation.',
   },
   {
     q: 'Is the site fee refundable?',
-    a: 'No. All payments are non-refundable, and cancelling the event forfeits the fee. The site fee is a payment for your date, not a gift, so it is not tax-deductible.',
+    a: 'No. Reservation payments are non-refundable, and cancelling the event forfeits the fee. You may change your date or times once at no charge, subject to availability.',
   },
   {
     q: 'Can we change our date?',
-    a: 'Yes, once, at no charge and subject to availability. Email admin@serracrosspark.com with the new date and time you have in mind.',
+    a: 'Yes, once, at no charge and subject to availability. Email admin@serracrosspark.com with the new date or times you have in mind.',
   },
   {
     q: 'What hours can we book?',
@@ -65,7 +69,7 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'How many guests can the park hold?',
-    a: 'Up to 300 seated or 500 standing. Parking inside the gates holds 35 vehicles, so plan how your guests will arrive if you expect more cars than that.',
+    a: 'Up to 250 people. Parking inside the gates holds 35 vehicles, so plan how your guests will arrive if you expect more cars than that.',
   },
   {
     q: 'Will we have the park to ourselves?',
@@ -83,8 +87,12 @@ const booking: FAQEntry[] = [
 
 const onTheDay: FAQEntry[] = [
   {
-    q: 'Is there power or lighting?',
-    a: 'No. There is no power on site and no lighting anywhere in the park, including the parking lot. Bring your own power for sound, and your own lighting if your event runs into the evening. Tell your DJ or band so they plan for it, and remember the gates lock at 8 PM.',
+    q: 'Is there power?',
+    a: 'Yes. There are two 20-amp circuits, enough for a small sound system. There is no water, no restrooms and no lighting, so bring your own if you want them.',
+  },
+  {
+    q: 'Is there lighting?',
+    a: 'No. There is no lighting anywhere in the park, including the parking lot. Bring your own if your event runs into the evening, and remember the gates lock at 8 PM.',
   },
   {
     q: 'Do you provide tables, chairs or tents?',
@@ -92,7 +100,7 @@ const onTheDay: FAQEntry[] = [
   },
   {
     q: 'Are there restrooms or water?',
-    a: 'No, neither. Rent portable restrooms and bring water for your guests and vendors. For a weekend event, portable restrooms can be delivered on Friday and collected on Monday.',
+    a: 'No, neither. If you want them for your guests and vendors, bring water and rent portable restrooms. For a weekend event, portable restrooms can be delivered on Friday and collected on Monday.',
   },
   {
     q: 'Can we throw confetti or petals?',

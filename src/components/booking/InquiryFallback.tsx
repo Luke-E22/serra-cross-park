@@ -9,7 +9,7 @@
  * message and terms. This island posts the same field names to "/" as application/x-www-form-urlencoded.
  *
  * The visitor agrees to the terms before sending: a required checkbox above the form (TermsCheckbox.tsx),
- * with the same words, the same three rules and the same link as the gate ahead of the booker. The ported
+ * with the same words, the same four rules and the same link as the gate ahead of the booker. The ported
  * InquiryForm owns its form element and its submit button, and shows its confirmation as soon as its own
  * submit handler runs, so the check happens ahead of that handler: onSubmitCapture on the wrapper stops an
  * unticked send, shows a caution notice and puts focus on the box. A ticked send posts terms=yes with the
@@ -24,6 +24,10 @@
  * payment is processed (docs/TERMS-SOURCE.md, 1.1), so the confirmation text comes from here through the
  * InquiryForm's sentText prop (logged in DESIGN-SYSTEM-CHANGES.md). The component's own sentence states
  * the rule the brief had, which the terms document replaced.
+ *
+ * Guests: the board's copy notes of 2026-10-14 set capacity at up to 250 people, with no seated or standing
+ * figure. The component's own help text still carries the brief's 300 and 500, so the form passes
+ * guestsHelp and guestsMax (logged in DESIGN-SYSTEM-CHANGES.md).
  */
 import { useId, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
@@ -152,7 +156,7 @@ export default function InquiryFallback() {
           {termsError && (
             <div id={errorId} role="alert">
               <Notice tone="caution" title="One thing before you send">
-                <p>Tick the box to agree to the terms before sending.</p>
+                <p>Check the box to agree to the terms before sending.</p>
               </Notice>
             </div>
           )}
@@ -164,6 +168,8 @@ export default function InquiryFallback() {
         sent={send === 'sent'}
         sentText="The park office will reply by email about your date and the site fee. Your reservation is confirmed once the payment is processed."
         dateHelp="Bookings are at least two hours, any start time between 8 AM and 8 PM."
+        guestsHelp="Up to 250 people."
+        guestsMax={250}
         timeField={{
           name: 'start-time',
           label: 'Start time',
