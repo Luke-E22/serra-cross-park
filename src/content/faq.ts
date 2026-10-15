@@ -65,7 +65,7 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'What hours can we book?',
-    a: '8 AM to 8 PM, every day of the year. Start at any time that suits you, with a two-hour minimum. Everyone is off the hill by 8 PM, when the gates lock.',
+    a: '8 AM to 8 PM, 364 days a year. The park is closed every July 4 because of fire danger. Start at any time that suits you, with a two-hour minimum. Everyone is off the hill by 8 PM, when the gates lock.',
   },
   {
     q: 'How many guests can the park hold?',
@@ -135,7 +135,7 @@ const onTheDay: FAQEntry[] = [
 const visiting: FAQEntry[] = [
   {
     q: 'Can anyone visit the park?',
-    a: 'Yes. Serra Cross Park is open to everyone from dawn to dusk, and it stays open to the public during events. The gates lock at 8 PM.',
+    a: 'Yes. Serra Cross Park is open to everyone from dawn to dusk, 364 days a year, and it stays open to the public during events. The park is closed every July 4 because of fire danger. The gates lock at 8 PM.',
   },
   {
     q: 'How do we get to the Cross?',

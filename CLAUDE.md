@@ -13,7 +13,7 @@ In this order, before changing anything:
 
 1. `BRIEF.md`: the whole brief. Section 9 is the source of facts, except event rules, which come from the next file.
 2. `docs/TERMS-SOURCE.md`: the Conservancy's Special Event Terms and Conditions, the source of every event rule (payment, refunds and rescheduling, insurance, time overruns, rentals, alcohol, confetti, public access, water, restrooms, lighting, trash, parking, prohibited activities, liability). The PDF is in `docs/source/` and published from `public/docs/serra-cross-park-terms-and-conditions.pdf`.
-3. `CONTENT-TODO.md`: 44 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
+3. `CONTENT-TODO.md`: 45 open questions for Luke. The site keeps neutral wording until each is answered. Add to it; never delete an open item.
 4. `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, each with a re-apply note.
 5. `docs/INTEGRATION-NOTES.md`: what Cal.com, Zeffy and Netlify really do, from live checks on 2026-10-09.
 6. `docs/BUILD-REPORT.md`: pages, islands, forms, tests, structured data and the Lighthouse numbers.

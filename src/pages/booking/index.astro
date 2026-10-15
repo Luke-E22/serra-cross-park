@@ -81,7 +81,7 @@ const gallery = await Promise.all([
 // PM, so at phone width the hours value wraps after "to".
 const facts = [
   { icon: 'users', label: 'Guests', value: 'Up to 250', note: 'people' },
-  { icon: 'sunset', label: 'Hours', value: '8 AM to 8 PM', note: 'daily, year-round' },
+  { icon: 'sunset', label: 'Hours', value: '8 AM to 8 PM', note: 'daily, except July 4' },
   { icon: 'landmark', label: 'Rate', value: '$300', note: 'per hour, two-hour minimum' },
 ] as const;
 
@@ -90,11 +90,11 @@ const facts = [
 const steps = [
   {
     title: 'Pick a date and time',
-    text: 'Choose an open day in the calendar, then a start time. Events run between 8 AM and 8 PM, with a two-hour minimum.',
+    text: 'Choose an open day in the calendar, then a start time. Event times are available between 8 AM and 8 PM, with a two-hour minimum.',
   },
   {
     title: 'Agree to the terms',
-    text: 'Read the terms and conditions and agree by checking the box. Every event must follow them.',
+    text: 'Read the terms and conditions and agree by checking the box. Events are required to abide by the terms and conditions.',
   },
   {
     title: 'Submit your booking',

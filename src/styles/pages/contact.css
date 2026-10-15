@@ -98,3 +98,15 @@
 @media (max-width: 640px) {
   .contact-directions__actions .sc-btn { width: 100%; }
 }
+
+/* The map under the directions panel: a plain embed in a bordered frame, square corners. */
+.contact-map { margin: var(--space-6) 0 0; }
+.contact-map__frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 320px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-alt);
+}
+.contact-map figcaption { margin-top: var(--space-2); }

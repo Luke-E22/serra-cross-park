@@ -82,9 +82,9 @@ export const TIMELINE: TimelineEntry[] = [
     text: 'A lawsuit is threatened over city ownership of the Cross, on church and state grounds.',
   },
   {
-    year: 'July 31, 2003',
-    title: 'The city votes to sell',
-    text: 'The City Council votes to sell the Cross and an acre around it to the highest bidder.',
+    year: 'Summer 2003',
+    title: 'The Conservancy buys the Cross',
+    text: 'The City Council votes to sell the Cross and an acre around it to the highest bidder. Serra Cross Conservancy receives donations from community members and is the highest bidder, taking ownership of the Cross.',
   },
   {
     year: 'January 2010',

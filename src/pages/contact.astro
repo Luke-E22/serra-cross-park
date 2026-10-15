@@ -30,6 +30,8 @@ const coast = await picture(coastPhoto.image, {
 });
 
 const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SITE.geo.lat},${SITE.geo.lng}`;
+// A plain Google Maps embed (no API key) centred on the park; lazy-loaded because it sits below the fold.
+const mapEmbedUrl = `https://www.google.com/maps?q=${SITE.geo.lat},${SITE.geo.lng}&z=16&output=embed`;
 
 const og = await ogImage(crossSunset);
 ---
@@ -143,6 +145,17 @@ const og = await ogImage(crossSunset);
           </Button>
         </div>
       </SignPanel>
+      <figure class="contact-map">
+        <iframe
+          class="contact-map__frame"
+          src={mapEmbedUrl}
+          title="Map of Serra Cross Park in Grant Park, Ventura"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
+        <figcaption class="caption">Serra Cross Park, Grant Park, Ventura. The pin marks the Cross.</figcaption>
+      </figure>
     </div>
   </section>
 
