@@ -5,7 +5,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 ## Content and facts
 
 - [ ] Every item in `CONTENT-TODO.md` answered.
-  43 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
+  44 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
 - [x] Power confirmed (item 41).
   On 2026-10-14 the board's copy notes said there are two 20-amp circuits at the park, with no water, restrooms or lighting, and that bringing any of those is the client's choice. The FAQ, the Terms basics and the booking notice say so. (On 2026-10-12 Luke had said there was no power; the board's note supersedes that.)
 - [ ] Terms PDF and terms page in step with the Conservancy's document.

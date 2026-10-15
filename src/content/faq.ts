@@ -104,7 +104,7 @@ const onTheDay: FAQEntry[] = [
   },
   {
     q: 'Can we throw confetti or petals?',
-    a: 'Only biodegradable or natural ones. Synthetic confetti and petals are not allowed, and leaving them behind brings a cleanup fee.',
+    a: 'Only biodegradable or natural ones. Synthetic confetti and petals (plastic, metal or fabric) are not allowed, and leaving them behind brings a cleanup fee.',
   },
   {
     q: 'What do we do with trash?',

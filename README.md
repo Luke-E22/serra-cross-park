@@ -251,7 +251,7 @@ It serves on http://localhost:8888. Verified on 2026-10-09: `/api/availability` 
 - `BRIEF.md`: the build brief. Pages, configuration, the booking design, facts, quality bar, repo and launch rules. For event rules, the terms document below wins.
 - `docs/TERMS-SOURCE.md`: the text of the Conservancy's Special Event Terms and Conditions (supplied 2026-10-12), the source of every event rule on the site. The PDF itself is in `docs/source/` and published from `public/docs/serra-cross-park-terms-and-conditions.pdf`.
 - `CONTENT-INVENTORY.md`: the old WordPress site, page by page, verbatim, with every image.
-- `CONTENT-TODO.md`: 43 open questions for Luke, each with where it came from.
+- `CONTENT-TODO.md`: 44 open questions for Luke, each with where it came from.
 - `DESIGN-SYSTEM-CHANGES.md`: every difference between `design-system/` and `src/components/ds/`, and how to re-apply each one when the snapshot is refreshed.
 - `LAUNCH-CHECKLIST.md`: what has to happen before DNS switches.
 - `CLAUDE.md`: the rules future coding sessions must follow in this repo.
