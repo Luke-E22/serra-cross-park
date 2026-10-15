@@ -31,7 +31,8 @@ const coast = await picture(coastPhoto.image, {
 
 const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${SITE.geo.lat},${SITE.geo.lng}`;
 // A plain Google Maps embed (no API key) centred on the park; lazy-loaded because it sits below the fold.
-const mapEmbedUrl = `https://www.google.com/maps?q=${SITE.geo.lat},${SITE.geo.lng}&z=16&output=embed`;
+// The maps?q=...&output=embed form redirects here with an X-Frame-Options header that blocks the frame, so the embed endpoint is used directly (pb: a place at these coordinates, zoom 16).
+const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m3!2m1!1s${SITE.geo.lat},${SITE.geo.lng}!6i16`;
 
 const og = await ogImage(crossSunset);
 ---
