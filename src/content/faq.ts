@@ -4,7 +4,7 @@
 // The owner's decisions stand where the document is silent: hours 8 AM to 8 PM every day, any
 // start time, a two-hour minimum at $300 per hour with setup and breakdown inside booked time.
 // The board's copy notes of 2026-10-14 settled capacity (up to 250 people, no seated or standing
-// figure) and power (two 20-amp circuits; no water, restrooms or lighting, and bringing any of
+// figure) and power (two 20-amp outlets; no water, restrooms or lighting, and bringing any of
 // those is the client's choice). Answers are plain strings so the same text can feed FAQList and
 // the FAQPage structured data. Every answer starts with the answer.
 //
@@ -20,7 +20,7 @@
 //  18. Resolved 2026-10-12 by the terms document (3.1): the gates stay open to the public from dawn to dusk and cannot be locked.
 //  19. Resolved 2026-10-12 by the terms document (2.2): insurance for any event with catered food, beverages or a reception.
 //  20. Resolved 2026-10-12: the phone number is no longer published. 911 for emergencies, the office email for everything else.
-//  41. Resolved 2026-10-14 by the board's copy notes: there are two 20-amp circuits at the park, so the FAQ says so again.
+//  41. Resolved 2026-10-14 by the board's copy notes: there are two 20-amp outlets at the park, so the FAQ says so again.
 //  43. The brief described a hold on the date while the fee arrived; the terms document confirms a reservation only once the
 //      full payment is processed, so no answer here mentions a hold.
 
@@ -88,7 +88,7 @@ const booking: FAQEntry[] = [
 const onTheDay: FAQEntry[] = [
   {
     q: 'Is there power?',
-    a: 'Yes. There are two 20-amp circuits, enough for a small sound system. There is no water, no restrooms and no lighting, so bring your own if you want them.',
+    a: 'Yes. There are two 20-amp outlets, enough for a small sound system. There is no water, no restrooms and no lighting, so bring your own if you want them.',
   },
   {
     q: 'Is there lighting?',

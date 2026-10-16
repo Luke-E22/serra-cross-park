@@ -8,7 +8,7 @@
  * TermsRules is the short list both places show above the box: the four rules the board reviewer
  * asked to stand out in bold (notes of 2026-10-14, applied at the owner's request), each in <strong>.
  * They replace the owner's three rules of 2026-10-12: the park entrance stays open, there are no
- * restrooms or lighting on site (there is power, two 20-amp circuits, so the old "no power" rule is
+ * restrooms or lighting on site (there is power, two 20-amp outlets, so the old "no power" rule is
  * gone), all trash and decor leave with the event, and booked time includes setup and breakdown.
  * Styles live under "terms agreement" in availability-calendar.css.
  */

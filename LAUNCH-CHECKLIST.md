@@ -7,7 +7,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Every item in `CONTENT-TODO.md` answered.
   45 items. Each answer lands in `src/config/site.ts`, `src/content/faq.ts`, `src/content/timeline.ts`, `src/content/photos.ts` or the page itself; then delete the matching `[CONFIRM: ...]` comment so the prelaunch check stops listing it.
 - [x] Power confirmed (item 41).
-  On 2026-10-14 the board's copy notes said there are two 20-amp circuits at the park, with no water, restrooms or lighting, and that bringing any of those is the client's choice. The FAQ, the Terms basics and the booking notice say so. (On 2026-10-12 Luke had said there was no power; the board's note supersedes that.)
+  On 2026-10-14 the board's copy notes said there are two 20-amp outlets at the park, with no water, restrooms or lighting, and that bringing any of those is the client's choice. The FAQ, the Terms basics and the booking notice say so. (On 2026-10-12 Luke had said there was no power; the board's note supersedes that.)
 - [ ] Terms PDF and terms page in step with the Conservancy's document.
   The Special Event Terms and Conditions (supplied 2026-10-12) are the source of event rules. The text is in `docs/TERMS-SOURCE.md`, the original PDF in `docs/source/`, and the published copy in `public/docs/serra-cross-park-terms-and-conditions.pdf`, linked from the terms page. When the Conservancy revises the document, replace both PDFs, update `TERMS-SOURCE.md`, the terms page and the FAQ, and fix the clause numbering (item 42: there is no 3.5).
 - [ ] Tax ID checked against the IRS determination letter (item 12).
