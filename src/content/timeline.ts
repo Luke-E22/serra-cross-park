@@ -79,7 +79,7 @@ export const TIMELINE: TimelineEntry[] = [
   {
     year: 'Spring 2003',
     title: 'A lawsuit threatens the Cross',
-    text: 'A lawsuit is threatened over city ownership of the Cross, on church and state grounds.',
+    text: 'A lawsuit is threatened on separation of church and state grounds: a government owning a religious landmark.',
   },
   {
     year: 'Summer 2003',

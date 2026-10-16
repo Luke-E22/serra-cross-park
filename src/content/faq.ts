@@ -139,7 +139,7 @@ const visiting: FAQEntry[] = [
   },
   {
     q: 'How do we get to the Cross?',
-    a: 'From the 101, exit California Street and turn right, then head north toward City Hall. In front of City Hall, turn right on Poli Street and follow it several blocks. Turn left on Kalorama, then left on Summit, and follow the signs to parking. Brakey Road is closed to vehicles. Full directions and a map are on the Contact page.',
+    a: 'From the 101, exit California Street and turn right. Turn right on Santa Clara Street, then left on Kalorama and follow it up the hill. Turn left on Summit and follow the signs to parking. Brakey Road is closed to vehicles. Full directions and a map are on the Contact page.',
     more: { label: 'Directions and map', href: '/contact/#directions' },
   },
   {
