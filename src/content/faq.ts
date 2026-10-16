@@ -10,7 +10,7 @@
 //
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
 //   2. The site fee is due when the booking is submitted and is non-refundable, with one free change of
-//      date or times (the terms document, 1.1 and 1.2). The board's copy for the booking page calls reservation
+//      date or time (the terms document, 1.1 and 1.2). The board's copy for the booking page calls reservation
 //      payments tax-deductible donations; the accountant has not confirmed that, so the FAQ says nothing
 //      about donations or tax either way. [CONFIRM: receipt treatment with the accountant]
 //   4. Insurance price, insurance vendor and the portable restroom vendor are left out on purpose. [CONFIRM: before naming any vendor or price]
@@ -57,11 +57,11 @@ const booking: FAQEntry[] = [
   },
   {
     q: 'Is the site fee refundable?',
-    a: 'No. Reservation payments are non-refundable, and cancelling the event forfeits the fee. You may change your date or times once at no charge, subject to availability.',
+    a: 'No. Reservation payments are non-refundable, and cancelling the event forfeits the fee. You may change your date or time once at no charge, subject to availability.',
   },
   {
     q: 'Can we change our date?',
-    a: 'Yes, once, at no charge and subject to availability. Email admin@serracrosspark.com with the new date or times you have in mind.',
+    a: 'Yes, once, at no charge and subject to availability. Email admin@serracrosspark.com with the new date or time you have in mind.',
   },
   {
     q: 'What hours can we book?',
