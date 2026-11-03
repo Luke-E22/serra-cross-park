@@ -2,9 +2,19 @@
  * The Cal.com booker, built with @calcom/embed-react from Luke's snippet (BRIEF.md section 7c).
  *
  * What changed from the snippet: colors come from design-system/tokens.json (src/lib/cal-theme.ts),
- * the calLink carries the day the visitor picked, the container keeps its height so the page does not
- * jump, and the embed only mounts in the browser. When Cal.com reports a failure, or stays silent for
- * READY_TIMEOUT_MS, InquiryFallback takes its place.
+ * the calLink carries what the visitor chose in the day panel (DayPanel.tsx), the container keeps its
+ * height so the page does not jump, and the embed only mounts in the browser. When Cal.com reports a
+ * failure, or stays silent for READY_TIMEOUT_MS, InquiryFallback takes its place.
+ *
+ * The link (calLinkFor): serra-cross-park/SLUG?month=YYYY-MM&date=YYYY-MM-DD, then &duration=MINUTES
+ * when a length was chosen and &slot=START when a start time was, START being that instant in UTC with
+ * milliseconds and Z. Checked in a real browser on 2026-11-03:
+ * https://cal.com/serra-cross-park/reserve?month=2026-11&date=2026-11-07&duration=180&slot=2026-11-07T17:00:00.000Z
+ * opens straight on the booking form for Saturday, November 7, 2026, 9:00 am to 12:00 pm, 3h. The
+ * duration must be one of the event's lengths. SLUG is eventSlugFor(minutes) (src/lib/day-times.ts):
+ * BOOKING.calEventSlug, unless BOOKING.eventSlugByLength gives the length an event of its own. With no
+ * date (the path where the month's availability failed) the link is the bare event, which opens on the
+ * current month; with a date and length but no start (a day's times failed) it opens on that day.
  *
  * Event names: the 1.5.3 types know linkReady and linkFailed. Newer embed.js builds also fire
  * bookerReady (docs/INTEGRATION-NOTES.md), which arrives through the "*" listener below.
@@ -14,6 +24,7 @@ import type { CSSProperties } from 'react';
 import Cal, { getCalApi } from '@calcom/embed-react';
 import { BOOKING } from '../../config/site';
 import { CAL_LIGHT_VARS } from '../../lib/cal-theme';
+import { eventSlugFor, isAllowedLength, toUtcSlot } from '../../lib/day-times';
 import InquiryFallback from './InquiryFallback';
 
 /**
@@ -57,15 +68,31 @@ const HINT_STYLE: CSSProperties = { margin: '0 0 var(--space-3)', color: 'var(--
 export interface CalBookerProps {
   /** The chosen day as YYYY-MM-DD, or null to open on the current month. */
   date: string | null;
+  /** The booked length in minutes, one of BOOKING.lengths. Adds &duration= and picks the event slug. */
+  minutes?: number;
+  /** The chosen start as an ISO string with offset, as Cal.com lists it. Adds &slot= so Cal.com opens on its form. */
+  start?: string;
   /** id of the heading that names this region, for example "Book Saturday, November 14". */
   headingId?: string;
 }
 
-/** `serra-cross-park/reserve`, plus `?month=YYYY-MM&date=YYYY-MM-DD` when a day was picked. */
-function calLinkFor(date: string | null): string {
-  const base = `${BOOKING.calUsername}/${BOOKING.calEventSlug}`;
-  if (!date) return base;
-  return `${base}?month=${date.slice(0, 7)}&date=${date}`;
+/**
+ * `serra-cross-park/reserve?month=2026-11&date=2026-11-07&duration=180&slot=2026-11-07T17:00:00.000Z`.
+ * Each part comes only with its value: no date, no month or date; no length, no duration and the
+ * default slug; no start, no slot. A malformed date, a length the event does not offer or an
+ * unreadable start is left out rather than sent.
+ */
+export function calLinkFor(date: string | null, minutes?: number, start?: string): string {
+  const day = date && ISO_DAY.test(date) ? date : null;
+  const length = minutes !== undefined && isAllowedLength(minutes) ? minutes : null;
+  const slot = start && !Number.isNaN(Date.parse(start)) ? toUtcSlot(start) : null;
+  const slug = length !== null ? eventSlugFor(length) : BOOKING.calEventSlug;
+  const query: string[] = [];
+  if (day) query.push(`month=${day.slice(0, 7)}`, `date=${day}`);
+  if (length !== null) query.push(`duration=${length}`);
+  if (slot) query.push(`slot=${slot}`);
+  const base = `${BOOKING.calUsername}/${slug}`;
+  return query.length > 0 ? `${base}?${query.join('&')}` : base;
 }
 
 /** "November 14" from "2026-11-14". Built in UTC so no time zone shifts the day. */
@@ -78,8 +105,9 @@ function formatPickDate(date: string): string {
   });
 }
 
-export default function CalBooker({ date, headingId }: CalBookerProps) {
+export default function CalBooker({ date, minutes, start, headingId }: CalBookerProps) {
   const day = date && ISO_DAY.test(date) ? date : null;
+  const calLink = calLinkFor(day, minutes, start);
   const [mounted, setMounted] = useState(false);
   const [state, setState] = useState<LoadState>('loading');
   const readyRef = useRef(false);
@@ -159,10 +187,11 @@ export default function CalBooker({ date, headingId }: CalBookerProps) {
               </p>
             )}
             {mounted && (
+              // Keyed by the whole link, so a new date, length or start remounts the embed on it.
               <Cal
-                key={day ?? 'any'}
+                key={calLink}
                 namespace={BOOKING.calEventSlug}
-                calLink={calLinkFor(day)}
+                calLink={calLink}
                 style={EMBED_STYLE}
                 config={EMBED_CONFIG}
               />

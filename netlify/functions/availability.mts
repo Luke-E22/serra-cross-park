@@ -3,7 +3,7 @@
 // Summarizes Cal.com's open slots for the next BOOKING.horizonMonths into one status per day
 // for the booking calendar. Nothing about who booked: Cal.com only returns open times.
 // All the logic lives in src/lib/availability.ts; this file fetches, merges and answers.
-// `?fixture=1` returns a deterministic fixture outside production (BRIEF.md 7a).
+// `?fixture=1` returns a deterministic fixture on deploy previews, branch deploys and local dev only.
 
 import type { Config, Context } from '@netlify/functions';
 import { BOOKING } from '../../src/config/site.ts';
@@ -19,6 +19,7 @@ import {
   todayInZone,
   type SlotData,
 } from '../../src/lib/availability.ts';
+import { allowsFixture, eventSlugFor } from '../../src/lib/day-times.ts';
 
 const CAL_SLOTS_URL = 'https://api.cal.com/v2/slots';
 const CAL_API_VERSION = '2024-09-04';
@@ -34,18 +35,26 @@ function json(body: unknown, status: number, headers: Record<string, string>): R
   return new Response(JSON.stringify(body), { status, headers });
 }
 
-/** True only on a Netlify production deploy. Local dev, deploy previews and branch deploys are not. */
-function isProduction(): boolean {
-  const context = typeof Netlify !== 'undefined' ? Netlify.env.get('CONTEXT') : process.env.CONTEXT;
-  if (context) return context === 'production';
-  if (process.env.NETLIFY_DEV) return false;
-  return process.env.NODE_ENV === 'production';
+/**
+ * The deploy context ("production", "deploy-preview", "branch-deploy", "dev"), or undefined.
+ * Netlify passes it on every request as context.deploy.context; functions do not get the build's
+ * CONTEXT variable at runtime, which is why the old check let ?fixture=1 through on the live site
+ * (found 2026-11-03). Same gate as /api/availability/times: allowsFixture() fails closed.
+ */
+function deployContext(context: Partial<Context> | undefined): string | undefined {
+  const fromRequest = context?.deploy?.context;
+  if (fromRequest) return fromRequest;
+  const fromEnv = typeof Netlify !== 'undefined' ? Netlify.env.get('CONTEXT') : process.env.CONTEXT;
+  return fromEnv || undefined;
 }
 
 async function fetchSlots(range: { start: string; end: string }): Promise<SlotData> {
   const url = new URL(CAL_SLOTS_URL);
+  // The grid counts open start times for BOOKING.slotDuration (the two-hour minimum since
+  // 2026-11-03), on the event that books that length when BOOKING.eventSlugByLength maps one.
+  const slug = BOOKING.slotDuration ? eventSlugFor(BOOKING.slotDuration) : BOOKING.calEventSlug;
   url.searchParams.set('username', BOOKING.calUsername);
-  url.searchParams.set('eventTypeSlug', BOOKING.calEventSlug);
+  url.searchParams.set('eventTypeSlug', slug);
   url.searchParams.set('start', range.start);
   url.searchParams.set('end', range.end);
   url.searchParams.set('timeZone', BOOKING.timeZone);
@@ -62,12 +71,12 @@ async function fetchSlots(range: { start: string; end: string }): Promise<SlotDa
   return clipSlotData(body.data, range);
 }
 
-export default async (req: Request, _context: Context): Promise<Response> => {
+export default async (req: Request, context: Context): Promise<Response> => {
   const today = todayInZone(BOOKING.timeZone);
   const start = today;
   const end = addMonths(today, BOOKING.horizonMonths); // inclusive
 
-  if (new URL(req.url).searchParams.get('fixture') === '1' && !isProduction()) {
+  if (new URL(req.url).searchParams.get('fixture') === '1' && allowsFixture(deployContext(context), process.env)) {
     return json(buildFixture(today, BOOKING.horizonMonths, BOOKING.minNoticeDays), 200, NO_STORE_HEADERS);
   }
 

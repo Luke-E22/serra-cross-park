@@ -5,11 +5,14 @@
    "2 of 3 open"; a booked day sits on sandstone with the date struck through and the word
    "booked"; a day not available online is muted, borderless and inert. The selected day is
    navy with paper text and the check icon, like a checked ChoiceChip.
-   Before the booker mounts, the terms agreement gate stands in its place: a square panel on
-   surface-raised with a line-strong border, like an open day, and a native 24px checkbox.
-   The only motion is the 150ms color fade on cells and the scroll to the booker. The global
-   reduced-motion rule in site.css stops the fade; the island reads the same media query
-   before it scrolls. */
+   A picked day opens the day panel under the grid (DayPanel.tsx): a square panel on
+   surface-raised with a line-strong border, holding the length select, the start times as
+   chips and, once a time is picked, the summary line and "Continue to book".
+   After Continue, the terms agreement gate stands where the booker will appear: the same square
+   panel, and a native 24px checkbox.
+   The only motion is the 150ms color fade on cells and the scroll to the day panel, the gate and
+   the booker. The global reduced-motion rule in site.css stops the fade; the island reads the same
+   media query before it scrolls. */
 
 /* ------------------------------------------------------------ frame */
 .avail { color: var(--ink); }
@@ -257,6 +260,78 @@
   margin: 0;
   color: var(--ink-muted);
 }
+
+/* ------------------------------------------------------------ day panel */
+/* The picked day's lengths and start times (DayPanel.tsx), ahead of the terms gate. The same square
+   panel as the gate below it. Status reads in words: the loading line, the "none left" and "not
+   loading" lines, and a checked chip, which the design system marks with navy, a check and its words. */
+.day-panel {
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--surface-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-none);
+  scroll-margin-top: var(--space-6);
+}
+.day-panel:not(:last-child) { margin-bottom: var(--space-6); }
+.day-panel__title {
+  margin: 0 0 var(--space-5);
+  color: var(--ink);
+}
+/* The heading takes focus after a pick. It is a target, not a control, so no ring. */
+.day-panel__title:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* The length select reads "8 hours, $2,400" at most, so it stays short instead of spanning the panel. */
+.day-panel__length {
+  max-width: 360px;
+  margin-bottom: var(--space-5);
+}
+
+/* The start times, one measure wide at most. A container, so the chips count columns by the room
+   they have rather than by the window. */
+.day-panel__times {
+  max-width: var(--measure);
+  container-type: inline-size;
+  container-name: day-times;
+}
+.day-panel__status p { margin: 0; }
+.day-panel__loading { color: var(--ink-muted); }
+.day-panel__message { color: var(--ink); }
+
+/* Four times to a row while each chip keeps room for "12:30 PM" and its check mark, then three,
+   then two. The chips are the design system's ChoiceChips, so each stays at least 48px tall
+   (var(--tap-target)); the rule only sets how many share a row. */
+.day-panel__times .sc-chips__list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@container day-times (max-width: 559px) {
+  .day-panel__times .sc-chips__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container day-times (max-width: 419px) {
+  .day-panel__times .sc-chips__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.day-panel__times .sc-chip { min-height: var(--tap-target); }
+.day-panel__note {
+  margin: var(--space-3) 0 0;
+  color: var(--ink-muted);
+}
+
+/* The summary stays in the tree so screen readers hear it; it takes space only with text. A line
+   on the panel sets it apart from the choices above. */
+.day-panel__summary { margin: 0; }
+.day-panel__summary:not(:empty) {
+  max-width: var(--measure);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.day-panel__summary p {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+}
+.day-panel__actions { margin-top: var(--space-4); }
 
 /* ------------------------------------------------------------ terms agreement */
 /* The gate before the booker (TermsGate in AvailabilityCalendar.tsx). It stands where the booker

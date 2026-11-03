@@ -1,14 +1,25 @@
 /**
  * The availability calendar on the booking page: a month grid of Open, Partly booked and
  * Booked days drawn over GET /api/availability (netlify/functions/availability.mts; the
- * response is typed in src/lib/availability.ts). Picking an open or partly booked day opens the
- * booking area under the grid. Booking never depends on the endpoint: when the fetch fails, the
- * booking area renders at once with no date.
+ * response is typed in src/lib/availability.ts).
  *
- * Before the Cal.com booker (CalBooker) mounts, on either path, the visitor agrees to the terms
- * and conditions: TermsGate stands where the booker will appear, and ticking its box mounts the
- * booker beneath it. The agreement is kept for the visit in sessionStorage (terms-agreement.ts),
- * so choosing another day shows one line instead of the panel.
+ * The booking flow, since the board's feedback of 2026-11-03 asked to see times before agreeing
+ * to anything:
+ * 1. Picking an open or partly booked day opens the day panel (DayPanel.tsx) under the grid, on
+ *    our own site: the length picker, that day's open start times for the length (live from
+ *    Cal.com through GET /api/availability/times) and, once a time is picked, a summary line and
+ *    "Continue to book". The panel's heading takes focus. A booked day keeps its one-line status.
+ * 2. Continue shows the terms gate (TermsGate) under the panel, and its title takes focus. Ticking
+ *    its box mounts the Cal.com booker (CalBooker) beneath it with the date, the length and the
+ *    start, so Cal.com opens straight on its booking form. The agreement is kept for the visit in
+ *    sessionStorage (terms-agreement.ts), so a later Continue shows one line instead of the panel,
+ *    mounts the booker at once and puts focus on its heading.
+ * 3. Changing the length or the time after Continue takes the gate and the booker down until the
+ *    visitor continues again. Picking another day does the same and clears the time.
+ *
+ * Booking never depends on the endpoints. When the month fetch fails, the Notice, the terms gate
+ * and then the booker with no date render at once, as before. When a day's times fail, the day
+ * panel says so and still continues to the booker on that date and length.
  *
  * Dates are 'YYYY-MM-DD' strings and all date math runs through Date.UTC in calendar-grid.ts,
  * never the visitor's local time zone, so every label matches the key it describes.
@@ -38,7 +49,10 @@ import {
   WEEKDAYS,
   ymOf,
   ymd,
+  zoneName,
 } from './calendar-grid';
+import DayPanel from './DayPanel';
+import type { DayChoice } from './DayPanel';
 import { readAgreement, sessionStore, writeAgreement } from './terms-agreement';
 import { TermsCheckbox, TermsLink, TermsRules } from './TermsCheckbox';
 import './availability-calendar.css';
@@ -98,17 +112,10 @@ function mailto(href: string): string {
   return /^mailto:/i.test(href) ? href : `mailto:${href}`;
 }
 
-/** "Pacific Time" for America/Los_Angeles. Falls back to the zone's own name. */
-function zoneName(timeZone: string): string {
-  try {
-    const part = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longGeneric' })
-      .formatToParts(new Date(0))
-      .find((p) => p.type === 'timeZoneName');
-    if (part && part.value) return part.value;
-  } catch {
-    // An unknown zone or an older engine: use the IANA name below.
-  }
-  return timeZone.replace(/_/g, ' ');
+/** Smooth, unless the visitor asks for reduced motion. */
+function scrollBehavior(): ScrollBehavior {
+  const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return reduced ? 'auto' : 'smooth';
 }
 
 /** A square half filled on the diagonal: the Partly booked mark. Decorative; the words carry it. */
@@ -179,7 +186,7 @@ function SkeletonMonth() {
 
 interface TermsGateProps {
   agreed: boolean;
-  /** True from the tick until the next pick: the panel stays up with the box checked and the booker beneath. */
+  /** True from the tick until the next Continue: the panel stays up with the box checked and the booker beneath. */
   fresh: boolean;
   onChange: (checked: boolean) => void;
   panelRef: React.RefObject<HTMLDivElement>;
@@ -312,8 +319,15 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
   const [viewMonth, setViewMonth] = React.useState<Ym | null>(null);
   const [twoUp, setTwoUp] = React.useState(false);
   const [selected, setSelected] = React.useState<Ymd | null>(null);
-  // Counts picks so choosing the same day again still scrolls back to the booker.
+  // Counts picks so choosing the same day again still scrolls back to the day panel.
   const [pickCount, setPickCount] = React.useState(0);
+  // What the visitor continued with from the day panel. The gate and the booker show only with it;
+  // a new day, length or time sets it back to null until the next Continue.
+  const [choice, setChoice] = React.useState<DayChoice | null>(null);
+  // Counts continues so the gate's title, or the booker heading, takes focus each time.
+  const [continueCount, setContinueCount] = React.useState(0);
+  // Fixture data for the month and the day's times: the prop, or ?fixture=1 on the page URL.
+  const [fixtureOn, setFixtureOn] = React.useState(fixture);
   // The day that last had keyboard focus; it keeps the tab stop where the visitor left it.
   const [active, setActive] = React.useState<Ymd | null>(null);
   const [bookedPick, setBookedPick] = React.useState<Ymd | null>(null);
@@ -323,16 +337,18 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
   // never in the server markup or the first client render (nothing is picked and the endpoint has
   // not answered yet), so the stored value cannot cause a hydration mismatch.
   const [agreed, setAgreed] = React.useState<boolean>(() => readAgreement(sessionStore()));
-  // True from the tick until the next pick: the panel stays up, box checked, booker beneath.
+  // True from the tick until the next Continue: the panel stays up, box checked, booker beneath.
   const [freshAgree, setFreshAgree] = React.useState(false);
   // Counts ticks so the booker heading takes focus each time the box is checked.
   const [agreeCount, setAgreeCount] = React.useState(0);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const headingRef = React.useRef<HTMLHeadingElement>(null);
+  const dayHeadingRef = React.useRef<HTMLHeadingElement>(null);
   const termsRef = React.useRef<HTMLDivElement>(null);
   const termsTitleRef = React.useRef<HTMLHeadingElement>(null);
 
-  // Fetch once on mount. ?fixture=1 on the page URL, or the prop, asks for fixture data.
+  // Fetch once on mount. ?fixture=1 on the page URL, or the prop, asks for fixture data; the day
+  // panel asks for fixture times on the same terms.
   React.useEffect(() => {
     const controller = new AbortController();
     let useFixture = fixture;
@@ -341,6 +357,7 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
     } catch {
       // No usable location: keep the prop.
     }
+    setFixtureOn(useFixture);
     const url = `/api/availability${useFixture ? '?fixture=1' : ''}`;
     fetch(url, { signal: controller.signal, headers: { accept: 'application/json' } })
       .then(async (res) => {
@@ -424,14 +441,26 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
   const pick = (date: Ymd, day: DaySummary) => {
     if (isSelectable(day)) {
       setBookedPick(null);
+      // Another day starts over: the gate and the booker wait for the next Continue. The same day
+      // again only brings its panel back into view.
+      if (date !== selected) setChoice(null);
       setSelected(date);
       setPickCount((n) => n + 1);
-      // A new view of the gate: an agreement from before shows as the one line.
-      setFreshAgree(false);
     } else if (day.status === 'booked') {
       setBookedPick(date);
     }
   };
+
+  /** "Continue to book" in the day panel: the gate shows, and the booker too once the visitor has agreed. */
+  const continueToBook = (next: DayChoice) => {
+    setChoice(next);
+    // A new view of the gate: an agreement from before shows as the one line.
+    setFreshAgree(false);
+    setContinueCount((n) => n + 1);
+  };
+
+  /** The length or the time changed after Continue: the gate and the booker wait for the next one. */
+  const resetChoice = () => setChoice(null);
 
   /** The checkbox in the gate. Ticking it mounts the booker; clearing it takes the booker down again. */
   const agree = (checked: boolean) => {
@@ -549,14 +578,23 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
     root.querySelector<HTMLElement>(`[data-ym="${ymOf(focusRequest.date)}"]`)?.focus();
   }, [focusRequest]);
 
-  // After a pick: bring the booking area into view and give it focus. Once the visitor has agreed
+  // After a pick: bring the day panel into view and give its heading focus. The gate and the
+  // booker come later, after Continue.
+  React.useEffect(() => {
+    if (!selected || pickCount === 0) return;
+    const heading = dayHeadingRef.current;
+    if (!heading) return;
+    heading.focus({ preventScroll: true });
+    (heading.closest<HTMLElement>('.day-panel') ?? heading).scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+  }, [selected, pickCount]);
+
+  // After Continue: bring the next step into view and give it focus. Once the visitor has agreed
   // that is the booker's heading; before, the gate stands in its place and its title takes the
   // focus. `agreed` is read here, not depended on: ticking the box has its own effect below and
   // must not scroll the panel away.
   React.useEffect(() => {
-    if (!selected || pickCount === 0) return;
-    const reduced = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const behavior: ScrollBehavior = reduced ? 'auto' : 'smooth';
+    if (continueCount === 0) return;
+    const behavior = scrollBehavior();
     if (agreed) {
       const heading = headingRef.current;
       if (!heading) return;
@@ -568,7 +606,7 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
     if (!title) return;
     title.focus({ preventScroll: true });
     (termsRef.current ?? title).scrollIntoView({ behavior, block: 'start' });
-  }, [selected, pickCount]);
+  }, [continueCount]);
 
   // Ticking the box mounts the booker. Its heading takes focus so the visitor lands on it; the
   // browser scrolls only as far as it must, so the panel stays in view above.
@@ -686,13 +724,31 @@ export default function AvailabilityCalendar({ horizonMonths, timeZone, fixture 
 
       {selected && (
         <div className="avail__book">
-          {termsGate}
-          {agreed && (
+          <DayPanel
+            date={selected}
+            timeZone={timeZone}
+            fixture={fixtureOn}
+            onContinue={continueToBook}
+            continued={choice !== null}
+            onReset={resetChoice}
+            headingRef={dayHeadingRef}
+          />
+          {choice && (
             <>
-              {bookingHeading(`Book ${formatBookDate(selected)}`)}
-              <React.Suspense fallback={loadingLine}>
-                <CalBooker date={selected} headingId={BOOK_HEADING_ID} />
-              </React.Suspense>
+              {termsGate}
+              {agreed && (
+                <>
+                  {bookingHeading(`Book ${formatBookDate(choice.date)}`)}
+                  <React.Suspense fallback={loadingLine}>
+                    <CalBooker
+                      date={choice.date}
+                      minutes={choice.minutes}
+                      start={choice.start || undefined}
+                      headingId={BOOK_HEADING_ID}
+                    />
+                  </React.Suspense>
+                </>
+              )}
             </>
           )}
         </div>

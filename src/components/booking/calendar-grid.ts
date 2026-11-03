@@ -2,8 +2,8 @@
  * Pure calendar helpers for the availability island. No React and no local time zone:
  * every date is a 'YYYY-MM-DD' string, every month a 'YYYY-MM' string, and every
  * calculation runs through Date.UTC, so the grid and its labels always agree with the keys
- * that /api/availability returns (see src/lib/availability.ts). The Vitest test beside this
- * file covers monthGrid and imports nothing else.
+ * that /api/availability returns (see src/lib/availability.ts). The Vitest tests beside this
+ * file cover monthGrid (AvailabilityCalendar.test.ts) and zoneName (day-panel.test.ts).
  */
 
 /** A month as 'YYYY-MM'. */
@@ -147,4 +147,20 @@ export function formatLongDate(date: Ymd): string {
 /** "Saturday, November 14" */
 export function formatBookDate(date: Ymd): string {
   return BOOK_DATE_FORMAT.format(utcDate(date));
+}
+
+/**
+ * "Pacific Time" for America/Los_Angeles. Falls back to the zone's own name with spaces for
+ * underscores. The calendar names it under the legend and the day panel under the start times.
+ */
+export function zoneName(timeZone: string): string {
+  try {
+    const part = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longGeneric' })
+      .formatToParts(new Date(0))
+      .find((p) => p.type === 'timeZoneName');
+    if (part && part.value) return part.value;
+  } catch {
+    // An unknown zone or an older engine: use the IANA name below.
+  }
+  return timeZone.replace(/_/g, ' ');
 }

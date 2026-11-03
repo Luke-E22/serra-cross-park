@@ -1,6 +1,6 @@
 # Integration notes
 
-Findings from live checks on 2026-10-09. These override the brief where they disagree. Keep this file current when Cal.com or Zeffy settings change. Event rules (payment with the reservation, confirmation once paid, insurance, parking and the rest) come from docs/TERMS-SOURCE.md, the Conservancy's terms document of 2026-10-12.
+Findings from live checks on 2026-10-09, and on 2026-11-03 for the day times and the booker link (their own section below). These override the brief where they disagree. Keep this file current when Cal.com or Zeffy settings change. Event rules (payment with the reservation, confirmation once paid, insurance, parking and the rest) come from docs/TERMS-SOURCE.md, the Conservancy's terms document of 2026-10-12.
 
 ## Cal.com
 
@@ -28,9 +28,59 @@ Response: `{ "status": "success", "data": { "2026-10-10": [{ "start": "2026-10-1
 
 **Booking page query parameters (checked in a real browser, 2026-10-09).** https://cal.com/serra-cross-park/reserve?month=2026-11&date=2026-11-14 opens on November 2026 with the 14th selected and its times listed (8:00 AM, 11:00 AM, 2:00 PM, 5:00 PM), so `month` and `date` are honored by the public page. The embed passes the same query through `calLink`, and it works there too (checked in a real browser on 2026-10-09 against the dev server: picking Saturday, October 24 in the availability calendar mounted the embed at `app.cal.com/serra-cross-park/reserve/embed?month=2026-10&date=2026-10-24&...`, and the booker opened on October 2026 with the 24th selected and 8:00am, 11:00am, 2:00pm and 5:00pm listed). The "Choose <date> in the calendar below" hint in `CalBooker.tsx` is therefore off (`SHOW_PICK_HINT = false`); turn it back on if a Cal.com update stops honoring `date`.
 
-**Durations.** The event page shows "$300.00 per hour with a minimum of two hours" and offers 2h, 3h, 4h and 5h, with 3h selected by default. The slots API without a `duration` parameter answers for the default (180 minutes), which is what the availability calendar counts. The default must become 2 hours to match the published two-hour minimum (CONTENT-TODO item 39); longer lengths can stay on offer. If the Conservancy wants the calendar to reflect another length, set `BOOKING.slotDuration` in minutes. The event description also says "You Must Agree to the Terms and Conditions at Checkout" and "All reservations must include time needed for vendor/client set up, event, and vendor/client break-down". The event has no terms checkbox question yet: the site asks for the agreement before the booker opens, and Cal.com should carry a required "I agree to the terms and conditions" checkbox question linking to https://serracrosspark.com/terms-and-conditions/ so the agreement is stored with each booking (CONTENT-TODO item 40).
+**Durations.** The event page shows "$300.00 per hour with a minimum of two hours" and offers 2h, 3h, 4h and 5h, with 3h selected by default. The slots API without a `duration` parameter answers for the default (180 minutes), which is what the availability calendar counted until 2026-11-03. Since then it sends `duration=120` (`BOOKING.slotDuration`) and counts two-hour starts. The default must become 2 hours to match the published two-hour minimum (CONTENT-TODO item 39); longer lengths can stay on offer. If the Conservancy wants the calendar to reflect another length, set `BOOKING.slotDuration` in minutes. The event description also says "You Must Agree to the Terms and Conditions at Checkout" and "All reservations must include time needed for vendor/client set up, event, and vendor/client break-down". The event has no terms checkbox question yet: the site asks for the agreement before the booker opens, and Cal.com should carry a required "I agree to the terms and conditions" checkbox question linking to https://serracrosspark.com/terms-and-conditions/ so the agreement is stored with each booking (CONTENT-TODO item 40).
 
-**Payment.** The terms document (1.1) says the full payment comes with the reservation form and the reservation is not confirmed until the payment has been received and processed, so the site has no separate pay step and mentions no hold on a date. These notes record no payment step on the `reserve` event as read on 2026-10-09. How the fee is collected with the reservation (a Cal.com payment app, or a Zeffy form) is CONTENT-TODO item 2; the confirmation setting that goes with it is item 43.
+**Payment.** The terms document (1.1) says the full payment comes with the reservation form and the reservation is not confirmed until the payment has been received and processed, so the site has no separate pay step and mentions no hold on a date. These notes record no payment step on the `reserve` event as read on 2026-10-09. How the fee is collected with the reservation (a Cal.com payment app, or a Zeffy form) is CONTENT-TODO item 2; the confirmation setting that goes with it is item 43. On 2026-11-03 the event carried a payment app that is set up but switched off (see the event table in the next section).
+
+## Day times and the booker link (2026-11-03)
+
+The board asked to see open times before agreeing to the terms. The day panel on `/booking/` lists one day's start times from our own endpoint. Once the visitor agrees, the booker opens on the time they chose.
+
+**Endpoint.** `GET /api/availability/times?date=YYYY-MM-DD&minutes=N`, in `netlify/functions/availability-times.mts`. The logic is in `src/lib/day-times.ts`, tested in `day-times.test.ts`.
+
+- 200: `{ "date": "2026-11-07", "minutes": 180, "timeZone": "America/Los_Angeles", "times": [{ "start": "2026-11-07T12:00:00.000-08:00", "end": "2026-11-07T15:00:00.000-08:00", "label": "12 PM" }, ...] }`. Earliest first, only starts on that date in Pacific Time. An empty `times` means no start of that length is left.
+- 400 `{ "error": "bad_request" }` for a date that is not a real YYYY-MM-DD, or a length not in `BOOKING.lengths`. 502 `{ "error": "availability_unavailable" }` when Cal.com fails or takes more than 8 seconds. Both send `Cache-Control: no-store`.
+- A 200 sends `Cache-Control: public, max-age=60` and `Netlify-CDN-Cache-Control: public, durable, s-maxage=120, stale-while-revalidate=600`. Netlify keys a function's cached responses on the whole query string by default (Netlify caching docs, read 2026-11-03), so each date and length is cached on its own.
+- `?fixture=1` (not in production) answers from `buildTimesFixture()`: hourly starts from 8 AM, each ending by 8 PM, plus a booking from 11 AM to 1 PM on Saturdays and Sundays, so weekend days come back partly booked and an 8-hour event fits none.
+- In `astro dev`, `scripts/dev-availability-plugin.mjs` serves it next to `/api/availability`.
+
+**The Cal.com query.** `GET https://api.cal.com/v2/slots?username=serra-cross-park&eventTypeSlug=reserve&start=2026-11-07&end=2026-11-08&timeZone=America/Los_Angeles&duration=180&format=range`, header `cal-api-version: 2024-09-04`, no key. Checked live on 2026-11-03:
+
+- `format=range` returns `{ start, end }` pairs. Without it, `start` comes alone.
+- `end` has to be the next day. Cal.com reads `start` and `end` as whole UTC days. With `end=2026-11-07` the answer stopped at 4 PM Pacific (UTC midnight), so no three-hour start came back after 1 PM. With `end=2026-11-08` the evening came back too, through the 5 PM start. Both answers also carry a stray `2026-11-06` key (that evening from 4 PM), and the second carries the morning of 2026-11-08. `selectDayTimes()` keeps only starts that fall on the date in Pacific Time.
+- Cal.com does not check `duration` against the event's lengths: `duration=90` came back with 90-minute slots. The endpoint's 400 is the only guard.
+- A past date answers `{"data":{},"status":"success"}`.
+- `eventTypeSlug` is `eventSlugFor(minutes)`: `BOOKING.eventSlugByLength[minutes]` when the map is set, otherwise `BOOKING.calEventSlug`. The month grid picks its slug the same way, for `BOOKING.slotDuration`.
+
+**The event, read 2026-11-03** from the public event-types API: `GET https://api.cal.com/v2/event-types?username=serra-cross-park&eventSlug=reserve`, header `cal-api-version: 2024-06-14`, no key.
+
+| Field | Value |
+| --- | --- |
+| `lengthInMinutesOptions` | 120, 180, 240, 300, 360, 420, 480 (`BOOKING.lengths` matches) |
+| `lengthInMinutes` (the default) | 180 |
+| `slotInterval` | 60: hourly starts from 8 AM, the last one ending by 8 PM |
+| `minimumBookingNotice` | 360 minutes |
+| `beforeEventBuffer` and `afterEventBuffer` | 60 minutes each |
+| Payment app (`metadata.apps.cal-payments`) | Set up but `enabled: false`. One `price`, 60000 cents ($600, the fee for two hours), `paymentOption: ON_BOOKING`, `refundPolicy: never`. The event's own `price` is 0. |
+
+The month grid now sends `duration=120` (`BOOKING.slotDuration`), so a day reads as open while any two-hour start is left. Without it, Cal.com counts the 180-minute default.
+
+**Booker link parameters (checked in a real browser, 2026-11-03).** `https://cal.com/serra-cross-park/reserve?month=2026-11&date=2026-11-07&duration=180&slot=2026-11-07T17:00:00.000Z` opens straight on the booking form, showing "Saturday, November 7, 2026 9:00 am to 12:00 pm, 3h".
+
+| Parameter | Value |
+| --- | --- |
+| `month` | `YYYY-MM` of the date |
+| `date` | `YYYY-MM-DD` |
+| `duration` | Minutes, one of the event's lengths |
+| `slot` | The start as a UTC instant with milliseconds and `Z`, from `toUtcSlot()` |
+
+The slots API, read twice that afternoon, never listed a 9 AM start on November 7 (the first three-hour start was 12 PM, then 11 AM). So the form may well open for a time that is not free: pass only a start the times endpoint has just returned. Whether Cal.com refuses a taken time when the form is submitted was not tested, because no test booking was made.
+
+**Inside the embed (checked 2026-11-03, read only).** After the day panel, the island mounted the iframe at `https://app.cal.com/serra-cross-park/reserve/embed?month=2026-11&date=2026-11-07&duration=180&slot=2026-11-07T20%3A00%3A00.000Z&layout=month_view&useSlotsViewOnSmallScreen=true&theme=light&embedType=inline&embed=reserve`. The embed writes the colons in `slot` as `%3A`. That URL, opened on its own in a browser, showed the booking form for Saturday, November 7, 2026, 12:00 to 3:00 pm, 3h, with the event's questions (name, email, phone, event type, guest count) and no payment step. Nothing was submitted.
+
+Opening the form holds the time. Before that check, the slots API listed eight two-hour starts on November 7, 11 AM to 6 PM. With the form open on 12 PM to 3 PM, it listed only 3 PM to 6 PM: the starts that overlap 12 to 3 were gone for everyone, our times endpoint included. They came back between 1:54 and 1:55 PM, about five minutes after the form was closed. So the day panel hides a time while someone is on its form, which is what we want. It also means a test on the live event briefly takes a real time away from visitors: test on a far-off date.
+
+This check ran in a browser set to Pacific Time. Cal.com's booker normally shows times in the visitor's own zone, while the day panel says Pacific Time, so a visitor elsewhere may see other clock times on the form for the same instant. Not yet checked from another zone.
 
 ## Zeffy
 
@@ -61,4 +111,5 @@ Site plan: render the container and load the script on the Donate page; if the s
 
 - Functions live in `netlify/functions/`; the availability function exports `default async (req: Request, context) => Response` and `config = { path: '/api/availability' }` (Netlify Functions 2.0 API, `.mts` is fine).
 - Netlify Forms need the form in the built HTML with `data-netlify="true"` (or `netlify`) and a `form-name` field; JavaScript submissions post `application/x-www-form-urlencoded` to `/`. Forms do not work in local dev; test on a deploy preview. The `event-inquiry` form carries a `terms` checkbox (value `yes`), required in the island and present in the hidden twin on `/booking/`.
-- Response caching for the function: `Cache-Control: public, max-age=60` for browsers and `Netlify-CDN-Cache-Control: public, durable, s-maxage=300, stale-while-revalidate=3600` for the CDN.
+- Response caching for `/api/availability`: `Cache-Control: public, max-age=60` for browsers and `Netlify-CDN-Cache-Control: public, durable, s-maxage=300, stale-while-revalidate=3600` for the CDN.
+- `availability-times.mts` follows the same pattern at `/api/availability/times` (see Day times above). Its CDN cache is shorter (`s-maxage=120, stale-while-revalidate=600`) because a day's times change as people book.

@@ -56,7 +56,7 @@ Serve the built site. By default it also uses port 4321, so stop the dev server 
 npm run preview
 ```
 
-Run the unit tests (Vitest 5, 5 files, 56 tests):
+Run the unit tests (Vitest 5, 7 files, 108 tests):
 
 ```bash
 npm test
@@ -79,7 +79,7 @@ Each `WARN` line is something to settle before launch. The check looks for five 
 Two things to know about dev mode:
 
 - **The Cal.com booker paints blank in `npm run dev`.** The iframe mounts with the right URL but shows nothing. In the production build it renders. Check the booker with `npm run build` then `npm run preview`, or on a Netlify deploy preview. It was verified in a real browser on 2026-10-09: with a day picked, the embed opens on that date with its times listed.
-- **`/api/availability` is served differently in each mode.** In `npm run dev`, `scripts/dev-availability-plugin.mjs` (a Vite plugin registered in `astro.config.mjs`) runs the real function from `netlify/functions/availability.mts`. `npm run preview` does not serve it, so the booking page in preview takes the fallback path (a Notice, the terms agreement, then the booker with no date). To see the real function on the built site, use the Netlify CLI (section 9).
+- **`/api/availability` and `/api/availability/times` are served differently in each mode.** In `npm run dev`, `scripts/dev-availability-plugin.mjs` (a Vite plugin registered in `astro.config.mjs`) runs the real functions from `netlify/functions/availability.mts` and `netlify/functions/availability-times.mts`. `npm run preview` serves neither, so the booking page in preview takes the fallback path (a Notice, the terms agreement, then the booker with no date). To see the real functions on the built site, use the Netlify CLI (section 9).
 
 If the dev server ever crashes islands with `_jsxDEV is not a function`, a production build has poisoned the dev cache. `astro.config.mjs` already keeps one Vite cache per npm script (`node_modules/.vite-dev`, `node_modules/.vite-build` and so on), so this should not recur. If it does, clear the caches and restart dev:
 
@@ -103,21 +103,24 @@ src/
   assets/photos/                the 30 park photos, originals, kebab-case names.
   assets/people/                board and staff photos (luke-erickson.webp so far).
   components/ds/                the ported design system (index.tsx, generated.ts). Changes logged in DESIGN-SYSTEM-CHANGES.md.
-  components/booking/           AvailabilityCalendar.tsx, CalBooker.tsx, InquiryFallback.tsx, calendar-grid.ts,
+  components/booking/           AvailabilityCalendar.tsx, DayPanel.tsx (a day's lengths and start times),
+                                CalBooker.tsx, InquiryFallback.tsx, calendar-grid.ts,
                                 TermsCheckbox.tsx and terms-agreement.ts (the terms agreement before the booker).
   components/                   ContactForm, ZeffyEmbed, GalleryLightbox, PageHero, PersonCard, SiteHeaderIsland.
   layouts/BaseLayout.astro      head, SEO tags, structured data, footer, global CSS.
   lib/availability.ts           the day-status logic behind the calendar, pure and tested.
+  lib/day-times.ts              one day's start times, lengths, fees and time labels, pure and tested.
   lib/cal-theme.ts              Cal.com embed colors, built from tokens.json.
   lib/images.ts                 picture() and ogImage().
   pages/                        one .astro file per page; booking/index.astro and booking/requested.astro.
   scripts/header-menu.ts        the menu toggle, inlined on every page (no React needed for it).
   styles/site.css               site-level styles from tokens; styles/pages/*.css per page; fonts.css.
-netlify/functions/availability.mts   the one serverless function, GET /api/availability.
+netlify/functions/availability.mts        GET /api/availability, the month grid.
+netlify/functions/availability-times.mts  GET /api/availability/times, one day's start times for one length.
 netlify.toml                    build settings, redirects from the old site, security headers.
 scripts/
   prelaunch-check.mjs           the warnings described above.
-  dev-availability-plugin.mjs   serves /api/availability in npm run dev.
+  dev-availability-plugin.mjs   serves /api/availability and /api/availability/times in npm run dev.
   strip-google-fonts-plugin.mjs removes bundle.css's Google Fonts @import at build time.
 public/                         favicon.svg, robots.txt, self-hosted EB Garamond (fonts/eb-garamond),
                                 and docs/serra-cross-park-terms-and-conditions.pdf, the published terms PDF.
@@ -160,30 +163,36 @@ Rules from the brand book: real park photos only, no stock. Never crop through t
 
 ## 6. Cal.com
 
-**What the site reads.** Account `serra-cross-park`, event slug `reserve` (title "Private Event / Wedding"). The brief's `30min` slug does not exist. The availability function calls Cal.com's public slots API, `https://api.cal.com/v2/slots` with the header `cal-api-version: 2024-09-04`, which answers without a key. The booker is Cal.com's own embed (`@calcom/embed-react`), so the booking rules (hours, start times, minimum length, minimum notice) live in the Cal.com dashboard, never in code.
+**What the site reads.** Account `serra-cross-park`, event slug `reserve` (title "Private Event / Wedding"). The brief's `30min` slug does not exist. Both availability functions call Cal.com's public slots API, `https://api.cal.com/v2/slots` with the header `cal-api-version: 2024-09-04`, which answers without a key. The booker is Cal.com's own embed (`@calcom/embed-react`), so the booking rules (hours, start times, minimum length, minimum notice) live in the Cal.com dashboard, never in code.
 
 **`BOOKING` in `src/config/site.ts`.**
 
 - `calUsername` and `calEventSlug`: the account and event. `CAL_BOOKING_PAGE_URL` (https://cal.com/serra-cross-park/reserve) is built from them for the fallback link.
 - `timeZone`: `America/Los_Angeles`. "Today" is worked out in this zone.
 - `horizonMonths` (12): how far ahead the calendar shows and how far the function fetches.
-- `minNoticeDays` (0): days inside this window show "Not available online". With 0, today reads "Booked, 0 of 4" after its last start time has passed. Set 1 to show "Not available online" instead, mirroring Cal.com's minimum notice.
+- `minNoticeDays` (0): days inside this window show "Not available online". With 0, today reads "Booked, 0 of 11" once Cal.com's six-hour minimum notice has passed its last start. Set 1 to show "Not available online" instead, mirroring Cal.com's minimum notice.
 - `fullDaySlots` (null): how many slots make a fully open day, by weekday (0 is Sunday). Leave null and the function learns it: a full day is the most slots seen for that weekday anywhere in the horizon. Set it only if a weekday is often fully booked across the whole year.
-- `slotDuration` (null): minutes, sent as `duration` to the slots API. On 2026-10-09 the `reserve` event offered 2, 3, 4 and 5 hours with 3 hours as the default, and the API answers for the default when nothing is sent. The default must become 2 hours to match the published two-hour minimum (CONTENT-TODO item 39). Set this only if the calendar should count a different length.
+- `slotDuration` (120): minutes, sent as `duration` to the slots API, so the month grid counts two-hour starts and a day reads as open while any two-hour start is left. A full day is 11 starts, 8 AM to 6 PM. Without it Cal.com counts the event's default length, which is still 180 minutes (CONTENT-TODO item 39). Keep it equal to the shortest of `lengths`; a test checks this.
+- `lengths` (120 to 480): the event lengths in minutes, the options under "How long is your event?" and the only lengths `/api/availability/times` accepts. Keep them equal to the lengths the Cal.com event offers (2 to 8 hours on 2026-11-03), because the booker's `duration` must be one of them.
+- `ratePerHour` (300): the site fee per hour. The day panel shows each length's fee from it ("3 hours, $900").
+- `eventSlugByLength` (null): minutes to a Cal.com event slug, for example `{ 120: 'reserve-2-hours' }`, in case each length gets its own event and price. A mapped length lists its times and books on its own event; everything else stays on `calEventSlug`. No code change is needed.
 
-**How the calendar works.** `/api/availability` fetches the horizon in about-a-month chunks, counts open slots per day and gives each day one status: past, closed, soon, notyet, booked, partial or open. Nothing about who booked; Cal.com only returns open times. Responses are cached 60 seconds in the browser and 5 minutes on Netlify's CDN; a slightly stale day cannot cause a double booking because the booker always checks live. As read on 2026-10-09, Cal.com offers four fixed 180-minute slots a day at 8, 11, 2 and 5 Pacific, every day, so the calendar shows every day as open until the dashboard is set to the published rule (8 AM to 8 PM, any start time, two-hour minimum) and the existing bookings are entered.
+**How the calendar works.** `/api/availability` fetches the horizon in about-a-month chunks, counts open two-hour starts per day and gives each day one status: past, closed, soon, notyet, booked, partial or open. Nothing about who booked; Cal.com only returns open times. Responses are cached 60 seconds in the browser and 5 minutes on Netlify's CDN; a slightly stale day cannot cause a double booking because the booker always checks live. As read on 2026-11-03, Cal.com offers hourly starts from 8 AM, every event over by 8 PM, so a fully open day has 11 two-hour starts. The 24 bookings from the old site are not in Cal.com yet, so those dates still show as open (CONTENT-TODO item 13).
 
-**The booker's date.** Picking a day mounts the embed with `calLink` set to `serra-cross-park/reserve?month=YYYY-MM&date=YYYY-MM-DD`. Verified in a real browser on 2026-10-09: the booker opens on that month with that day selected and its times listed. So `SHOW_PICK_HINT` in `src/components/booking/CalBooker.tsx` stays `false`. If a Cal.com update stops honoring `date`, set it to `true` and the page shows "Choose <date> in the calendar below if it is not already selected." above the embed.
+**The day panel.** Since the board's feedback of 2026-11-03, visitors see a day's times before they agree to anything. Picking an open or partly booked day opens a panel under the grid (`DayPanel.tsx`): "How long is your event?" (2 to 8 hours, each with its fee, 2 hours by default), that day's open start times as chips, and a note that times are start times in Pacific Time with setup and breakdown inside booked time. The times come from `GET /api/availability/times?date=YYYY-MM-DD&minutes=N` (`netlify/functions/availability-times.mts`), which answers `{ date, minutes, timeZone, times: [{ start, end, label }] }`, cached 60 seconds in the browser and 2 minutes on the CDN. The panel keeps each day and length it has loaded for the rest of the visit. Picking a time shows a summary line ("Saturday, November 7, 9 AM to 12 PM. 3 hours, $900 site fee.") and a secondary "Continue to book" button. Continue shows the terms agreement; a new day, length or time takes the agreement and the booker away again until the next Continue.
 
-**Fallbacks.** Booking never depends on our endpoint.
+**The booker link.** Once the visitor agrees, the embed mounts with `calLink` set to `serra-cross-park/reserve?month=YYYY-MM&date=YYYY-MM-DD&duration=MINUTES&slot=START`, where `START` is the chosen start in UTC with milliseconds and `Z` (for 9 AM Pacific on November 7, `2026-11-07T17:00:00.000Z`). Verified in a real browser on 2026-11-03: the booker opens straight on its booking form for that time and length. With `month` and `date` alone it opens on that day with its times listed (verified 2026-10-09), so `SHOW_PICK_HINT` in `src/components/booking/CalBooker.tsx` stays `false`. If a Cal.com update stops honoring `date`, set it to `true` and the page shows "Choose <date> in the calendar below if it is not already selected." above the embed. Opening the booker on a time holds that time in Cal.com for about five minutes, and nobody else can pick it meanwhile. So test on a far-off date, and cancel any test booking in Cal.com afterwards.
+
+**Fallbacks.** Booking never depends on our endpoints.
 
 - If `/api/availability` fails, the page shows a Notice ("Live availability is not loading right now") and renders the terms agreement at once; ticking the box mounts the booker with no date.
+- If a day's times fail to load, the day panel says so and "Continue to book" still opens the booker on that date and length, with no start time.
 - If the Cal.com script fails or stays silent for 12 seconds, `InquiryFallback` takes its place: a link to the public booking page, a required terms checkbox and the design system's inquiry form, posted to the Netlify form `event-inquiry` with `terms=yes`.
 - Without JavaScript, a Notice links to the public booking page and the park office email.
 
 **`CAL_API_KEY`.** Not needed today. Only if Cal.com starts refusing anonymous slot requests with 401 or 403: create an API key in Cal.com, add `CAL_API_KEY` as an environment variable in the Netlify UI (Site configuration, Environment variables), and redeploy. The function then sends it as a bearer token. Never put it in the repo; `.env.example` shows the variable with an empty value.
 
-**Dashboard settings still to change.** Turn "Requires confirmation" on so a booking never confirms itself: the slot stays blocked while unconfirmed, and the park office confirms the reservation by email once its payment is processed (the terms document, clause 1.1; CONTENT-TODO item 43). Set a future limit that matches `horizonMonths`. Set the success redirect to https://serracrosspark.com/booking/requested/. Add booking questions (event type, guest count, a required "I agree to the terms and conditions" checkbox linking to https://serracrosspark.com/terms-and-conditions/, so the agreement is stored with each booking). Make the availability match the published rule: 8 AM to 8 PM every day, any start time (30-minute steps, or 60-minute steps if Luke wants hourly starts), a two-hour minimum with 2 hours as the default length; the four fixed 180-minute slots at 8, 11, 2 and 5 go, and no weekend exception is needed since the 7:30 PM end was dropped on 2026-10-12. Enter or block the 24 approved bookings from the old WordPress calendar (through April 2028), or the new calendar shows those dates as open. Confirm the event title and description wording inside the booker. The full list is in `LAUNCH-CHECKLIST.md`; the settings as read on 2026-10-09 are in `docs/INTEGRATION-NOTES.md`.
+**Dashboard settings still to change.** Turn "Requires confirmation" on so a booking never confirms itself: the slot stays blocked while unconfirmed, and the park office confirms the reservation by email once its payment is processed (the terms document, clause 1.1; CONTENT-TODO item 43). Set a future limit that matches `horizonMonths`. Set the success redirect to https://serracrosspark.com/booking/requested/. Add booking questions (event type, guest count, a required "I agree to the terms and conditions" checkbox linking to https://serracrosspark.com/terms-and-conditions/, so the agreement is stored with each booking). Make the availability match the published rule: 8 AM to 8 PM every day, any start time, a two-hour minimum with 2 hours as the default length. As read on 2026-11-03 the four fixed slots are gone: the event offers hourly starts from 8 AM, every event over by 8 PM, and lengths of 2 to 8 hours, but its default is still 3 hours (CONTENT-TODO item 39). No weekend exception is needed since the 7:30 PM end was dropped on 2026-10-12. If the lengths change in Cal.com, change `BOOKING.lengths` to match. Enter or block the 24 approved bookings from the old WordPress calendar (through April 2028), or the new calendar shows those dates as open. Confirm the event title and description wording inside the booker. The full list is in `LAUNCH-CHECKLIST.md`; the settings as read on 2026-10-09 and 2026-11-03 are in `docs/INTEGRATION-NOTES.md`.
 
 ## 7. Zeffy
 
@@ -209,19 +218,21 @@ sudo xcodebuild -license
 2. Under Site configuration, Forms, turn on form detection. The two forms are `contact` and `event-inquiry`.
 3. Under Site configuration, Notifications, Form submission notifications, send submissions of both forms to admin@serracrosspark.com.
 4. Add `CAL_API_KEY` under Environment variables only if Cal.com starts refusing anonymous requests (section 6).
-5. On the first deploy preview, check: a test submission of each form arrives; `/booking/` loads the live calendar, picking a day opens the booker on that date, and `/api/availability` answers JSON with the two cache headers; `/donate/` shows the Zeffy form; `/calendar/` redirects to `/booking/#availability` and `/shop/anything` to `/donate/`.
+5. On the first deploy preview, check: a test submission of each form arrives; `/booking/` loads the live calendar, picking a day opens the day panel with that day's times, Continue and the terms checkbox open the booker on the chosen time, and `/api/availability` and `/api/availability/times?date=YYYY-MM-DD&minutes=120` answer JSON with the two cache headers; `/donate/` shows the Zeffy form; `/calendar/` redirects to `/booking/#availability` and `/shop/anything` to `/donate/`.
 6. Domain. Add serracrosspark.com under Domain management. Before changing DNS, copy the current MX and TXT records into Netlify DNS (or keep DNS where it is and point an A or CNAME record at Netlify) so admin@serracrosspark.com keeps working.
 7. Back up the WordPress site and keep it running until DNS has switched and the new site answers on the domain.
 8. After launch, submit `https://serracrosspark.com/sitemap-index.xml` in Google Search Console (the old site's verification tag is carried in `BaseLayout.astro`, so the property stays verified) and spot-check the old URLs.
 
 ## 9. Tests and checks
 
-**Vitest.** `npm test` runs five files, 56 tests, in well under a second.
+**Vitest.** `npm test` runs seven files, 108 tests, in well under a second.
 
 - `src/lib/availability.test.ts` (25): date helpers across UTC midnight and DST, chunking, clipping and merging Cal.com data, every day status (the fixture's weekend and weekday slot counts, learned weekday counts, closed weekdays, minimum notice, the end of the window, the past), the response envelope and the fixture.
 - `src/lib/cal-theme.test.ts` (12): token aliases resolve to plain colors, the embed gets every key the brief and Cal.com name, paper text on navy, square corners.
 - `src/components/ZeffyEmbed.test.ts` (9): the embed URL and embed path derived from a form URL, with and without a language segment.
+- `src/lib/day-times.test.ts` (27): time labels ("9 AM", "12:30 PM"), the booker's UTC `slot` across the November clock change, lengths and fees, the event slug per length, real calendar dates, picking one day's starts out of Cal.com's data (the stray day before and after, missing or bad ends, repeats), the times fixture, and a check that `BOOKING.slotDuration` stays the shortest length.
 - `src/components/booking/AvailabilityCalendar.test.ts` (4): the month grid (padding, six-row months, leap day, zero-padded dates).
+- `src/components/booking/day-panel.test.ts` (25): the day panel's words (fees, length options, the "no times left" line, the summary line), the times URL and response parsing, the booker link with `duration` and `slot`, and the zone name.
 - `src/components/booking/terms-agreement.test.ts` (6): the sessionStorage helpers behind the terms agreement (an empty or missing store, the exact stored value, write and clear, a store that throws, no store outside a browser).
 
 **Type check.** `npm run check` runs `astro check`. For the function and scripts too:

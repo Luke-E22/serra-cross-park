@@ -23,7 +23,33 @@ export const BOOKING = {
   horizonMonths: 12,        // how far ahead the calendar shows
   minNoticeDays: 0,         // mirror Cal.com "minimum notice"
   fullDaySlots: null as null | Record<number, number>, // optional: slots in a fully open day, by weekday (0 = Sunday)
-  slotDuration: null as null | number,                 // minutes; only if the Cal.com event offers several durations
+  // Minutes the month grid counts open start times for (the slots API `duration`). 120 is the
+  // two-hour minimum, so a day reads as open while any two-hour start is left. null would count
+  // the event's default length instead (180 minutes, read 2026-11-03).
+  slotDuration: 120 as null | number,
+  // Event lengths in minutes, shortest first: the options under "How long is your event?" and the
+  // only lengths /api/availability/times accepts. Keep them equal to the lengths the Cal.com event
+  // offers (lengthInMinutesOptions, read 2026-11-03), because the booker's `duration` must be one.
+  lengths: [120, 180, 240, 300, 360, 420, 480] as number[],
+  // Site fee in dollars per hour of booked time, setup and breakdown included. The day panel shows
+  // each length's fee from it (3 hours, $900).
+  ratePerHour: 300,
+  // One Cal.com event per length, each with its own Cal Pay price at $300 an hour, because Cal.com
+  // charges one fixed price per event whatever length is chosen (Cal.com docs and code, checked
+  // 2026-11-03). Set up in Cal.com on 2026-11-03: reserve is 2 hours at $600 (Luke), reserve-3h to
+  // reserve-8h are 3 to 8 hours at $900 to $2,400, refund policy never. A length in the map lists
+  // its times and books on that event, and the month grid counts on the event mapped to
+  // slotDuration. A booking on any of them blocks the same hours on all of them. If a price changes,
+  // change it on that event in Cal.com and keep ratePerHour here in step.
+  eventSlugByLength: {
+    120: 'reserve',
+    180: 'reserve-3h',
+    240: 'reserve-4h',
+    300: 'reserve-5h',
+    360: 'reserve-6h',
+    420: 'reserve-7h',
+    480: 'reserve-8h',
+  } as null | Record<number, string>,
 };
 
 /** The public Cal.com booking page. The fallback link when the embed cannot load. */
