@@ -98,12 +98,15 @@ function isSelectable(day: DaySummary | undefined): boolean {
   return kind === 'open' || kind === 'partial';
 }
 
-/** The button's full name, for example "Saturday, November 14, 2026. Partly booked, 2 of 3 times open." */
+/**
+ * The button's full name, for example "Saturday, November 14, 2026. Partly booked." No counts of
+ * open times since 2026-11-04: picking the day shows what is not available instead (DayPanel).
+ */
 function dayLabel(date: Ymd, day: DaySummary | undefined): string {
   const name = formatLongDate(date);
   const kind = kindOf(day);
-  if (kind === 'open' && day) return `${name}. Open, ${day.open} ${day.open === 1 ? 'time' : 'times'} available.`;
-  if (kind === 'partial' && day) return `${name}. Partly booked, ${day.open} of ${day.of} times open.`;
+  if (kind === 'open') return `${name}. Open.`;
+  if (kind === 'partial') return `${name}. Partly booked.`;
   if (kind === 'booked') return `${name}. Booked.`;
   return `${name}. Not available online.`;
 }
@@ -256,11 +259,6 @@ function DayCell({ date, day, selected, tabbable, onPick, onFocus }: DayCellProp
     >
       <span className="avail__num label-lg">{dayOfMonth(date)}</span>
       {kind === 'partial' && <HalfMark className="avail__mark" />}
-      {kind === 'partial' && day && (
-        <span className="avail__detail caption">
-          {day.open} of {day.of} open
-        </span>
-      )}
       {kind === 'booked' && <span className="avail__detail caption">booked</span>}
       {selected && <Icon name="check" size={16} className="avail__check" />}
     </button>

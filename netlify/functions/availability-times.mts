@@ -5,8 +5,11 @@
 // about who booked: Cal.com only returns open times. Selection and labels live in
 // src/lib/day-times.ts; this file checks the query, fetches and answers.
 //
-//   200 { date, minutes, timeZone, times: [{ start, end, label }] }, earliest first, only times
-//       on `date` in BOOKING.timeZone. An empty list means no time of that length is left.
+//   200 { date, minutes, timeZone, times: [{ start, end, label }], unavailable: [{ start, end, label }] }.
+//       `times` are the open starts for `minutes`, earliest first, only on `date` in BOOKING.timeZone;
+//       empty means no time of that length is left. `unavailable` are the parts of the park's day
+//       where no event of the shortest length fits (owner's request, 2026-11-04), from a second
+//       query for that length; empty means the whole day is free.
 //   400 { error: 'bad_request' } for a date that is not a real YYYY-MM-DD, or a length that is
 //       not in BOOKING.lengths. Cal.com answers any length it is sent, so this is the only check.
 //   502 { error: 'availability_unavailable' } when Cal.com fails or takes longer than 8 seconds.
@@ -25,7 +28,9 @@ import {
   isAllowedLength,
   isCalendarDate,
   selectDayTimes,
+  unavailableWindows,
   type DayTime,
+  type DayWindow,
   type DayTimesResponse,
   type RangeSlotData,
 } from '../../src/lib/day-times.ts';
@@ -93,8 +98,15 @@ async function fetchDay(date: string, minutes: number): Promise<RangeSlotData> {
   return body.data;
 }
 
-function answer(date: string, minutes: number, times: DayTime[]): DayTimesResponse {
-  return { date, minutes, timeZone: BOOKING.timeZone, times };
+function answer(date: string, minutes: number, times: DayTime[], unavailable: DayWindow[]): DayTimesResponse {
+  return { date, minutes, timeZone: BOOKING.timeZone, times, unavailable };
+}
+
+/** The shortest length on offer: the windows are where not even this fits. */
+const PROBE_MINUTES = Math.min(...BOOKING.lengths);
+
+function windowsFrom(probeTimes: DayTime[], date: string): DayWindow[] {
+  return unavailableWindows(probeTimes.map((t) => t.start), date, BOOKING.timeZone, PROBE_MINUTES);
 }
 
 export default async (req: Request, context: Context): Promise<Response> => {
@@ -108,12 +120,20 @@ export default async (req: Request, context: Context): Promise<Response> => {
   // Fails closed: on production, or wherever the context is unknown outside a local dev server,
   // ?fixture=1 is ignored and the live times answer.
   if (params.get('fixture') === '1' && allowsFixture(deployContext(context), process.env)) {
-    return json(answer(date, minutes, buildTimesFixture(date, minutes, BOOKING.timeZone)), 200, NO_STORE_HEADERS);
+    const times = buildTimesFixture(date, minutes, BOOKING.timeZone);
+    const unavailable = windowsFrom(buildTimesFixture(date, PROBE_MINUTES, BOOKING.timeZone), date);
+    return json(answer(date, minutes, times, unavailable), 200, NO_STORE_HEADERS);
   }
 
   try {
-    const data = await fetchDay(date, minutes);
-    return json(answer(date, minutes, selectDayTimes(data, date, BOOKING.timeZone, minutes)), 200, OK_HEADERS);
+    // The chosen length and the shortest one, side by side; one query when they are the same.
+    const [data, probeData] = await Promise.all([
+      fetchDay(date, minutes),
+      minutes === PROBE_MINUTES ? null : fetchDay(date, PROBE_MINUTES),
+    ]);
+    const times = selectDayTimes(data, date, BOOKING.timeZone, minutes);
+    const probeTimes = probeData ? selectDayTimes(probeData, date, BOOKING.timeZone, PROBE_MINUTES) : times;
+    return json(answer(date, minutes, times, windowsFrom(probeTimes, date)), 200, OK_HEADERS);
   } catch (err) {
     const detail = err instanceof Error ? err.message.slice(0, 200) : 'unknown error';
     return json({ error: 'availability_unavailable', detail }, 502, NO_STORE_HEADERS);

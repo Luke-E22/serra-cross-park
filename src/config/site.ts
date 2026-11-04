@@ -34,6 +34,11 @@ export const BOOKING = {
   // Site fee in dollars per hour of booked time, setup and breakdown included. The day panel shows
   // each length's fee from it (3 hours, $900).
   ratePerHour: 300,
+  // The park's booking day, in minutes after midnight in timeZone: 8 AM to 8 PM every day (owner,
+  // 2026-10-12). The day panel lists the parts of this day no event can use as "Not available".
+  // Cal.com's own hours win for booking; keep these in step with them.
+  dayOpens: 8 * 60,
+  dayCloses: 20 * 60,
   // One Cal.com event per length, each with its own Cal Pay price at $300 an hour, because Cal.com
   // charges one fixed price per event whatever length is chosen (Cal.com docs and code, checked
   // 2026-11-03). Set up in Cal.com on 2026-11-03: reserve is 2 hours at $600 (Luke), reserve-3h to

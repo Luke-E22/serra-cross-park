@@ -21,6 +21,18 @@ export type DayTime = {
   label: string;
 };
 
+/**
+ * A stretch of the park's day that no event can use: booked, the hour kept clear on each side of a
+ * booking, past the notice period, or a gap too short for the shortest event.
+ */
+export type DayWindow = {
+  /** ISO with offset, as Cal.com writes times. */
+  start: string;
+  end: string;
+  /** "8 AM to 2 PM" on a clock in the booking zone. */
+  label: string;
+};
+
 /** The body of a 200 from GET /api/availability/times. */
 export type DayTimesResponse = {
   /** The day asked for, YYYY-MM-DD in `timeZone`. */
@@ -31,6 +43,11 @@ export type DayTimesResponse = {
   timeZone: string;
   /** Open start times on `date` that fit `minutes`, earliest first. Empty when none fit. */
   times: DayTime[];
+  /**
+   * The parts of the park's day (BOOKING.dayOpens to BOOKING.dayCloses) where no event of the
+   * shortest length fits, earliest first, whatever `minutes` is. Empty when the whole day is free.
+   */
+  unavailable: DayWindow[];
 };
 
 /**
@@ -206,6 +223,51 @@ export function toUtcSlot(iso: string): string {
 export function startsOn(iso: string, date: string, timeZone: string): boolean {
   const at = Date.parse(iso);
   return !Number.isNaN(at) && todayInZone(timeZone, new Date(at)) === date;
+}
+
+/* ---------- unavailable windows ---------- */
+
+/**
+ * The parts of `date` between `opens` and `closes` (minutes after midnight in `timeZone`) that no
+ * event can use, from the open start times of a `probeMinutes` event (the shortest length). Each
+ * start frees the stretch from it to its end; what no start frees is not available. Cal.com only
+ * publishes open times, never bookings, so this is as close to "what is booked" as the public API
+ * goes. A window is wider than the booking inside it: every event has 60-minute buffers before and
+ * after (read 2026-11-04), and the probe's own buffers add to the booking's, so a paid booking from
+ * 3 PM to 5 PM on 2026-11-28 read as "1 PM to 8 PM" (no two-hour event fits after it by 8 PM).
+ */
+export function unavailableWindows(
+  starts: readonly string[],
+  date: string,
+  timeZone: string,
+  probeMinutes: number,
+  opens: number = BOOKING.dayOpens,
+  closes: number = BOOKING.dayCloses,
+): DayWindow[] {
+  const dayStart = instantAt(date, opens, timeZone);
+  const dayEnd = instantAt(date, closes, timeZone);
+  if (!(dayEnd > dayStart)) return [];
+  const free = starts
+    .map((iso) => Date.parse(iso))
+    .filter((at) => !Number.isNaN(at))
+    .map((at) => [Math.max(at, dayStart), Math.min(at + probeMinutes * 60_000, dayEnd)] as const)
+    .filter(([from, to]) => to > from)
+    .sort((a, b) => a[0] - b[0]);
+
+  const windows: DayWindow[] = [];
+  const add = (from: number, to: number) => {
+    if (to <= from) return;
+    const start = toZonedIso(from, timeZone);
+    const end = toZonedIso(to, timeZone);
+    windows.push({ start, end, label: rangeLabel(start, end, timeZone) });
+  };
+  let cursor = dayStart;
+  for (const [from, to] of free) {
+    add(cursor, from);
+    if (to > cursor) cursor = to;
+  }
+  add(cursor, dayEnd);
+  return windows;
 }
 
 /* ---------- freshness and fixtures ---------- */

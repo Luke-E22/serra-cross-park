@@ -16,6 +16,7 @@ import {
   selectDayTimes,
   toUtcSlot,
   toZonedIso,
+  unavailableWindows,
   type RangeSlotData,
 } from './day-times.ts';
 
@@ -352,5 +353,55 @@ describe('allowsFixture', () => {
     expect(allowsFixture('', {})).toBe(false);
     expect(allowsFixture(undefined, { NETLIFY_DEV: 'true' })).toBe(true);
     expect(allowsFixture(undefined, { NODE_ENV: 'development' })).toBe(true);
+  });
+});
+
+describe('unavailableWindows', () => {
+  const LA = 'America/Los_Angeles';
+  // Two-hour starts on the hour, Pacific standard time (-08:00), as the probe query returns them.
+  const at = (hour: number) => `2026-11-25T${String(hour).padStart(2, '0')}:00:00.000-08:00`;
+
+  it('is empty when two-hour starts cover the park day from 8 AM to 8 PM', () => {
+    const starts = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map(at);
+    expect(unavailableWindows(starts, '2026-11-25', LA, 120, 8 * 60, 20 * 60)).toEqual([]);
+  });
+
+  it('lists what no start frees: a booking with its clear hours, and the evening', () => {
+    // A booking from 11 AM to 1 PM with 60-minute buffers leaves starts at 8 and from 3 PM to 4 PM.
+    const starts = [8, 15, 16].map(at);
+    const windows = unavailableWindows(starts, '2026-11-25', LA, 120, 8 * 60, 20 * 60);
+    expect(windows.map((w) => w.label)).toEqual(['10 AM to 3 PM', '6 PM to 8 PM']);
+    expect(windows[0]).toMatchObject({ start: at(10), end: at(15) });
+  });
+
+  it('is the whole day when nothing is open', () => {
+    expect(unavailableWindows([], '2026-11-25', LA, 120, 8 * 60, 20 * 60).map((w) => w.label)).toEqual(['8 AM to 8 PM']);
+  });
+
+  it('merges overlapping starts and ignores anything unreadable or outside the day', () => {
+    // The 6 AM start ends at 8 AM, so it frees nothing; 9 and 10 overlap into 9 AM to 12 PM.
+    const starts = ['nonsense', '2026-11-25T06:00:00.000-08:00', at(9), at(10), '2026-11-25T19:30:00.000-08:00'];
+    expect(unavailableWindows(starts, '2026-11-25', LA, 120, 8 * 60, 20 * 60).map((w) => w.label)).toEqual([
+      '8 AM to 9 AM',
+      '12 PM to 7:30 PM',
+    ]);
+  });
+
+  it('reads the hours on the day daylight saving ends', () => {
+    // 2026-11-01: 8 AM is already standard time, so the day still runs 8 AM to 8 PM.
+    const windows = unavailableWindows([], '2026-11-01', LA, 120, 8 * 60, 20 * 60);
+    expect(windows).toEqual([
+      { start: '2026-11-01T08:00:00.000-08:00', end: '2026-11-01T20:00:00.000-08:00', label: '8 AM to 8 PM' },
+    ]);
+  });
+
+  it('finds the fixture weekend booking from its two-hour starts', () => {
+    // 2026-11-07 is a Saturday; the fixture books 11 AM to 1 PM and has no buffers.
+    const starts = buildTimesFixture('2026-11-07', 120, LA).map((t) => t.start);
+    expect(unavailableWindows(starts, '2026-11-07', LA, 120, 8 * 60, 20 * 60).map((w) => w.label)).toEqual([
+      '11 AM to 1 PM',
+    ]);
+    expect(BOOKING.dayOpens).toBe(8 * 60);
+    expect(BOOKING.dayCloses).toBe(20 * 60);
   });
 });

@@ -56,7 +56,7 @@ Serve the built site. By default it also uses port 4321, so stop the dev server 
 npm run preview
 ```
 
-Run the unit tests (Vitest 5, 7 files, 108 tests):
+Run the unit tests (Vitest 5, 7 files, 128 tests):
 
 ```bash
 npm test
@@ -170,7 +170,7 @@ Rules from the brand book: real park photos only, no stock. Never crop through t
 - `calUsername` and `calEventSlug`: the account and event. `CAL_BOOKING_PAGE_URL` (https://cal.com/serra-cross-park/reserve) is built from them for the fallback link.
 - `timeZone`: `America/Los_Angeles`. "Today" is worked out in this zone.
 - `horizonMonths` (12): how far ahead the calendar shows and how far the function fetches.
-- `minNoticeDays` (0): days inside this window show "Not available online". With 0, today reads "Booked, 0 of 11" once Cal.com's six-hour minimum notice has passed its last start. Set 1 to show "Not available online" instead, mirroring Cal.com's minimum notice.
+- `minNoticeDays` (0): days inside this window show "Not available online". With 0, today reads "Booked" once Cal.com's six-hour minimum notice has passed its last start. Set 1 to show "Not available online" instead, mirroring Cal.com's minimum notice.
 - `fullDaySlots` (null): how many slots make a fully open day, by weekday (0 is Sunday). Leave null and the function learns it: a full day is the most slots seen for that weekday anywhere in the horizon. Set it only if a weekday is often fully booked across the whole year.
 - `slotDuration` (120): minutes, sent as `duration` to the slots API, so the month grid counts two-hour starts and a day reads as open while any two-hour start is left. A full day is 11 starts, 8 AM to 6 PM. Without it Cal.com counts the event's default length, which is still 180 minutes (CONTENT-TODO item 39). Keep it equal to the shortest of `lengths`; a test checks this.
 - `lengths` (120 to 480): the event lengths in minutes, the options under "How long is your event?" and the only lengths `/api/availability/times` accepts. Keep them equal to the lengths the Cal.com event offers (2 to 8 hours on 2026-11-03), because the booker's `duration` must be one of them.
@@ -179,7 +179,7 @@ Rules from the brand book: real park photos only, no stock. Never crop through t
 
 **How the calendar works.** `/api/availability` fetches the horizon in about-a-month chunks, counts open two-hour starts per day and gives each day one status: past, closed, soon, notyet, booked, partial or open. Nothing about who booked; Cal.com only returns open times. Responses are cached 60 seconds in the browser and 5 minutes on Netlify's CDN; a slightly stale day cannot cause a double booking because the booker always checks live. As read on 2026-11-03, Cal.com offers hourly starts from 8 AM, every event over by 8 PM, so a fully open day has 11 two-hour starts. The 24 bookings from the old site are not in Cal.com yet, so those dates still show as open (CONTENT-TODO item 13).
 
-**The day panel.** Since the board's feedback of 2026-11-03, visitors see a day's times before they agree to anything. Picking an open or partly booked day opens a panel under the grid (`DayPanel.tsx`): "How long is your event?" (2 to 8 hours, each with its fee, 2 hours by default), that day's open start times as chips, and a note that times are start times in Pacific Time with setup and breakdown inside booked time. The times come from `GET /api/availability/times?date=YYYY-MM-DD&minutes=N` (`netlify/functions/availability-times.mts`), which answers `{ date, minutes, timeZone, times: [{ start, end, label }] }`, cached 60 seconds in the browser and 2 minutes on the CDN. The panel keeps each day and length it has loaded for the rest of the visit. Picking a time shows a summary line ("Saturday, November 7, 9 AM to 12 PM. 3 hours, $900 site fee.") and a secondary "Continue to book" button. Continue shows the terms agreement; a new day, length or time takes the agreement and the booker away again until the next Continue.
+**The day panel.** Since the board's feedback of 2026-11-03, visitors see a day's times before they agree to anything. Picking an open or partly booked day opens a panel under the grid (`DayPanel.tsx`): "Not available" with the day's taken stretches as time ranges (or "Nothing is booked yet. Open 8 AM to 8 PM."), then "How long is your event?" (2 to 8 hours, each with its fee, 2 hours by default), that day's open start times as chips, and a note that times are start times in Pacific Time with setup and breakdown inside booked time. The times come from `GET /api/availability/times?date=YYYY-MM-DD&minutes=N` (`netlify/functions/availability-times.mts`), which answers `{ date, minutes, timeZone, times: [{ start, end, label }], unavailable: [{ start, end, label }] }`, cached 60 seconds in the browser and 2 minutes on the CDN. The panel keeps each day and length it has loaded for the rest of the visit. Picking a time shows a summary line ("Saturday, November 7, 9 AM to 12 PM. 3 hours, $900 site fee.") and a secondary "Continue to book" button. Continue shows the terms agreement; a new day, length or time takes the agreement and the booker away again until the next Continue.
 
 **The booker link.** Once the visitor agrees, the embed mounts with `calLink` set to `serra-cross-park/reserve?month=YYYY-MM&date=YYYY-MM-DD&duration=MINUTES&slot=START`, where `START` is the chosen start in UTC with milliseconds and `Z` (for 9 AM Pacific on November 7, `2026-11-07T17:00:00.000Z`). Verified in a real browser on 2026-11-03: the booker opens straight on its booking form for that time and length. With `month` and `date` alone it opens on that day with its times listed (verified 2026-10-09), so `SHOW_PICK_HINT` in `src/components/booking/CalBooker.tsx` stays `false`. If a Cal.com update stops honoring `date`, set it to `true` and the page shows "Choose <date> in the calendar below if it is not already selected." above the embed. Opening the booker on a time holds that time in Cal.com for about five minutes, and nobody else can pick it meanwhile. So test on a far-off date, and cancel any test booking in Cal.com afterwards.
 
@@ -225,7 +225,7 @@ sudo xcodebuild -license
 
 ## 9. Tests and checks
 
-**Vitest.** `npm test` runs seven files, 108 tests, in well under a second.
+**Vitest.** `npm test` runs seven files, 128 tests, in well under a second.
 
 - `src/lib/availability.test.ts` (25): date helpers across UTC midnight and DST, chunking, clipping and merging Cal.com data, every day status (the fixture's weekend and weekday slot counts, learned weekday counts, closed weekdays, minimum notice, the end of the window, the past), the response envelope and the fixture.
 - `src/lib/cal-theme.test.ts` (12): token aliases resolve to plain colors, the embed gets every key the brief and Cal.com name, paper text on navy, square corners.

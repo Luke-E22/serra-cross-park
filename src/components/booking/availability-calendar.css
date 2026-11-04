@@ -1,8 +1,8 @@
 /* Availability calendar island (src/components/booking/AvailabilityCalendar.tsx).
    Every value reads a token from design-system/tokens.css. Square corners, borders not
    shadows, and every status is told by a mark and words as well as by color: an open day has
-   a line-strong border on surface-raised; a partly booked day adds a half-filled square and
-   "2 of 3 open"; a booked day sits on sandstone with the date struck through and the word
+   a line-strong border on surface-raised; a partly booked day adds a half-filled square (no
+   count of open times since 2026-11-04); a booked day sits on sandstone with the date struck through and the word
    "booked"; a day not available online is muted, borderless and inert. The selected day is
    navy with paper text and the check icon, like a checked ChoiceChip.
    A picked day opens the day panel under the grid (DayPanel.tsx): a square panel on
@@ -222,7 +222,7 @@
   right: 2px;
 }
 
-/* "2 of 3 open" and "booked" appear under the number once a cell is at least 64px wide
+/* "booked" appears under the number once a cell is at least 64px wide
    (seven 64px columns plus six gaps). Narrower cells keep the mark alone. */
 .avail__day .avail__detail {
   display: none;
@@ -282,6 +282,39 @@
 .day-panel__title:focus {
   outline: none;
   box-shadow: none;
+}
+
+/* "Not available": the day's taken stretches as a short list under the heading, each a square tag
+   on surface-alt with a line-strong border. The heading's words carry the meaning, not the color. */
+.day-panel__taken {
+  max-width: var(--measure);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+.day-panel__taken-title {
+  margin: 0 0 var(--space-2);
+  color: var(--ink-muted);
+}
+.day-panel__taken-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.day-panel__taken-list li {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-alt);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+}
+.day-panel__taken .day-panel__note { margin-top: var(--space-2); }
+.day-panel__free {
+  margin: 0;
+  color: var(--ink);
 }
 
 /* The length select reads "8 hours, $2,400" at most, so it stays short instead of spanning the panel. */

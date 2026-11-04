@@ -4,6 +4,10 @@
  * calendar (AvailabilityCalendar.tsx) opens this panel under the grid, on our own site:
  *
  * - the day as a heading ("Saturday, November 7"), which takes focus after each pick;
+ * - "Not available": the parts of the park's day no event can use, as time ranges ("10 AM to
+ *   2 PM"), with a note that they include the time kept clear around each booking, or "Nothing is
+ *   booked yet" when the whole day is free (owner's request, 2026-11-04, in place of the open-time
+ *   counts the grid used to show). The same for every length, so they stay put when it changes;
  * - "How long is your event?", a select of BOOKING.lengths, each with its site fee at
  *   BOOKING.ratePerHour ("3 hours, $900"), two hours by default;
  * - that day's open start times for the chosen length, as chips with radio semantics, read live
@@ -34,7 +38,7 @@
 import * as React from 'react';
 import { BOOKING } from '../../config/site';
 import { feeFor, isAllowedLength, isFreshTimes, lengthLabel, rangeLabel, startsOn } from '../../lib/day-times';
-import type { DayTime } from '../../lib/day-times';
+import type { DayTime, DayWindow } from '../../lib/day-times';
 import { Button, ChoiceChips, Field } from '../ds';
 import type { Choice, FieldOption } from '../ds';
 import { formatBookDate, zoneName } from './calendar-grid';
@@ -180,6 +184,46 @@ export function parseTimes(body: unknown, asked?: TimesRequest): DayTime[] {
     .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
 }
 
+function isDayWindow(value: unknown): value is DayWindow {
+  if (!value || typeof value !== 'object') return false;
+  const { start, end, label } = value as Record<string, unknown>;
+  return (
+    typeof start === 'string' &&
+    typeof end === 'string' &&
+    typeof label === 'string' &&
+    label !== '' &&
+    Date.parse(end) > Date.parse(start)
+  );
+}
+
+/**
+ * The "Not available" windows in an endpoint body, sorted, unreadable entries and any that do not
+ * start on the asked date dropped. Null when the body carries none at all (an answer cached before
+ * the field existed), so the panel shows nothing rather than claim the day is free.
+ */
+export function parseUnavailable(body: unknown, asked: TimesRequest): DayWindow[] | null {
+  const list = body && typeof body === 'object' ? (body as { unavailable?: unknown }).unavailable : undefined;
+  if (!Array.isArray(list)) return null;
+  return list
+    .filter(isDayWindow)
+    .filter((w) => startsOn(w.start, asked.date, asked.timeZone))
+    .map(({ start, end, label }) => ({ start, end, label }))
+    .sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+}
+
+/** "8 AM", "12 PM", "7:30 PM" for minutes after midnight. */
+export function clockLabel(minuteOfDay: number): string {
+  const hour = Math.floor(minuteOfDay / 60) % 24;
+  const minute = minuteOfDay % 60;
+  const twelve = hour % 12 === 0 ? 12 : hour % 12;
+  return `${twelve}${minute ? `:${String(minute).padStart(2, '0')}` : ''} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+/** "Nothing is booked yet. Open 8 AM to 8 PM." for a day with no window. */
+export function freeDayMessage(opens: number = BOOKING.dayOpens, closes: number = BOOKING.dayCloses): string {
+  return `Nothing is booked yet. Open ${clockLabel(opens)} to ${clockLabel(closes)}.`;
+}
+
 const LENGTH_OPTIONS: FieldOption[] = BOOKING.lengths.map((minutes) => ({
   value: String(minutes),
   label: lengthOptionLabel(minutes),
@@ -203,6 +247,9 @@ export default function DayPanel({ date, timeZone, fixture, onContinue, continue
   // Times by date, length and source, with when they were fetched. A failed load is not cached, so
   // coming back to it tries again.
   const cache = React.useRef(new Map<string, { times: DayTime[]; at: number }>());
+  // The "Not available" windows by date and source. They do not depend on the length, so they stay
+  // on screen while a new length loads; every successful load refreshes them.
+  const windowsCache = React.useRef(new Map<string, DayWindow[]>());
   // The load in flight or just finished; its key says which date and length it belongs to. Only an
   // error is read from it; times come from the cache.
   const [load, setLoad] = React.useState<{ key: string; status: LoadStatus } | null>(null);
@@ -220,6 +267,7 @@ export default function DayPanel({ date, timeZone, fixture, onContinue, continue
   const status: LoadStatus = cached ? 'ready' : load && load.key === key && load.status === 'error' ? 'error' : 'loading';
   const times = cached ?? NO_TIMES;
   const chosen = times.find((t) => t.start === start) ?? null;
+  const windows = windowsCache.current.get(`${date}|${fixture ? 'fixture' : 'live'}`) ?? null;
 
   React.useEffect(() => {
     const found = cache.current.get(key);
@@ -231,8 +279,12 @@ export default function DayPanel({ date, timeZone, fixture, onContinue, continue
     fetch(timesUrl(date, minutes, fixture), { signal: controller.signal, headers: { accept: 'application/json' } })
       .then(async (res) => {
         if (!res.ok) throw new Error(`times responded ${res.status}`);
-        const list = parseTimes(await res.json(), { date, minutes, timeZone });
+        const body: unknown = await res.json();
+        const asked = { date, minutes, timeZone };
+        const list = parseTimes(body, asked);
         cache.current.set(key, { times: list, at: Date.now() });
+        const unavailable = parseUnavailable(body, asked);
+        if (unavailable) windowsCache.current.set(`${date}|${fixture ? 'fixture' : 'live'}`, unavailable);
         if (!controller.signal.aborted) setLoad({ key, status: 'ready' });
       })
       .catch(() => {
@@ -277,6 +329,28 @@ export default function DayPanel({ date, timeZone, fixture, onContinue, continue
       <h3 id={headingId} className="day-panel__title heading-sm" tabIndex={-1} ref={headingRef}>
         {formatBookDate(date)}
       </h3>
+
+      {windows && (
+        <div className="day-panel__taken">
+          {windows.length === 0 ? (
+            <p className="day-panel__free body-sm">{freeDayMessage()}</p>
+          ) : (
+            <>
+              <h4 className="day-panel__taken-title label">Not available</h4>
+              <ul className="day-panel__taken-list" role="list">
+                {windows.map((w) => (
+                  <li key={w.start} className="body-sm">
+                    {w.label}
+                  </li>
+                ))}
+              </ul>
+              <p className="day-panel__note body-sm">
+                These include time kept clear around each booking, so the events themselves are shorter.
+              </p>
+            </>
+          )}
+        </div>
+      )}
 
       <Field
         className="day-panel__length"

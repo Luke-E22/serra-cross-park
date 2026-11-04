@@ -8,7 +8,10 @@ import { eventSlugFor } from '../../lib/day-times';
 import { calLinkFor } from './CalBooker';
 import { zoneName } from './calendar-grid';
 import {
+  clockLabel,
   formatFee,
+  freeDayMessage,
+  parseUnavailable,
   lengthAdjective,
   lengthInWords,
   lengthOptionLabel,
@@ -173,5 +176,42 @@ describe('zoneName', () => {
 
   it('falls back to the IANA name for a zone Intl does not know', () => {
     expect(zoneName('Mars/Olympus_Mons')).toBe('Mars/Olympus Mons');
+  });
+});
+
+describe('not available windows', () => {
+  const asked = { date: '2026-11-25', minutes: 180, timeZone: 'America/Los_Angeles' };
+
+  it('reads the windows from the times body, sorted, dropping strays and junk', () => {
+    const body = {
+      date: '2026-11-25',
+      minutes: 180,
+      times: [],
+      unavailable: [
+        { start: '2026-11-25T18:00:00.000-08:00', end: '2026-11-25T20:00:00.000-08:00', label: '6 PM to 8 PM' },
+        { start: '2026-11-25T10:00:00.000-08:00', end: '2026-11-25T15:00:00.000-08:00', label: '10 AM to 3 PM' },
+        { start: '2026-11-26T10:00:00.000-08:00', end: '2026-11-26T12:00:00.000-08:00', label: '10 AM to 12 PM' },
+        { start: '2026-11-25T12:00:00.000-08:00', end: '2026-11-25T11:00:00.000-08:00', label: 'backwards' },
+        'nonsense',
+      ],
+    };
+    expect(parseUnavailable(body, asked)?.map((w) => w.label)).toEqual(['10 AM to 3 PM', '6 PM to 8 PM']);
+  });
+
+  it('is null when the body carries no windows, so the panel claims nothing', () => {
+    expect(parseUnavailable({ times: [] }, asked)).toBeNull();
+    expect(parseUnavailable(null, asked)).toBeNull();
+  });
+
+  it('is an empty list when the whole day is free', () => {
+    expect(parseUnavailable({ times: [], unavailable: [] }, asked)).toEqual([]);
+  });
+
+  it('words a free day with the park hours', () => {
+    expect(clockLabel(8 * 60)).toBe('8 AM');
+    expect(clockLabel(12 * 60)).toBe('12 PM');
+    expect(clockLabel(19 * 60 + 30)).toBe('7:30 PM');
+    expect(clockLabel(0)).toBe('12 AM');
+    expect(freeDayMessage()).toBe('Nothing is booked yet. Open 8 AM to 8 PM.');
   });
 });
