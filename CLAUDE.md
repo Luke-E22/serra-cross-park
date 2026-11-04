@@ -91,6 +91,9 @@ In this order, before changing anything:
 - Hours stay 8 AM to 8 PM at any start time, two-hour minimum at $300 per hour, the fee due when the booking is submitted, non-refundable, one change of date or times at no charge subject to availability.
 - The booking page's "tax-deductible donations" sentence is the board's and stays as written until the accountant rules (CONTENT-TODO item 2). See Money words above for what every other page may say.
 
+**Type (2026-11-04). Do not undo it.**
+- Board members found Strong Glasgow hard to read small. It is only for major headings: `display-xl`, `display-lg`, `heading`, the wordmark and the FactGrid values. `heading-sm`, `label-lg` and `label` are Jost (self-hosted, `--font-subhead`, the "Subheads" block in `src/styles/site.css`); `heading-sm` is sentence case, labels stay uppercase. Logged in `DESIGN-SYSTEM-CHANGES.md`.
+
 ## 4. How the site is built
 
 - Astro 7.3, `output: 'static'`, `build.format: 'directory'`, TypeScript. One page per file in `src/pages/`; each imports its own CSS from `src/styles/pages/` at the top of its frontmatter.
@@ -107,7 +110,7 @@ In this order, before changing anything:
 - Cal.com facts: username `serra-cross-park`, event slug `reserve` (the brief's `30min` does not exist). As read on 2026-11-03: lengths of 2 to 8 hours (`BOOKING.lengths` must stay equal to them), hourly starts from 8 AM with every event over by 8 PM, 60-minute buffers, a six-hour minimum notice, and still a 180-minute default where the published rule wants 120. CONTENT-TODO items 11, 38 and 39 stay open until Luke confirms these settings. A payment app is set up on the event but switched off. `BOOKING.minNoticeDays` is 0; set it to 1 to show today as "Not available online" instead of "Booked". Booking rules live in Cal.com, never in code.
 - Dev bridge: `scripts/dev-availability-plugin.mjs` serves `/api/availability` and `/api/availability/times` in `astro dev`. `npm run preview` serves neither, so the booking page in preview takes the fallback path (Notice, the terms agreement, then the booker). `npx netlify-cli serve --offline` (port 8888) runs the real functions on the built site.
 - Vite cache: `astro.config.mjs` sets `vite.cacheDir` per npm script (`node_modules/.vite-dev`, `.vite-build`). If an island crashes with "_jsxDEV is not a function": `rm -rf node_modules/.vite*` and restart dev.
-- Fonts: EB Garamond is self-hosted from `public/fonts/eb-garamond/` through `src/styles/fonts.css`; `scripts/strip-google-fonts-plugin.mjs` removes the Google Fonts import from `bundle.css` at build time. Strong Glasgow in `design-system/fonts/` is the personal-use demo; the three digit-only `@font-face` rules at the top of `bundle.css` go when the licensed files arrive.
+- Fonts: EB Garamond and Jost are self-hosted from `public/fonts/eb-garamond/` and `public/fonts/jost/` through `src/styles/fonts.css`; `scripts/strip-google-fonts-plugin.mjs` removes the Google Fonts import from `bundle.css` at build time. Strong Glasgow in `design-system/fonts/` is the personal-use demo; the three digit-only `@font-face` rules at the top of `bundle.css` go when the licensed files arrive.
 - Forms: Netlify Forms `contact` and `event-inquiry`. Each island form has a static copy in the page HTML with the same `name` and field names. They do not run locally; test on a deploy preview.
 
 ## 5. Before you finish any change

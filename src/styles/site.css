@@ -163,6 +163,35 @@ body { font-size: 20px; line-height: 32px; }
   .sc-tl__text { font-size: 19px; line-height: 30px; }
 }
 
+/* ------------------------------------------------------------ Subheads */
+/* Board members found Strong Glasgow hard to read at small sizes (2026-11-04). It stays on the major
+   headings (display-xl, display-lg, heading) and the wordmark; the three smaller styles move to Jost,
+   a geometric sans of the same era, self-hosted in fonts.css. heading-sm drops the capitals and reads
+   in sentence case; label and label-lg keep them, tracked, as signage. Logged in DESIGN-SYSTEM-CHANGES.md. */
+:root { --font-subhead: "Jost", "Futura", "Century Gothic", "Trebuchet MS", sans-serif; }
+.heading-sm {
+  font-family: var(--font-subhead);
+  font-size: 23px;
+  line-height: 1.25;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.label-lg {
+  font-family: var(--font-subhead);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+.label {
+  font-family: var(--font-subhead);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+/* The design system nudges button words down 2px for Strong Glasgow's tall capitals; Jost sits centered without it. */
+.sc-btn__label { padding-top: 0; }
+
 /* "to" and "or" inside a FactGrid value sit in the serif, lowercase, so "8 AM to 8 PM" and "Up to 250" read as words. */
 .sc-fact__word {
   font-family: var(--font-serif);
