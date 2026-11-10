@@ -20,13 +20,13 @@ import { ogImage, picture } from '../lib/images';
 // board wrote about the entrance and the on-site representative are kept in its words. The site fee
 // figures come from BOOKING through feeFor(), and the question list reads src/content/faq.ts, so a
 // change made there lands here too. The booking page's sentence about tax-deductible payments is not
-// repeated here, and nothing here says where the fee goes (CLAUDE.md, Money words).
+// repeated here, and nothing here says where the fee goes (CLAUDE.md, Money words). A rehearsal at the
+// park is a separate booking if the couple is having an event (owner, 2026-11-09); the page leaves that
+// out at the owner's request.
 //
 // Open questions (CONTENT-TODO.md) that shaped the wording here:
 // [CONFIRM: item 46, the three ceremony and reception tiles, "most events book two or three hours" and "no packages and no required vendors" are proposals for the board]
 // [CONFIRM: item 47, the Visit Ventura line and the Google rating come from outside the brief; check both again before publishing]
-// [CONFIRM: item 48, whether a rehearsal needs its own booking; the page says nothing until the board decides]
-// [CONFIRM: item 33, permission and credits for the "-SCP" wedding photos on this page]
 
 const money = (dollars: number) => `$${dollars.toLocaleString('en-US')}`;
 const feeRange = (fromHours: number, toHours: number) => `${money(feeFor(fromHours * 60))} to ${money(feeFor(toHours * 60))}`;

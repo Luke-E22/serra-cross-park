@@ -15,7 +15,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Board and staff photos in place, or the initials placeholders signed off.
   Item 8. Drop a square image in `src/assets/people/` and set `photo` on the person in `PEOPLE` in `src/config/site.ts`; `luke-erickson.webp` is the worked example. Officer titles go in `title`. The prelaunch check warns once per person without a photo (seven today).
 - [ ] Photo permissions and credits settled (items 33 and 34).
-  The West Cooke Photography rainbow photo (`cross-double-rainbow` in `src/content/photos.ts`, credit in its caption), the "-SCP" wedding set with identifiable couples and guests, and the two About photos of unnamed children and adults. Credits and captions live in `src/content/photos.ts`; retire a photo by removing its import and entry there.
+  The "-SCP" wedding set needs no permission (owner, 2026-11-09). Still to settle: the West Cooke Photography rainbow photo (`cross-double-rainbow` in `src/content/photos.ts`, credit in its caption), the "-SCP" wedding set with identifiable couples and guests, and the two About photos of unnamed children and adults. Credits and captions live in `src/content/photos.ts`; retire a photo by removing its import and entry there.
 - [ ] Larger originals for the archival History photos and the rainbow photo, if they exist (item 35).
   The old site served them at 188 to 720 pixels wide, so they render soft in the timeline figures and the gallery lightbox.
 - [ ] Facebook group confirmed as the Conservancy's active page (item 36).
@@ -150,7 +150,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 
 The page is built and private at `https://serracrosspark.com/weddings-preview/`: no link to it, not in the sitemap, not for search engines.
 
-- [ ] The board approves the draft, and CONTENT-TODO items 46, 47 and 48 are answered.
+- [ ] The board approves the draft, and CONTENT-TODO items 46 and 47 are answered.
 - [ ] The page moved to its public address.
   Rename `src/pages/weddings-preview.astro` to `src/pages/weddings.astro` and set `path="/weddings/"` on its `BaseLayout`.
 - [ ] The private settings removed.
@@ -158,7 +158,7 @@ The page is built and private at `https://serracrosspark.com/weddings-preview/`:
 - [ ] The two `/weddings` redirects deleted from `netlify.toml`, since the page takes over that address.
 - [ ] The page linked from the site.
   "Weddings" in `NAV` and in the "Plan and give" footer column (`src/config/site.ts`), and the Weddings card on Home pointed at `/weddings/`.
-- [ ] Permission for the wedding photos settled (CONTENT-TODO item 33), then real couples' words and photos added with their consent.
+- [ ] Real couples' words and photos added with their consent, once there are some.
 - [ ] Lighthouse run on the page, mobile, and the page checks from docs/BUILD-REPORT.md section 3.
 - [ ] The new address submitted in Search Console (URL inspection, then request indexing).
 - [ ] The park's Google listing, now filed as a Monument, given a "Wedding venue" category and linked to the page, if Google allows it on that listing.
