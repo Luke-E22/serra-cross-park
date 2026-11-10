@@ -16,11 +16,14 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory' },
-  // Two noindex pages stay out of the sitemap: /booking/requested/ (Cal.com's success redirect)
-  // and /website-proposal/ (the board proposal, a private page).
+  // Three noindex pages stay out of the sitemap: /booking/requested/ (Cal.com's success redirect),
+  // /website-proposal/ (the board proposal) and /weddings-preview/ (a draft for the board), both private.
   integrations: [
     react(),
-    sitemap({ filter: (page) => !page.includes('/booking/requested/') && !page.includes('/website-proposal/') }),
+    sitemap({
+      filter: (page) =>
+        !page.includes('/booking/requested/') && !page.includes('/website-proposal/') && !page.includes('/weddings-preview/'),
+    }),
   ],
   vite: { cacheDir, plugins: [stripGoogleFontsPlugin(), devAvailabilityPlugin()] },
 });

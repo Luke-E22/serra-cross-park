@@ -57,6 +57,17 @@ export const BOOKING = {
   } as null | Record<number, string>,
 };
 
+// Outside praise on the hidden weddings page (src/pages/weddings-preview.astro). Both were read on
+// 2026-11-09 and come from outside the brief, so they wait on the board's review and a fresh check
+// before the page goes public (CONTENT-TODO item 47). Google's panel read 4.8 from 1,134 reviews;
+// the page says "more than 1,100" so it stays true as reviews come in. The Visit Ventura words are from
+// https://visitventuraca.com/blog/10-unique-wedding-venues-in-ventura/ (updated 2025-04-14).
+export const PRAISE = {
+  googleRating: '4.8',
+  googleReviews: 'more than 1,100',
+  visitVentura: 'one of the most beautiful and affordable wedding venues in Ventura',
+};
+
 /** The public Cal.com booking page. The fallback link when the embed cannot load. */
 export const CAL_BOOKING_PAGE_URL = `https://cal.com/${BOOKING.calUsername}/${BOOKING.calEventSlug}`;
 

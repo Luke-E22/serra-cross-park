@@ -1,0 +1,332 @@
+---
+import '../styles/pages/weddings.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Button, FactGrid, FAQList, Gallery, Ornament, SectionHeading, SignPanel, Steps, type GalleryImage } from '../components/ds';
+import { BOOKING, PRAISE } from '../config/site';
+import { FAQ, type FAQEntry } from '../content/faq';
+import { PHOTOS } from '../content/photos';
+import type { PhotoKey } from '../content/photos';
+import { feeFor } from '../lib/day-times';
+import { ogImage, picture } from '../lib/images';
+
+// The weddings page, a hidden draft for the board's approval (owner's request, 2026-11-09). Search
+// Console showed no wedding searches reaching the site, and /weddings/ only redirected to "Plan your
+// event", so this page exists to come up for wedding searches and to answer what a couple asks first.
+// Until the board approves it, it is private the same way /website-proposal/ is: no link to it in the
+// header or footer, left out of the sitemap (astro.config.mjs), noindex in the head below and an
+// X-Robots-Tag header in netlify.toml. LAUNCH-CHECKLIST.md, "Weddings page", lists the steps to publish.
+//
+// Event rules follow docs/TERMS-SOURCE.md and the board's copy notes of 2026-10-14; the two rules the
+// board wrote about the entrance and the on-site representative are kept in its words. The site fee
+// figures come from BOOKING through feeFor(), and the question list reads src/content/faq.ts, so a
+// change made there lands here too. The booking page's sentence about tax-deductible payments is not
+// repeated here, and nothing here says where the fee goes (CLAUDE.md, Money words).
+//
+// Open questions (CONTENT-TODO.md) that shaped the wording here:
+// [CONFIRM: item 46, the three ceremony and reception tiles, "most events book two or three hours" and "no packages and no required vendors" are proposals for the board]
+// [CONFIRM: item 47, the Visit Ventura line and the Google rating come from outside the brief; check both again before publishing]
+// [CONFIRM: item 48, whether a rehearsal needs its own booking; the page says nothing until the board decides]
+// [CONFIRM: item 33, permission and credits for the "-SCP" wedding photos on this page]
+
+const money = (dollars: number) => `$${dollars.toLocaleString('en-US')}`;
+const feeRange = (fromHours: number, toHours: number) => `${money(feeFor(fromHours * 60))} to ${money(feeFor(toHours * 60))}`;
+
+// The same three tiles as the booking page, in the board's words. The no-break spaces keep each
+// figure with its AM or PM, so a narrow tile wraps after "to".
+const facts = [
+  { icon: 'users', label: 'Guests', value: 'Up to 250', note: 'people' },
+  { icon: 'sunset', label: 'Hours', value: '8\u00A0AM to 8\u00A0PM', note: 'daily, except July\u00A04' },
+  { icon: 'landmark', label: 'Rate', value: money(BOOKING.ratePerHour), note: 'per hour, two-hour minimum' },
+] as const;
+
+// What the hours on offer (BOOKING.lengths, two to eight) cost, grouped the way a couple thinks about them.
+const costs = [
+  { icon: 'clock', label: 'Ceremony', value: feeRange(2, 3), note: 'two or three hours' },
+  { icon: 'clock', label: 'Ceremony and short reception', value: feeRange(4, 5), note: 'four or five hours' },
+  { icon: 'clock', label: 'Ceremony and full reception', value: feeRange(6, 8), note: 'six to eight hours' },
+] as const;
+
+const parkHas = [
+  'The stone platform at the Cross',
+  'The lawn below it',
+  'Views of the Pacific and the Channel Islands',
+  'Two 20-amp outlets, enough for a small sound system',
+  'Parking for 35 vehicles inside the gates',
+  'Wheelchair access and disabled parking',
+];
+
+const youBring = [
+  'Chairs, tables, tents and decor, set up and taken away within your booked time',
+  'Water, portable restrooms and lighting, if you want them',
+  'A licensed bartender or caterer, if you serve alcohol',
+  'Event insurance, if you have catered food, beverages or a reception: a one-day $1 million liability policy, with proof emailed to the park office at least seven days before',
+  'A way to take your trash home, so the park is left as you found it',
+];
+
+const goodToKnow = [
+  'The park entrance remains open to the public. Reservations may put up signs, block off parking spaces, station someone at the entrance, or ask the public to vacate.',
+  'There is no on-site Serra Cross Conservancy representative during your event.',
+  'Everyone is off the hill by 8 PM, when the gates lock.',
+  'There are no changing rooms, so arrive dressed and ready.',
+  'Confetti and petals must be biodegradable or natural, never synthetic (plastic, metal or fabric).',
+  'No smoking, fireworks or open flames.',
+];
+
+// Four steps, the same order and facts as the five on the booking page, shortened for couples.
+const steps = [
+  { title: 'Pick a date and time', text: 'Choose an open day, how many hours you need and a start time. You can see open times before you agree to anything.' },
+  { title: 'Agree to the terms', text: 'Read the terms and conditions and agree by checking the box.' },
+  { title: 'Submit your booking', text: 'Add a few details about your event. The full site fee is due when you submit and is non-refundable.' },
+  { title: 'We confirm by email', text: 'Once your payment is processed, the park office emails your confirmation. Your date is reserved.' },
+];
+
+// The questions a couple asks first, by their exact wording in faq.ts. A question that is renamed
+// there fails the build here instead of quietly dropping off the page.
+const allQuestions: FAQEntry[] = [...FAQ.booking, ...FAQ.onTheDay, ...FAQ.visiting];
+function question(q: string): FAQEntry {
+  const entry = allQuestions.find((item) => item.q === q);
+  if (!entry) throw new Error(`weddings-preview: no question "${q}" in src/content/faq.ts`);
+  return entry;
+}
+const faqItems = [
+  'How many guests can the park hold?',
+  'Will we have the park to ourselves?',
+  'Do you provide tables, chairs or tents?',
+  'Are there restrooms or water?',
+  'Is there power?',
+  'Do we need event insurance?',
+  'Can we serve alcohol?',
+  'Can we throw confetti or petals?',
+  'What happens if we run past our booked time?',
+  'Can we change our date?',
+  'Is the park wheelchair accessible?',
+].map((q) => {
+  const { a } = question(q);
+  return { q, a };
+});
+
+// The first photo keeps the whole Cross in frame and sits on the plain page surface, not under the
+// navy hero scrim, so a wedding page opens bright. weddings.css shows it at 5:6, which trims only
+// empty sky above the Cross and pavement below the steps.
+const heroPhoto = PHOTOS['ceremony-floral-arch'];
+const hero = await picture(heroPhoto.image, {
+  widths: [560, 840, 1120, 1280],
+  sizes: '(min-width: 1200px) 560px, (min-width: 901px) 46vw, 100vw',
+  priority: true,
+  alt: heroPhoto.alt,
+});
+
+// The one photo that shows how a ceremony sits on the site. It is a thin banner, shown whole on wider
+// screens; on phones weddings.css crops its sides around the Cross.
+const bannerPhoto = PHOTOS['ceremony-guests-banner'];
+const banner = await picture(bannerPhoto.image, {
+  widths: [800, 1200, 1800],
+  sizes: '(min-width: 1248px) 1200px, 100vw',
+  alt: bannerPhoto.alt,
+});
+
+const og = await ogImage(PHOTOS['reception-lawn'].image);
+
+// Gallery cells, as on the booking page: three columns, two under 720px.
+const GALLERY_CELL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 50vw';
+const GALLERY_TALL = '(min-width: 1200px) 376px, (min-width: 721px) 33vw, 80vw';
+const GALLERY_WIDE = '(min-width: 1200px) 764px, (min-width: 721px) 66vw, 50vw';
+
+async function cell(
+  key: PhotoKey,
+  opts: { widths: number[]; sizes: string; layout?: GalleryImage['layout']; position?: string },
+): Promise<GalleryImage> {
+  const p = PHOTOS[key];
+  const pic = await picture(p.image, { widths: opts.widths, sizes: opts.sizes, position: opts.position, alt: p.alt });
+  return { src: pic.src, alt: pic.alt, imgProps: pic.imgProps, caption: p.caption, layout: opts.layout ?? 'normal' };
+}
+
+// Six photos in nine cells: normal, tall, normal, tall, wide, normal. The photos with the Cross in
+// frame take normal or tall cells, and the bridal party takes the wide strip, where a Cross would be cut.
+const gallery = await Promise.all([
+  cell('reception-lawn', { widths: [400, 752, 1128], sizes: GALLERY_CELL, position: '50% 42%' }),
+  cell('reception-table-view', { widths: [400, 752, 1128], sizes: GALLERY_TALL, layout: 'tall' }),
+  cell('ceremony-rose-arch-wedding-party', { widths: [400, 752, 1128], sizes: GALLERY_CELL }),
+  cell('cross-channel-islands', { widths: [400, 752, 1128], sizes: GALLERY_TALL, layout: 'tall', position: '50% 28%' }),
+  cell('bridesmaids-gold', { widths: [800, 1200, 1600], sizes: GALLERY_WIDE, layout: 'wide', position: '50% 38%' }),
+  cell('reception-umbrellas', { widths: [400, 752, 1128], sizes: GALLERY_CELL }),
+]);
+---
+
+<BaseLayout
+  title="Outdoor wedding venue in Ventura"
+  description="Get married at the Cross above Ventura, with the ocean and the Channel Islands below. Up to 250 people, $300 per hour with a two-hour minimum. See open dates."
+  path="/weddings-preview/"
+  ogImage={og}
+  ogImageAlt={PHOTOS['reception-lawn'].alt}
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex" />
+  </Fragment>
+
+  <section class="sc-section weddings-hero">
+    <div class="sc-container weddings-hero__inner">
+      <div class="weddings-hero__text">
+        <p class="weddings-hero__eyebrow label">
+          <Ornament size={20} />
+          <span>Ceremonies and receptions</span>
+        </p>
+        <h1 class="weddings-hero__title display-xl">Outdoor weddings above Ventura</h1>
+        <p class="weddings-hero__lede lede">
+          Say your vows at the Cross, with the ocean and the Channel Islands below. Up to 250 people, at {money(BOOKING.ratePerHour)} per hour with a two-hour minimum.
+        </p>
+        <div class="weddings-hero__actions">
+          <Button variant="primary" size="lg" icon="arrow-right" href="/booking/#availability">See open dates</Button>
+          <Button variant="secondary" size="lg" href="#visit">Come see it first</Button>
+        </div>
+        <p class="weddings-hero__proof body-sm">
+          Rated {PRAISE.googleRating} out of 5 in {PRAISE.googleReviews} Google reviews of the park.
+        </p>
+      </div>
+      <figure class="weddings-hero__figure">
+        <img src={hero.src} alt={hero.alt} {...hero.imgProps} />
+        <figcaption class="caption">{heroPhoto.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          eyebrow="The place"
+          title="Married on the hill"
+          intro="Serra Cross Park is an outdoor wedding venue on the hill above Mission San Buenaventura in Ventura. Ceremonies happen on the stone platform at the Cross and receptions on the lawn, with the ocean behind your guests."
+        />
+      </div>
+      <figure class="weddings-banner">
+        <img src={banner.src} alt={banner.alt} {...banner.imgProps} />
+        <figcaption class="caption">{bannerPhoto.caption}</figcaption>
+      </figure>
+      <div class="weddings-facts">
+        <FactGrid columns={3} items={[...facts]} />
+      </div>
+      <div class="weddings-story body">
+        <p class="weddings-story__praise lede">Visit Ventura calls the Cross “{PRAISE.visitVentura}.”</p>
+        <p>
+          The Cross that stands here today went up in 1941. In January 2010, stoneworkers from around the world built the dry-stone ramparts around it in ten days, with no mortar. <a href="/history/">Read the history</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          eyebrow="Site fee"
+          title="What a wedding here costs"
+          intro={`You pay for the hours you book, at ${money(BOOKING.ratePerHour)} per hour with a two-hour minimum. We don't offer packages and we don't require vendors, so you plan the day your way.`}
+        />
+      </div>
+      <div class="weddings-facts">
+        <FactGrid columns={3} items={[...costs]} />
+      </div>
+      <div class="weddings-columns">
+        <div>
+          <h3 class="weddings-columns__title heading-sm">How many hours do you need?</h3>
+          <p class="body">
+            Booked time includes setup and breakdown for you and your vendors, so count both. If your vendors need an hour to set up, your ceremony runs 30 minutes and packing up takes an hour, book three hours. Most events on our calendar book two or three hours.
+          </p>
+        </div>
+        <div>
+          <h3 class="weddings-columns__title heading-sm">When you pay</h3>
+          <p class="body">
+            The full site fee is due when you submit your booking and is non-refundable. You may change your date or time once at no charge, subject to availability.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading
+          as="h2"
+          eyebrow="Planning"
+          title="What to plan for"
+          intro="The hill gives you the view, the stone platform and the lawn. Nearly everything else comes with you."
+        />
+      </div>
+      <div class="weddings-panels">
+        <SignPanel tone="navy" title="At the park">
+          <ul class="weddings-list" role="list">
+            {parkHas.map((item) => <li>{item}</li>)}
+          </ul>
+        </SignPanel>
+        <SignPanel tone="navy" title="What you bring">
+          <ul class="weddings-list" role="list">
+            {youBring.map((item) => <li>{item}</li>)}
+          </ul>
+        </SignPanel>
+      </div>
+      <div class="weddings-rules">
+        <h3 class="weddings-columns__title heading-sm">Good to know</h3>
+        <ul class="weddings-list body" role="list">
+          {goodToKnow.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="body">Events are required to abide by the <a href="/terms-and-conditions/">terms and conditions</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--dark" id="visit">
+    <div class="sc-container site-dark__inner">
+      <SectionHeading onDark eyebrow="Before you book" title="Come see it first" />
+      <div class="site-dark__body body">
+        <p>The park is open to everyone from dawn to dusk, 364 days a year. You don't need an appointment.</p>
+        <p>Come at the hour you hope to marry. See where the sun falls and where your guests would sit.</p>
+        <p>The park stays open during events, so you may see one under way.</p>
+        <div class="site-dark__actions">
+          <Button variant="secondary" size="lg" onDark icon="arrow-right" href="/contact/#directions">Get directions</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section weddings-gallery">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading as="h2" eyebrow="Gallery" title="Weddings at the Cross" />
+      </div>
+      <Gallery images={gallery} />
+      <div class="weddings-gallery__more">
+        <Button variant="secondary" href="/gallery/" icon="arrow-right">See the gallery</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section sc-section--alt">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading as="h2" eyebrow="Step by step" title="How booking works" />
+      </div>
+      <Steps steps={steps} />
+      <div class="weddings-book">
+        <Button variant="secondary" size="lg" href="/booking/#availability" icon="arrow-right">See open dates</Button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sc-section">
+    <div class="sc-container">
+      <div class="site-section__head">
+        <SectionHeading as="h2" eyebrow="FAQ" title="Wedding questions" />
+      </div>
+      <FAQList items={faqItems} defaultOpen={0} />
+      <div class="weddings-more">
+        <Button variant="link" href="/faq/" icon="arrow-right">See all questions</Button>
+        <Button variant="link" href="/booking/#questions" icon="arrow-right">Ask the park office</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

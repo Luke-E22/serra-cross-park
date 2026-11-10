@@ -1,0 +1,195 @@
+/* The weddings page (src/pages/weddings-preview.astro, a hidden draft for the board).
+   Every value reads a token from design-system/tokens.css. Square corners, borders not shadows.
+   Section order: the opening with the photo, married on the hill, what it costs, what to plan for,
+   come see it first (navy), gallery, how booking works, wedding questions. */
+
+/* ------------------------------------------------------------ the opening */
+/* Words on the left, the photo on the right, on the plain page surface so the page opens bright.
+   One column under 900px, words first, so the buttons stay near the top on a phone. */
+.weddings-hero { padding-block: var(--space-8); }
+.weddings-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(560px, 46%);
+  gap: var(--space-8);
+  align-items: center;
+}
+.weddings-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  color: var(--accent-text);
+}
+/* Two classes: the display style's size comes from the global sheet and must lose here. It eases
+   down to the design system's own 46px under 640px, and tops out at 70px, not 76px, so the title
+   holds two lines beside the photo on a wide screen. */
+.weddings-hero .weddings-hero__title {
+  margin: 0;
+  font-size: clamp(46px, 5.3vw, 70px);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.weddings-hero__lede {
+  max-width: 600px;
+  margin: var(--space-5) 0 0;
+  color: var(--ink);
+}
+.weddings-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.weddings-hero__proof {
+  margin: var(--space-5) 0 0;
+  color: var(--ink-muted);
+}
+.weddings-hero__figure { margin: 0; }
+/* 5:6 trims only the empty sky above the Cross and the pavement below the steps. */
+.weddings-hero__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 6;
+  object-fit: cover;
+  object-position: 50% 52%;
+}
+.weddings-hero__figure figcaption { margin-top: var(--space-2); }
+@media (max-width: 900px) {
+  .weddings-hero__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+}
+@media (max-width: 640px) {
+  .weddings-hero { padding-block: var(--space-6) var(--space-7); }
+  .weddings-hero__actions .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ married on the hill */
+/* The ceremony banner is shown whole. It is too thin to read on a phone, so there it takes 16:9,
+   which crops only its sides: the Cross sits 41% across the frame. */
+.weddings-banner { margin: 0 0 var(--space-7); }
+.weddings-banner img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.weddings-banner figcaption { margin-top: var(--space-2); }
+@media (max-width: 720px) {
+  .weddings-banner img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: 41% 50%;
+  }
+}
+
+/* Both sets of three tiles stay in one row on a tablet and stack on a phone. The design system's
+   two-column step would leave the third tile alone on a row. Three classes, to outrank its rules. */
+@media (max-width: 900px) {
+  .weddings-facts .sc-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .weddings-facts .sc-facts .sc-fact {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+  .weddings-facts .sc-facts .sc-fact:first-child { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 640px) {
+  .weddings-facts .sc-facts { grid-template-columns: minmax(0, 1fr); }
+  .weddings-facts .sc-facts .sc-fact { padding-left: 0; padding-right: 0; border-left: 0; }
+  .weddings-facts .sc-facts .sc-fact + .sc-fact { border-top: 1px solid var(--line); }
+}
+
+.weddings-story {
+  max-width: var(--measure);
+  margin-top: var(--space-7);
+  color: var(--ink);
+}
+.weddings-story p { margin: 0 0 var(--space-4); }
+.weddings-story p:last-child { margin-bottom: 0; }
+.weddings-story .weddings-story__praise { margin-bottom: var(--space-5); }
+
+/* ------------------------------------------------------------ what it costs */
+.weddings-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7);
+  margin-top: var(--space-7);
+}
+.weddings-columns p { margin: 0; color: var(--ink); }
+.weddings-columns__title {
+  margin: 0 0 var(--space-3);
+  color: var(--ink);
+}
+@media (max-width: 720px) {
+  .weddings-columns { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+}
+
+/* ------------------------------------------------------------ what to plan for */
+.weddings-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+@media (max-width: 860px) {
+  .weddings-panels { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* A square ochre mark on each line, like the rules on the booking page. */
+.weddings-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ink);
+}
+.weddings-list li {
+  position: relative;
+  padding-left: var(--space-5);
+  margin-bottom: var(--space-2);
+}
+.weddings-list li:last-child { margin-bottom: 0; }
+.weddings-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: var(--radius-none);
+}
+
+.weddings-rules {
+  max-width: var(--measure);
+  margin-top: var(--space-7);
+}
+.weddings-rules > p {
+  margin: var(--space-5) 0 0;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------ gallery */
+/* On two columns the wide cell drops to one, so the eight cells fill four rows with no gap. The
+   captions step aside there: in a cell that narrow they cover half the photo. Alt text still says
+   what is in each frame. */
+.weddings-gallery__more {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-6);
+}
+@media (max-width: 720px) {
+  .weddings-gallery .sc-gallery__item--wide { grid-column: span 1; }
+  .weddings-gallery .sc-gallery__item figcaption { display: none; }
+  .weddings-gallery__more .sc-btn { width: 100%; }
+}
+
+/* ------------------------------------------------------------ how booking works, questions */
+.weddings-book { margin-top: var(--space-7); }
+@media (max-width: 640px) {
+  .weddings-book .sc-btn { width: 100%; }
+}
+.weddings-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin-top: var(--space-6);
+}

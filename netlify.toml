@@ -81,3 +81,10 @@
   for = "/website-proposal/*"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
+
+# The weddings page is a draft for the board until it approves it: private in the same way.
+
+[[headers]]
+  for = "/weddings-preview/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

@@ -145,3 +145,21 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 - [ ] Content-Security-Policy added to `netlify.toml` and tested with the Cal.com booker and the Zeffy form on a deploy preview.
 - [ ] docs/INTEGRATION-NOTES.md and `CONTENT-TODO.md` brought up to date.
   Record the final Cal.com and Zeffy settings and close the answered items so the next person starts from the live state.
+
+## Weddings page (waiting on the board)
+
+The page is built and private at `https://serracrosspark.com/weddings-preview/`: no link to it, not in the sitemap, not for search engines.
+
+- [ ] The board approves the draft, and CONTENT-TODO items 46, 47 and 48 are answered.
+- [ ] The page moved to its public address.
+  Rename `src/pages/weddings-preview.astro` to `src/pages/weddings.astro` and set `path="/weddings/"` on its `BaseLayout`.
+- [ ] The private settings removed.
+  The two robots and googlebot meta lines in the page's head, the `/weddings-preview/*` X-Robots-Tag block in `netlify.toml`, and the `/weddings-preview/` condition in the sitemap filter in `astro.config.mjs`.
+- [ ] The two `/weddings` redirects deleted from `netlify.toml`, since the page takes over that address.
+- [ ] The page linked from the site.
+  "Weddings" in `NAV` and in the "Plan and give" footer column (`src/config/site.ts`), and the Weddings card on Home pointed at `/weddings/`.
+- [ ] Permission for the wedding photos settled (CONTENT-TODO item 33), then real couples' words and photos added with their consent.
+- [ ] Lighthouse run on the page, mobile, and the page checks from docs/BUILD-REPORT.md section 3.
+- [ ] The new address submitted in Search Console (URL inspection, then request indexing).
+- [ ] The park's Google listing, now filed as a Monument, given a "Wedding venue" category and linked to the page, if Google allows it on that listing.
+- [ ] Free listings set up on The Knot and WeddingWire (through WeddingPro) and Zola, each linking to the page, and Visit Ventura asked to correct its entry (CONTENT-TODO item 49).
