@@ -7,6 +7,7 @@ import {
   clipSlotData,
   countSlots,
   eachDay,
+  isClosedEveryYear,
   mergeSlotData,
   monthChunks,
   summarize,
@@ -319,5 +320,30 @@ describe('buildFixture', () => {
     expect(fixture.days['2026-10-10']!.status).toBe('soon');
     expect(fixture.days['2026-10-11']!.status).not.toBe('soon');
     expect(buildFixture(TODAY, 12, 0).days[TODAY]!.status).not.toBe('soon');
+  });
+});
+
+describe('closedEveryYear', () => {
+  it('matches the month and day in any year', () => {
+    expect(isClosedEveryYear('2027-07-04', ['07-04'])).toBe(true);
+    expect(isClosedEveryYear('2031-07-04', ['07-04'])).toBe(true);
+    expect(isClosedEveryYear('2027-07-05', ['07-04'])).toBe(false);
+    expect(isClosedEveryYear('2027-07-04', [])).toBe(false);
+  });
+
+  it('reads July 4 as closed even when Cal.com offers every slot', () => {
+    const counts = { '2027-07-03': 11, '2027-07-04': 11, '2027-07-05': 11 };
+    const days = summarize({
+      counts,
+      start: '2027-07-03',
+      end: '2027-07-05',
+      today: '2027-07-01',
+      minNoticeDays: 0,
+      fullDaySlots: null,
+      closedEveryYear: ['07-04'],
+    });
+    expect(days['2027-07-04']!.status).toBe('closed');
+    expect(days['2027-07-03']!.status).toBe('open');
+    expect(days['2027-07-05']!.status).toBe('open');
   });
 });

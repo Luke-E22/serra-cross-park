@@ -26,7 +26,7 @@ Everything that has to happen before serracrosspark.com switches from WordPress 
 ## Cal.com
 
 - [ ] Cal.com: the event's title reads right on the site (its slug is `reserve`; the brief's `30min` does not exist and `BOOKING.calEventSlug` in `src/config/site.ts` already says `reserve`); "Requires confirmation" is on, with unconfirmed bookings still blocking the time, and the park office confirms each reservation once its payment is processed; availability is 8 AM to 8 PM every day with flexible start times and a two-hour minimum; booking questions cover event type, guest count and a required terms checkbox linking to `https://serracrosspark.com/terms-and-conditions/`; after booking, redirect to `https://serracrosspark.com/booking/requested/`; minimum notice and the future limit match `BOOKING`.
-- [ ] Cal.com: July 4 blocked every year (the park is closed for fire danger; CONTENT-TODO 45).
+- [ ] Cal.com: July 4 blocked every year (the park is closed for fire danger; CONTENT-TODO 45). The website already blocks it (`BOOKING.closedEveryYear`, 2026-11-18); this item is for Cal.com's own page.
   The items below break this one into the settings read from the live event on 2026-10-09 (CONTENT-TODO items 11, 38, 39 and 40, docs/INTEGRATION-NOTES.md).
 - [ ] Requires confirmation turned on, with unconfirmed bookings blocking the slot.
   Off today. The booking steps on `/booking/` and `/booking/requested/` promise that the park office confirms the reservation by email once the payment is processed, so a booking must not confirm itself; the slot stays blocked while unconfirmed. The terms document (1.1) says the full payment comes with the reservation form and nothing is confirmed before it is processed (item 43). Cal.com dashboard, event `reserve`, Advanced.

@@ -45,6 +45,8 @@ export interface SummarizeInput {
   today: string;
   minNoticeDays: number;
   fullDaySlots: Record<number, number> | null;
+  /** Days closed every year, as MM-DD (BOOKING.closedEveryYear). They read closed whatever Cal.com offers. */
+  closedEveryYear?: readonly string[];
 }
 
 export interface BuildResponseInput extends SummarizeInput {
@@ -185,7 +187,8 @@ export function countSlots(data: SlotData): Record<string, number> {
 /**
  * One status per day from `start` through `end` (inclusive), following BRIEF.md 7a:
  *   past    before today
- *   closed  the weekday never has slots in the horizon and fullDaySlots gives it none
+ *   closed  the weekday never has slots in the horizon and fullDaySlots gives it none, or the
+ *           day is one of closedEveryYear (July 4)
  *   soon    fewer than minNoticeDays days from today (today is 0 days away)
  *   notyet  after the last date that has any slot
  *   booked  zero slots
@@ -195,7 +198,7 @@ export function countSlots(data: SlotData): Record<string, number> {
  * anywhere in the horizon.
  */
 export function summarize(input: SummarizeInput): Record<string, DaySummary> {
-  const { counts, start, end, today, minNoticeDays, fullDaySlots } = input;
+  const { counts, start, end, today, minNoticeDays, fullDaySlots, closedEveryYear = [] } = input;
   const days = eachDay(start, addDays(end, 1));
 
   const maxSeen: number[] = [0, 0, 0, 0, 0, 0, 0];
@@ -217,7 +220,7 @@ export function summarize(input: SummarizeInput): Record<string, DaySummary> {
     const of = fullFor(weekdayOf(date));
     let status: DayStatus;
     if (date < today) status = 'past';
-    else if (of === 0) status = 'closed';
+    else if (of === 0 || isClosedEveryYear(date, closedEveryYear)) status = 'closed';
     else if (date < soonUntil) status = 'soon';
     else if (date > lastWithSlots) status = 'notyet';
     else if (open === 0) status = 'booked';
@@ -226,6 +229,11 @@ export function summarize(input: SummarizeInput): Record<string, DaySummary> {
     out[date] = { status, open, of };
   }
   return out;
+}
+
+/** True when `ymd` falls on one of the days closed every year, given as MM-DD. */
+export function isClosedEveryYear(ymd: string, closedEveryYear: readonly string[]): boolean {
+  return closedEveryYear.includes(ymd.slice(5));
 }
 
 /** Runs summarize() and wraps the result in the response envelope. */

@@ -20,7 +20,7 @@
 
 import type { Config, Context } from '@netlify/functions';
 import { BOOKING } from '../../src/config/site.ts';
-import { addDays } from '../../src/lib/availability.ts';
+import { addDays, isClosedEveryYear } from '../../src/lib/availability.ts';
 import {
   allowsFixture,
   buildTimesFixture,
@@ -115,6 +115,12 @@ export default async (req: Request, context: Context): Promise<Response> => {
   const minutes = parseMinutes(params.get('minutes'));
   if (!isCalendarDate(date) || !isAllowedLength(minutes)) {
     return json({ error: 'bad_request' }, 400, NO_STORE_HEADERS);
+  }
+
+  // A day the park is closed every year (July 4) offers no times and is unavailable all day,
+  // whatever Cal.com would offer, and Cal.com is not asked.
+  if (isClosedEveryYear(date, BOOKING.closedEveryYear)) {
+    return json(answer(date, minutes, [], windowsFrom([], date)), 200, OK_HEADERS);
   }
 
   // Fails closed: on production, or wherever the context is unknown outside a local dev server,

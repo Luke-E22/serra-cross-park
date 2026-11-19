@@ -39,6 +39,10 @@ export const BOOKING = {
   // Cal.com's own hours win for booking; keep these in step with them.
   dayOpens: 8 * 60,
   dayCloses: 20 * 60,
+  // Days the park is closed every year, as MM-DD. July 4 is closed for fire danger (owner). The
+  // owner asked on 2026-11-18 for the website to block it, so the month grid shows it as "Not
+  // available online" and the day panel offers no times. Cal.com's own page is not changed by this.
+  closedEveryYear: ['07-04'] as string[],
   // One Cal.com event per length, each with its own Cal Pay price at $300 an hour, because Cal.com
   // charges one fixed price per event whatever length is chosen (Cal.com docs and code, checked
   // 2026-11-03). Set up in Cal.com on 2026-11-03: reserve is 2 hours at $600 (Luke), reserve-3h to

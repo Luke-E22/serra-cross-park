@@ -89,6 +89,7 @@ export default async (req: Request, context: Context): Promise<Response> => {
       today,
       minNoticeDays: BOOKING.minNoticeDays,
       fullDaySlots: BOOKING.fullDaySlots,
+      closedEveryYear: BOOKING.closedEveryYear,
       timeZone: BOOKING.timeZone,
     });
     return json(response, 200, OK_HEADERS);
